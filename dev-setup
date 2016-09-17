@@ -6,7 +6,7 @@ git submodule init
 
 echo Updating repositories
 
-git submodule update
+git submodule update --remote
 
 echo Module status
 
