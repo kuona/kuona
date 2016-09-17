@@ -1,2 +1,17 @@
-puts "Kuona developer setup"
+echo "Kuona developer setup"
 
+echo Initialising sub-modules
+
+git submodule init
+
+echo Updating repositories
+
+git submodule update
+
+echo Module status
+
+git submodule status
+
+echo Installing required tool using hombrew and bundle
+
+brew bundle
