@@ -1,0 +1,32 @@
+[submodule "http-collector"]
+	path = http-collector
+	url = git@github.com:kuona/http-collector.git
+	branch = master
+[submodule "dashboard"]
+	path = dashboard
+	url = git@github.com:kuona/dashboard.git
+	branch = master
+[submodule "environment-service"]
+	path = environment-service
+	url = git@github.com:kuona/environment-service.git
+	branch = master
+[submodule "deployment"]
+	path = deployment
+	url = git@github.com:kuona/deployment.git
+	branch = master
+[submodule "kuona"]
+	path = kuona
+	url = git@github.com:kuona/kuona.git
+	branch = master
+[submodule "git-collector"]
+	path = git-collector
+	url = git@github.com:kuona/git-collector.git
+	branch = master
+[submodule "test-service"]
+	path = test-service
+	url = git@github.com:kuona/test-service.git
+	branch = master
+[submodule "kuona.github.io"]
+	path = kuona.github.io
+	url = git@github.com:kuona/kuona.github.io.git
+	branch = master
