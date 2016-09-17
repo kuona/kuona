@@ -6,7 +6,7 @@ git submodule init
 
 echo Updating repositories
 
-git submodule update --remote
+git submodule update
 
 echo Module status
 
@@ -15,3 +15,15 @@ git submodule status
 echo Installing required tool using hombrew and bundle
 
 brew bundle
+
+cd dashboard; sh dev-setup; cd ..
+
+echo Initial environment service build
+
+cd environment-service
+lein install
+lein midje
+
+cd ../git-collector
+lein install
+lein test
