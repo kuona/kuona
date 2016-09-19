@@ -18,12 +18,8 @@ brew bundle
 
 cd dashboard; sh dev-setup; cd ..
 
-echo Initial environment service build
+echo Initial environment service setup
 
-cd environment-service
-lein install
-lein midje
+cd environment-service; lein deps
 
-cd ../git-collector
-lein install
-lein test
+cd ../git-collector;lein deps
