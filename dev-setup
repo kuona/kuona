@@ -28,4 +28,8 @@ echo "${pblue}Initial environment service setup${preset}"
 cd environment-service; lein deps
 cd ../git-collector;lein deps
 
+echo "${pblue}Creating logging directory${preset}"
+sudo mkdir -p /var/log/kuona
+sudo chown $(whoami) /var/log/kuona
+
 echo "${pgreen}Ready to develop! Start with the readme.${preset}"
