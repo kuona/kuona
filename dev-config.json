@@ -4,6 +4,8 @@
     "elasticsearch-mode": "http",
     "elasticsearch-url": "http://localhost:9300",
     "environment-service-port": 9001,
-    "elasticsearch-cluster": "elasticsearch"
+    "elasticsearch-cluster": "elasticsearch",
+    "api-key": "test-key",
+    "metrics": "localhost:10000/health"
   }
 }
