@@ -33,3 +33,6 @@
 [submodule "jenkins-collector"]
 	path = jenkins-collector
 	url = git@github.com:kuona/jenkins-collector.git
+[submodule "kuona.io"]
+	path = kuona.io
+	url = git@github.com:kuona/kuona.io.git
