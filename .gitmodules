@@ -39,3 +39,6 @@
 [submodule "kuona-collector-lib"]
 	path = kuona-collector-lib
 	url = git@github.com:kuona/kuona-collector-lib.git
+[submodule "code-collector"]
+	path = code-collector
+	url = git@github.com:kuona/code-collector.git
