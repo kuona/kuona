@@ -12,7 +12,7 @@ git submodule foreach git pull'''
     }
     stage('build libraries') {
       steps {
-        dir(path: 'krona-collector-lib') {
+        dir(path: 'kuona-collector-lib') {
           sh 'lein install'
         }
         
