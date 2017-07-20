@@ -42,3 +42,6 @@
 [submodule "code-collector"]
 	path = code-collector
 	url = git@github.com:kuona/code-collector.git
+[submodule "snapshot-collector"]
+	path = snapshot-collector
+	url = git@github.com:grahambrooks/functional-event-store.git
