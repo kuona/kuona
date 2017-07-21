@@ -79,13 +79,13 @@ public class PomFile {
 
 
   public Closeable inject(String path) {
-    File pomFile = new File(path + "/pom.xml");
-    final File originalPomFile = new File(path + "pom.xml.original");
+    File pomFile = new File(path, "pom.xml");
+    final File originalPomFile = new File(path, "pom.xml.original");
     try {
 
       if (pomFile.exists()) {
-        Document doc = readPomDom(originalPomFile);
         if (pomFile.renameTo(originalPomFile)) {
+          Document doc = readPomDom(originalPomFile);
 
           dependencies.stream().forEach(d -> d.apply(doc));
 

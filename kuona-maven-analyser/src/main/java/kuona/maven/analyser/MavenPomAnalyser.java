@@ -79,6 +79,7 @@ public class MavenPomAnalyser {
     final PomFile pomFile = new PomFile();
 
     try (Closeable ignored = pomFile.inject(path)) {
+
       new Maven(path).run("mvn help:effective-pom  -Doutput=target/effective-pom.xml", System.out);
 
       analyseEffectivePom(path + "/target/effective-pom.xml", artifacts);
