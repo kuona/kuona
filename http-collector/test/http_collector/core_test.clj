@@ -1,5 +1,7 @@
 (ns http-collector.core-test
   (:require [midje.sweet :refer :all]
+            [clj-http.client :as http]
+            [cheshire.core :refer :all]
             [http-collector.core :refer :all]))
 
 (facts "Content filtering"
@@ -15,10 +17,14 @@
              (collect-endpoint "http://localhost:12000") => {:error "Connection Refused",
                                                              :status "DOWN",
                                                              :type "error",
-                                                             :url "http://localhost:12000"})
+                                                             :url "http://localhost:12000"}
+             (provided (http/get anything) =throws=> (java.net.ConnectException.)))
+       
        (fact "Service running and healthy"
              (collect-endpoint "http://kuona.io:9002/status") => {:status "UP",
-                                                                  :url "http://kuona.io:9002/status"}))
+                                                                  :url "http://kuona.io:9002/status"}
+             (provided (http/get anything) => {:headers {:Content-Type "json"}
+                                               :body (generate-string {:status "UP"})})))
 
 (facts "Content testing"
        (fact "test run against content"
