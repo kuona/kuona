@@ -1,0 +1,28 @@
+---
+- hosts: kuona
+  remote_user: deploy
+  become: true
+  become_user: root
+  vars:
+    kuona_home: /home/kuona
+  tasks:
+  - name: "Deploy Kuona test service service"
+    copy: src="../target/test-service-0.0.1-standalone.jar" dest="{{kuona_home}}" owner=kuona group=kuona
+  - name: Creating convenience symlink
+    file: src="{{kuona_home}}/test-service-0.0.1-standalone.jar" dest="{{kuona_home}}/test-service.jar" state=link
+
+  - name: Creating service control script for service
+    template: src=init.d.j2 dest="/etc/init.d/kuona-test-service" mode=u+x
+    vars:
+      jar: "{{kuona_home}}/test-service.jar"
+      pidfile: "{{kuona_home}}/test-service.pid"
+    
+  - name: "Restart Kuona test service"
+    service: name=kuona-test-service state=restarted
+    
+  - name: Configure proxy
+    template: src=test-service.kuona.io.conf dest="/etc/nginx/sites-available/test-service.kuona.io.conf"
+  - name: Enable proxy configuration
+    file: src="/etc/nginx/sites-available/test-service.kuona.io.conf" dest="/etc/nginx/sites-enabled/test-service.kuona.io.conf" state=link
+  - name: Reload configuration to enable proxy
+    service: name=nginx state=reloaded

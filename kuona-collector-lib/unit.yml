@@ -1,0 +1,13 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: clojure
+
+inputs:
+  - name: kuona-collector-lib
+
+run:
+  path: kuona-collector-lib/build

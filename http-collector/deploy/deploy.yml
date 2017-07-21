@@ -1,0 +1,19 @@
+---
+- hosts: kuona
+  remote_user: deploy
+  become: true
+  become_user: root
+  vars:
+    kuona_home: /home/kuona
+    collectors_home: "{{kuona_home}}/collectors"
+    working_directory: "{{kuona_home}}/working"
+  tasks:
+  - name: Test connection
+    ping:
+      
+  - name: "Deploy Kuona http collector"
+    copy: src="../target/http-collector-0.2.2-standalone.jar" dest="{{collectors_home}}" owner=kuona group=kuona
+  - name: Creating convenience symlink
+    file: src="{{collectors_home}}/http-collector-0.2.2-standalone.jar" dest="{{collectors_home}}/http-collector.jar" state=link
+
+    

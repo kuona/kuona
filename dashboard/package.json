@@ -1,0 +1,19 @@
+{
+  "name": "kuona-dashboard",
+  "version": "1.0.0",
+  "description": "Builds UI for Kuona",
+  "author": "Kuona",
+  "repository": "https://github.com/kuona/dashboard",
+  "dependencies": {
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "load-grunt-tasks": "^3.5.2"
+  },
+  "devDependencies": {
+    "grunt-browser-sync": "^2.2.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "http-proxy-middleware": "^0.17.1"
+  }
+}

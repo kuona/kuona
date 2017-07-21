@@ -1,0 +1,8 @@
+---
+- hosts: kuona
+  remote_user: deploy
+  tasks:
+  - name: Test connection
+    ping:
+  - name: Test connection 3
+    ping:

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html ng-app="kuona.snapshot">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Page title set in pageTitle directive -->
+    <title page-title></title>
+
+    <!-- Font awesome -->
+    <link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <!-- Bootstrap and Fonts -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Main Inspinia CSS files -->
+    <link href="/css/animate.css" rel="stylesheet">
+    <link id="loadBefore" href="/css/style.css" rel="stylesheet">
+    <base href="/snapshot/index.html">
+</head>
+
+<!-- ControllerAs syntax -->
+<!-- Main controller with serveral data used in Inspinia theme on diferent view -->
+<body ng-controller="SnapshotController" class="top-navigation pace-done">
+  <div class="wrapper">
+    <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
+      <div ng-include="'/views/common/navigation.html'"></div>
+
+      <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-12 owner">
+          <table>
+            <tr>
+              <td>
+                <img alt="image" class="img-circle" ng-src="{{ avatar_url }}">
+              </td>
+              <td>
+                <h2>{{snapshot.repository.name}} Snapshot</h2>
+                <small>{{snapshot.repository.description}}</small>
+                <a href="{{repository.project.html_url}}"> {{repository.project.html_url}} <i class="fa fa-github"></i></a>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="ibox">
+            <div class="ibox-title">
+              <h5><i class="fa fa-github"></i> Project data
+                <small>last updated {{snapshot.repository.updated_at  | date:'yyyy-MM-dd'}}.</small>
+              </h5>
+            </div>
+            <div class="ibox-content">
+              <dl class="dl-horizontal">
+                <dt>Open Issues</dt>
+                <dd class="text-navy">{{snapshot.repository.open_issues_count}} <i class="fa fa-bug"></i></dd>
+                <dt>Forks</dt>
+                <dd class="text-navy">{{snapshot.repository.forks_count}} <i class="fa fa-code-fork"></i></dd>
+                <dt>Watchers</dt>
+                <dd class="text-navy">{{snapshot.repository.watchers_count}} <i class="fa fa-eye"></i></dd>
+                <dt>Stars</dt>
+                <dd class="text-navy">{{snapshot.repository.stargazers_count | number}} <i class="fa fa-star"></i></dd>
+                <dt>Size</dt>
+                <dd class="text-navy">{{snapshot.repository.size | number}}</dd>
+                <dt>Updated</dt>
+                <dd class="text-navy">{{snapshot.repository.updated_at  | date:'yyyy-MM-dd'}}</dd>
+                <dt>Language</dt>
+                <dd class="text-navy">{{snapshot.repository.language}}</dd>
+                <dt>Pushed at</dt>
+                <dd class="text-navy">{{snapshot.repository.pushed_at | date:'yyyy-MM-dd' }}</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="ibox">
+            <div class="ibox-title">
+              <h5><i class="fa fa-file"></i> Repository Content Project data</h5>
+            </div>
+            <div class="ibox-content">
+              <dl class="dl-horizontal">
+                <dt>Files</dt><dd class="text-navy">{{snapshot.content.file_count}} <i class="fa fa-file"></i></dd>
+                <dt>Lines of comments</dt><dd>{{snapshot.content.comment_lines | number}}</dd>
+                <dt>Blank lines</dt><dd>{{snapshot.content.blank_lines | number}}</dd>
+                <dt>Lines of Code</dt><dd>{{snapshot.content.code_lines | number}}</dd>
+              </dl>
+              <canvas id="filesBarCanvas"></canvas>
+              <canvas id="codeBarCanvas""></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div ng-include="'/views/common/footer.html'"></div>
+    </div>
+  </div>
+  
+    
+  <!-- jQuery and Bootstrap -->
+  <script src="/js/jquery/jquery-2.1.1.min.js"></script>
+  <script src="/js/plugins/jquery-ui/jquery-ui.js"></script>
+  <script src="/js/bootstrap/bootstrap.min.js"></script>
+
+  <!-- MetsiMenu -->
+  <script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+
+  <!-- SlimScroll -->
+  <script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+  <!-- Peace JS -->
+  <!--<script src="/js/plugins/pace/pace.min.js"></script>-->
+
+  <!-- Custom and plugin javascript -->
+  <script src="/js/inspinia.js"></script>
+
+  <!-- Main Angular scripts-->
+  <script src="/js/angular/angular.js"></script>
+  <script src="/js/angular/angular-websocket.js"></script>
+  <script src="/js/plugins/oclazyload/dist/ocLazyLoad.min.js"></script>
+  <script src="/js/ui-router/angular-ui-router.min.js"></script>
+  <script src="/js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
+  <script src="/js/angular/angular-resource.min.js"></script>
+
+  <script src="/js/d3.min.js"></script>
+  <script src="/js/d3pie.min.js"></script>
+  <script src="/js/plugins/chartjs/Chart.min.js"></script>
+  <!-- Anglar App Script -->
+  <script src="/js/snapshot.js"></script>
+</body>
+</html>

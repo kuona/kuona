@@ -1,0 +1,58 @@
+---
+- hosts: kuona
+  remote_user: root
+  vars:
+    kuona_home: /home/kuona
+    collectors_home: "{{kuona_home}}/collectors"
+    working_directory: "{{kuona_home}}/working"
+    git_collector_version: "0.2.2"
+    dashboard_version: 0.2.2-SNAPSHOT
+  tasks:
+  - name: Test connection
+    ping:
+      
+  - name: Create Collectors folder
+    file: path="{{collectors_home}}" state=directory owner=kuona group=kuona
+    
+  - name: Create working folder
+    file: path="{{working_directory}}" state=directory owner=kuona group=kuona
+    
+  - name: Deploy git collector
+    copy: src="../git-collector/target/git-collector-{{git_collector_version}}-standalone.jar" dest={{collectors_home}} owner=kuona group=kuona
+  - name: Symlink git collector
+    file: src="{{collectors_home}}/git-collector-{{git_collector_version}}-standalone.jar" dest="{{collectors_home}}/git-collector.jar" state=link
+    
+  - name: Configure kuona properties
+    template: src=kuona-properties.json.template dest="{{kuona_home}}/kuona-properties.json" owner=kuona group=kuona
+    
+  - name: Starter template
+    template: src=kuona-start.template dest="{{kuona_home}}/kuona-start"  owner=kuona group=kuona mode=u+rwx
+
+  - name: "Deploy dashboard"
+    copy: src="../environment-service/target/environment-service-0.0.1-standalone.jar" dest="{{kuona_home}}" owner=kuona group=kuona
+  - name: Dashboard symlink
+    file: src="{{kuona_home}}/dashboard-0.0.1-standalone.jar" dest="{{kuona_home}}/environment-service.jar" state=link
+
+  - name: Kuona Envrionment service init.d
+    template: src=init.d.j2 dest="/etc/init.d/environment-service"
+    vars:
+      jar: "{{kuona_home}}/environment-service.jar"
+    
+    
+  - name: "Deploy dashboard"
+    copy: src="../kuona//web/app/target/dashboard-{{dashboard_version}}.jar" dest="{{kuona_home}}" owner=kuona group=kuona
+  - name: Dashboard symlink
+    file: src="{{kuona_home}}/dashboard-{{dashboard_version}}.jar" Dest="{{kuona_home}}/dashboard.jar" state=link
+
+  - name: Kuona service init.d
+    template: src=init.d.j2 dest="/etc/init.d/kuona"
+    vars:
+      jar: "{{kuona_home}}/dashboard.jar"
+    
+  - name: "Restart Kuona environment service"
+    service: name=environment-service state=restarted
+
+  - name: "Restart Kuona dashboard"
+    service: name=kuona state=restarted
+
+    

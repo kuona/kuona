@@ -1,0 +1,22 @@
+---
+- hosts: kuona
+  remote_user: deploy
+  become: true
+  become_user: root
+  vars:
+    content_dir: /var/www/dashboard.kuona.io
+    server_name: dashboard.kuona.io
+    site_template_path: /etc/nginx/sites-available
+  tasks:
+  - name: Create Content directory
+    file: path="{{content_dir}}" state=directory owner=deploy group=deploy
+  - name: Copy site
+    synchronize: src="../out/" dest="{{ content_dir }}"
+  - name: Update permissions
+    file: dest="{{ content_dir }}" owner=deploy group=deploy recurse=yes
+  - name: Site configuration
+    template: src=preview.dashboard.conf dest="/etc/nginx/sites-available/{{server_name}}.conf"
+  - name: Enable site
+    file: src="/etc/nginx/sites-available/{{server_name}}.conf" dest="/etc/nginx/sites-enabled/{{server_name}}.conf" state=link
+  - name: Reload configuration
+    service: name=nginx state=reloaded
