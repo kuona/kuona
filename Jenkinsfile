@@ -8,10 +8,6 @@ pipeline {
     }
     stage('Dependencies') {
       steps {
-        dir(path: 'dashboard') {
-          sh 'npm install'
-        }
-        
         sh 'sh dev-setup'
       }
     }
