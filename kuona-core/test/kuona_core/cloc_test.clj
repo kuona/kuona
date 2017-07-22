@@ -70,7 +70,7 @@
        (fact "each-commit"
              (let [index          (store/index :kuona-metrics "http://localhost:9200")
                    code-mapping   (store/mapping :code index)
-                   test-repo-path (clojure.string/join "/" [(canonical-path ".") "test-repo"])]
+                   test-repo-path (clojure.string/join "/" [(canonical-path "..") "test" "test-repo"])]
                
                (each-commit (fn [path sha time]
                               (loc-collector
