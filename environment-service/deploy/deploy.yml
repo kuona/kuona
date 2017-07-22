@@ -14,7 +14,7 @@
     ping:
       
   - name: "Deploy environment service"
-    copy: src="../target/environment-service-0.0.1-standalone.jar" dest="{{kuona_home}}" owner=kuona group=kuona
+    copy: src="target/environment-service-0.0.1-standalone.jar" dest="{{kuona_home}}" owner=kuona group=kuona
   - name: Creating convenience symlink
     file: src="{{kuona_home}}/environment-service-0.0.1-standalone.jar" dest="{{kuona_home}}/environment-service.jar" state=link
 
