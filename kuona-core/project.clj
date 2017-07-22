@@ -1,5 +1,5 @@
 (defproject kuona-collector "0.0.1"
-  :description "Kuona library to support collectors"
+  :description "Kuona core library"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
