@@ -16,7 +16,7 @@ echo "${pgreen}\_| \_/\__,_|\___/|_| |_|\__,_|${preset}"
 echo
 echo "${pblue}Kuona developer setup${preset} for ${pgreen}${PWD}${preset}"
 
-if command -v grunt >/dev/null 2>&1; then
+if ! command -v grunt >/dev/null 2>&1; then
     echo "${pblue}Installing required tools using hombrew and bundle${preset}"
     brew bundle
 fi
