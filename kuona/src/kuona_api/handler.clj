@@ -1,4 +1,4 @@
-(ns environment-service.handler
+(ns kuona-api.handler
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
             [compojure.handler :as handler]
@@ -6,7 +6,7 @@
             [ring.middleware.json :as middleware]
             [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
             [ring.adapter.jetty :as jetty]
-            [environment-service.environments :refer :all]
+            [kuona-api.environments :refer :all]
             [kuona-core.metric.store :as store])
   (:gen-class))
 

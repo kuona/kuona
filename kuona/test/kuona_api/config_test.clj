@@ -1,12 +1,12 @@
-(ns environment-service.config-test
+(ns kuona-api.config-test
   (:require [midje.sweet :refer :all]
             [cheshire.core :refer :all]
-            [environment-service.config :refer :all]))
+            [kuona-api.config :refer :all]))
 
 (def valid-config
   (generate-string
    {:settings
-    {:environment-service-port 9001
+    {:api-service-port 9001
      :elasticsearch-url "http://localhost:9300"}}))
 
 (def missing-port-config
@@ -14,7 +14,7 @@
    {:elasticsearch-url "http://localhost:9300"}}))
 
 (def missing-search-config
-  (generate-string {:settings {:environment-service-port 9001 }}))
+  (generate-string {:settings {:api-service-port 9001 }}))
 
 (defn string-reader
   [s]

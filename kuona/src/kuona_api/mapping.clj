@@ -1,4 +1,4 @@
-(ns environment-service.mapping)
+(ns kuona-api.mapping)
 
 (def es-string-type
   { :type "string" })

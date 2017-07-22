@@ -1,4 +1,4 @@
-(ns environment-service.environments
+(ns kuona-api.environments
   (:require [clojurewerkz.elastisch.rest          :as esr]
             [clojurewerkz.elastisch.rest.document :as esd]
             [clojurewerkz.elastisch.rest.index    :as esi]
@@ -6,8 +6,8 @@
             [clojurewerkz.elastisch.rest.response :as esrsp]
             [slingshot.slingshot :refer :all]
             [clojure.tools.logging :as log]
-            [environment-service.util :refer :all]
-            [environment-service.mapping :refer :all])
+            [kuona-core.util :refer :all]
+            [kuona-api.mapping :refer :all])
   (:gen-class))
 
 (def index (volatile! "kuona-env"))

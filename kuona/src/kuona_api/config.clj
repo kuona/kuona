@@ -1,11 +1,11 @@
-(ns environment-service.config
+(ns kuona-api.config
   (:require [cheshire.core :refer :all]
             [slingshot.slingshot :refer [throw+]])
   (:gen-class))
 
 (defn port-selector
   [params]
-  (:environment-service-port (:settings params)))
+  (:api-service-port (:settings params)))
 
 (defn missing-port?
   [params]

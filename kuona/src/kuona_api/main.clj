@@ -1,13 +1,13 @@
-(ns environment-service.main
+(ns kuona-api.main
   (:require [clojure.string :as string]
             [clojure.tools.cli :refer [parse-opts]]
             [slingshot.slingshot :refer [try+]]
             [ring.adapter.jetty :as jetty]
-            [environment-service.handler :as service]
             [clojure.tools.logging :as log]
-            [environment-service.config :as config]
-            [environment-service.environments :as env]
-            [kuona-core.metric.store :as store])
+            [kuona-core.metric.store :as store]
+            [kuona-api.handler :as service]
+            [kuona-api.config :as config]
+            [kuona-api.environments :as env])
   (:gen-class))
 
 (def cli-options

@@ -1,9 +1,9 @@
-(ns environment-service.handler-test
+(ns kuona-api.handler-test
   (:require [ring.mock.request :as mock]
             [cheshire.core :refer :all]
             [midje.sweet :refer :all]
-            [environment-service.handler :refer :all]
-            [environment-service.environments :refer :all]))
+            [kuona-api.handler :refer :all]
+            [kuona-api.environments :refer :all]))
 
 (defn mock-json-post
   [app url body]

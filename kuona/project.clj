@@ -1,10 +1,9 @@
-(defproject environment-service "0.0.1"
-  :description "Kuona environments service"
-  :url "https://github.com/kuona/environment-service"
+(defproject kuona-api "0.0.1"
+  :description "Kuona HTTP API service"
+  :url "https://github.com/kuona/kuona-project"
   :min-lein-version "2.0.0"
-  :main environment-service.main
-  :aot [environment-service.main]
-  :uberjar { :aot :all }
+  :main kuona-api.main
+  :aot [kuona-api.main]
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/tools.cli "0.3.5"]
                  [org.clojure/tools.logging "0.3.1"]
@@ -22,9 +21,9 @@
                  [kuona-core "0.0.2"]]
   :plugins [[lein-ring "0.9.7"]
             [lein-midje "3.0.0"]]
-  :ring {:handler environment-service.handler/app}
-  :profiles
-  {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
-                        [ring/ring-mock "0.3.0"]
-                        [midje "1.9.0-alpha5"]
-                        [com.jcabi/jcabi-log "0.17.1"]]}})
+  :ring {:handler kuona-api.handler/app}
+  :profiles {:dev       {:dependencies [[javax.servlet/servlet-api "2.5"]
+                                        [ring/ring-mock "0.3.0"]
+                                        [midje "1.9.0-alpha5"]
+                                        [com.jcabi/jcabi-log "0.17.1"]]}
+             :uberjar { :aot :all }})
