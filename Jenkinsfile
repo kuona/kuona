@@ -12,6 +12,7 @@ pipeline {
           sh 'npm install'
         }
         
+        sh 'sh dev-setup'
       }
     }
     stage('Build') {
