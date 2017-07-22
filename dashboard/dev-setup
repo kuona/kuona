@@ -1,6 +1,8 @@
 echo DASHBOARD Developer Setup
 
-npm install -g grunt-cli
+if command -v foo >/dev/null 2>&1; then
+   npm install -g grunt-cli
+fi
 
 echo Initialising dashboard dev setup
 cd dashboard
