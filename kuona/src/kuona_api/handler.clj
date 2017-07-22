@@ -49,9 +49,11 @@
   (str base "?page=" page-number))
 
 (defn get-repository-count [] (store/get-count repositories))
+
 (defn get-repositories
   [search page]
-  (response (store/search repositories search 100 page repository-page-link)))
+  (let [page-number (. Integer parseInt  page)]
+    (response (store/search repositories search 100 page repository-page-link))))
 
 (defroutes app-routes
   (GET "/" [] (response service-data))
