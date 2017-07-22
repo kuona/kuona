@@ -1,0 +1,26 @@
+---
+- hosts: kuona
+  remote_user: deploy
+  become: true
+  become_user: root
+  vars:
+    kuona_home: /home/kuona
+    working_directory: "{{kuona_home}}/working"
+    jar_name: "kuona-api-0.0.1-standalone.jar"
+    dashboard_version: 0.2.2-SNAPSHOT
+  tasks:
+  - name: "Uploading jar {{jar_name}}"
+    copy: src="../target/{{jar_name}}" dest="{{kuona_home}}" owner=kuona group=kuona
+
+  - name: Creating convenience symlink
+    file: src="{{kuona_home}}/{{jar_name}}" dest="{{kuona_home}}/kuona-api.jar" state=link
+
+  - name: Creating systemd control file
+    template: src=systemd-service.j2 dest="/etc/systemd/system/kuona-api.service" mode=u+x
+    vars:
+      jar: "{{kuona_home}}/kuona-api.jar"
+      pidfile: "{{kuona_home}}/kuona-api.pid"
+  - name: Start service
+    systemd:
+      name: kuona-api
+      state: reloaded

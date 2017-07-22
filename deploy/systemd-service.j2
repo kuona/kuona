@@ -1,0 +1,15 @@
+[Unit]
+Description=Kuona API Service
+
+[Service]
+User=nobody
+# The configuration file application.properties should be here:
+WorkingDirectory={{kuona_home}}
+ExecStart=/usr/bin/java -Xmx256m -jar {{ jar }} -c /home/kuona/kuona-properties.json
+SuccessExitStatus=143
+TimeoutStopSec=10
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
