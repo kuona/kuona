@@ -1,4 +1,4 @@
-(defproject http-collector "0.2.2"
+(defproject kuona-http-collector "0.2.2"
   :description "Data collector for HTTP endpoints for Kuona project"
   :url "http://github.com/kuona/http-collector"
   :main http-collector.core

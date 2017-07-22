@@ -33,6 +33,6 @@ cd ..
 
 find collectors -iname 'project.clj' -exec echo "»»» Building: " {} \; -execdir ${LEIN_BUILD} \; -exec echo "»»» Installing (local): " {} \; -execdir ${LEIN_PACKAGE} \;
 
-find . -iname '*.jar' -not -path './target' -exec cp -f {} ./target \;
+find . -iname '*standalone.jar' -not -path './target' -exec cp -f {} ./target \;
 
 echo "${pblue}Binaries collected to ./target${preset}"

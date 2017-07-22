@@ -1,4 +1,4 @@
-(defproject jenkins-collector "0.0.1"
+(defproject kuona-jenkins-collector "0.0.1"
   :description "Jenkins build metric collector"
   :url "http://github.com/kuona"
   :main jenkins-collector.main

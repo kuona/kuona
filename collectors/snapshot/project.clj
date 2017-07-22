@@ -1,4 +1,4 @@
-(defproject snapshot-collector "0.0.1"
+(defproject kuona-snapshot-collector "0.0.1"
   :description "Kuona snapshot collector. Collects point in time (HEAD) code and repository metrics"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"

@@ -1,4 +1,4 @@
-(defproject git-collector "0.2.2"
+(defproject kuona-git-collector "0.2.2"
   :description "Kuona Git collector"
   :url "https://github.com/kuona/git-collector"
   :main git-collector.core

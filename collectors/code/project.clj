@@ -1,4 +1,4 @@
-(defproject code-collector "0.1.0-SNAPSHOT"
+(defproject kuona-code-collector "0.1.0-SNAPSHOT"
   :description "Code metric collector for Kuona"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
