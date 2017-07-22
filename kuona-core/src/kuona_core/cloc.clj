@@ -134,7 +134,7 @@
                            :blank-lines   (sum-count metrics :blank-lines)
                            :code-lines    (sum-count metrics :code-lines)
                            :languages     metrics}}
-   :collector {:name    :kuona-core-cloc
+   :collector {:name    :kuona-collector-cloc
                :version "0.1"}})
 
 (defn collect-loc

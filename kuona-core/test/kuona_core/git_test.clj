@@ -5,12 +5,11 @@
 
 (facts "about commit history"
        (let [test-repo-path (clojure.string/join "/" [(canonical-path ".") "test-repo"])]
-         (println test-repo-path)
          (fact "has commits"
                (> (count (git/commits test-repo-path))) => true)
          (fact "daily count is less than full count"
                (< (count (git/commit-by-day test-repo-path)) (count (git/commits test-repo-path))) => true)
          (fact "traversing the commit histry by day"
-               (git/each-commit (fn [repo-path sha time] ) test-repo-path) => nil)
+               (git/each-commit (fn [repo-path sha time]) test-repo-path) => nil)
          (fact "traversing the commit histry by day"
-               (git/each-commit-by-day (fn [repo-path sha time] ) test-repo-path) => nil)))
+               (git/each-commit-by-day (fn [repo-path sha time]) test-repo-path) => nil)))

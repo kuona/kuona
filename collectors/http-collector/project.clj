@@ -16,4 +16,5 @@
                  [cheshire "5.6.3"]
                  [clojurewerkz/quartzite "2.0.0"]]
   :plugins [[lein-midje "3.0.0"]]
-  :profiles {:dev {:dependencies [[midje "1.9.0-alpha5"]]}})
+  :profiles {:dev {:dependencies [[midje "1.9.0-alpha5"]]}
+             :uberjar {:aot :all}})

@@ -9,13 +9,29 @@ preset="\033[0m"
 PWD=`pwd`
 
 LEIN_BUILD="lein midje"
+LEIN_PACKAGE="lein uberjar"
 LEIN_INSTALL="lein install"
 
 if [ ! -d "target" ]; then
    mkdir target
 fi
 
-find . -iname 'project.clj' -exec echo "»»» Building: " {} \; -execdir ${LEIN_BUILD} \; -exec echo "»»» Installing (local): " {} \; -execdir ${LEIN_INSTALL} \;
+echo "${pblue}Building the core${preset}"
+
+cd kuona-core
+${LEIN_BUILD}
+${LEIN_INSTALL}
+cd ..
+
+echo "${pblue}Building the API${preset}"
+
+cd kuona
+${LEIN_BUILD}
+${LEIN_PACKAGE}
+cd ..
+
+
+find collectors -iname 'project.clj' -exec echo "»»» Building: " {} \; -execdir ${LEIN_BUILD} \; -exec echo "»»» Installing (local): " {} \; -execdir ${LEIN_PACKAGE} \;
 
 find . -iname '*.jar' -not -path './target' -exec cp -f {} ./target \;
 

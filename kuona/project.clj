@@ -19,11 +19,12 @@
                  [cheshire "5.6.3"]
                  [clojurewerkz/elastisch "3.0.0-beta2"]
                  [slingshot "0.12.2"]
-                 [kuona-core "0.0.1"]]
+                 [kuona-core "0.0.2"]]
   :plugins [[lein-ring "0.9.7"]
             [lein-midje "3.0.0"]]
   :ring {:handler environment-service.handler/app}
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [ring/ring-mock "0.3.0"]
-                        [midje "1.9.0-alpha5"]]}})
+                        [midje "1.9.0-alpha5"]
+                        [com.jcabi/jcabi-log "0.17.1"]]}})

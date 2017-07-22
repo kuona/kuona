@@ -35,7 +35,7 @@ fi
 find . -iname 'project.clj' -exec echo "Resolving dependencies for: " {} \; -execdir lein deps \;
 
 if [ ! -d "kuona-collector-lib/test-repo" ]; then
-   git clone git@github.com:grahambrooks/functional-event-store.git kuona-collector-lib/test-repo
+   git clone git@github.com:grahambrooks/functional-event-store.git test/test-repo
 fi
 
 echo "${pgreen}Ready to develop! Start with the readme.${preset}"

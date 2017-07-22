@@ -1,7 +1,14 @@
-# functional-event-store
+# snapshot-collector
 
-This code is a companion to an article on event sourcing http://www.grahambrooks.com/event-driven-architecture/patterns/event-sourcing/
+A Clojure library designed to ... well, that part is up to you.
 
-Probably the best way to get to grips with the example is to run through the tests with midje
+## Usage
 
-    lein midje
+FIXME
+
+## License
+
+Copyright © 2017 FIXME
+
+Distributed under the Eclipse Public License either version 1.0 or (at
+your option) any later version.
