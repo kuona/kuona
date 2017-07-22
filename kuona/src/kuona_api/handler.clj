@@ -53,7 +53,7 @@
 (defn get-repositories
   [search page]
   (let [page-number (. Integer parseInt  page)]
-    (response (store/search repositories search 100 page repository-page-link))))
+    (response (store/search repositories search 100 page-number repository-page-link))))
 
 (defroutes app-routes
   (GET "/" [] (response service-data))
