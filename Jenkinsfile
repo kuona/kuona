@@ -9,8 +9,7 @@ pipeline {
     stage('Dependencies'){
         steps {
           dir(path: 'dashboard') {
-            sh '''npm install -g grunt-cli
-npm install'''
+            sh '''npm install'''
           }
         }
       }
