@@ -18,7 +18,7 @@
     (catch Exception _
         {})))
 
-(facts "about route mapping"
+(future-facts "about route mapping"
        (with-state-changes [(before :facts (set-and-initialize-index "kuona-test-env1"))]
          (fact
           (let [response (app (mock/request :get "/"))]

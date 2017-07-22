@@ -1,6 +1,5 @@
 (ns jenkins-collector.jenkins
   (:require [clj-http.client :as client]
-            [midje.sweet :refer :all]
             [cheshire.core :refer :all]
             [clojure.tools.logging :as log]))
 

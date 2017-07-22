@@ -17,7 +17,7 @@
                  [ring/ring-defaults "0.2.1"]
                  [ring/ring-json "0.4.0"]
                  [cheshire "5.6.3"]
-                 [clojurewerkz/elastisch "2.2.1"]
+                 [clojurewerkz/elastisch "3.0.0-beta2"]
                  [slingshot "0.12.2"]
                  [kuona-collector "0.0.1"]]
   :plugins [[lein-ring "0.9.7"]

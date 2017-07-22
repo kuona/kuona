@@ -5,31 +5,22 @@ pblue="\033[0;34m"
 pgreen="\033[0;32m"
 preset="\033[0m"
 
-echo "${pblue}Kuona developer setup${preset}"
+PWD=`pwd`
 
-echo "${pblue}Initialising sub-modules${preset}"
-git submodule init
+echo "${pblue}Kuona developer setup${preset} for ${pgreen}${PWD}${preset}"
 
-echo "${pblue}Updating repositories${preset}"
-
-git submodule update
-
-echo "${pblue}Module status${preset}"
-
-git submodule status
-
-echo "${pblue}Installing required tool using hombrew and bundle${preset}"
-
+echo "${pblue}Installing required tools using hombrew and bundle${preset}"
 brew bundle
+echo "${pblue}Setting up web development environment${preset}"
 cd dashboard; sh dev-setup; cd ..
-
-echo "${pblue}Initial environment service setup${preset}"
-
-cd environment-service; lein deps
-cd ../git-collector;lein deps
 
 echo "${pblue}Creating logging directory${preset}"
 sudo mkdir -p /var/log/kuona
 sudo chown $(whoami) /var/log/kuona
+
+
+find . -iname 'project.clj' --execdir lein deps \;
+
+git clone git@github.com:grahambrooks/functional-event-store.git kuona-collector-lib/test-repo
 
 echo "${pgreen}Ready to develop! Start with the readme.${preset}"

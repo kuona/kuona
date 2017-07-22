@@ -17,4 +17,5 @@
                  [org.clojure/data.xml "0.0.8"]
                  [kuona-collector "0.0.1"]]
   :plugins [[lein-midje "3.0.0"]]
-  :profiles {:dev {:dependencies [[midje "1.9.0-alpha5"]]}})
+  :profiles {:dev {:dependencies [[midje "1.9.0-alpha5"]]}
+             :uberjar {:aot :all}})
