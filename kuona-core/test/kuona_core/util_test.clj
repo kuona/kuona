@@ -1,6 +1,6 @@
-(ns kuona-collector.util-test
+(ns kuona-core.util-test
   (:require [midje.sweet :refer :all]
-            [kuona-collector.util :refer :all]))
+            [kuona-core.util :refer :all]))
 
 
 (facts "about uuids"

@@ -1,9 +1,9 @@
-(ns kuona-collector.maven
+(ns kuona-core.maven
   (:require [clojure.java.shell :as shell]
             [cheshire.core :refer :all]
             [clojure.tools.logging :as log]
             [clojure.data.xml :refer :all]
-            [kuona-collector.util :refer :all])
+            [kuona-core.util :refer :all])
   (:gen-class))
 
 (defn load-pom-file

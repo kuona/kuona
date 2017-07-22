@@ -1,4 +1,4 @@
-(defproject kuona-collector "0.0.1"
+(defproject kuona-core "0.0.2"
   :description "Kuona core library"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -10,7 +10,7 @@
                                                     com.sun.jdmk/jmxtools
                                                     com.sun.jmx/jmxri]]
                  [clj-http "3.6.0"]
-                 [org.slf4j/slf4j-log4j12 "1.7.25"] ;; Required for clj-jgit
+                 [org.slf4j/slf4j-log4j12 "1.7.25"]
                  [clj-jgit "0.8.9"]
                  [cheshire "5.6.3"]
                  [slingshot "0.12.2"]

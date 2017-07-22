@@ -1,9 +1,9 @@
-(ns kuona-collector.metric.store
+(ns kuona-core.metric.store
   (:require [clj-http.client :as http]
             [slingshot.slingshot :refer :all]
             [clojure.tools.logging :as log]
             [cheshire.core :refer :all]
-            [kuona-collector.util :refer :all])
+            [kuona-core.util :refer :all])
   (:gen-class))
 
 (def es-string-type

@@ -4,7 +4,7 @@
             [clojure.tools.logging :as log]
             [clojure.tools.cli :refer [parse-opts]]
             [jenkins-collector.config :as config]
-            [kuona-collector.metric.store :as store]
+            [kuona-core.metric.store :as store]
             [jenkins-collector.jenkins :as jenkins])
   (:gen-class))
 

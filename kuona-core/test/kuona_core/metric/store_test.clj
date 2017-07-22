@@ -1,8 +1,8 @@
-(ns kuona-collector.metric.store-test
+(ns kuona-core.metric.store-test
   (:require [midje.sweet :refer :all]
             [clj-http.client :as http]
             [cheshire.core :refer :all]
-            [kuona-collector.metric.store :as store]))
+            [kuona-core.metric.store :as store]))
 
 (facts
  (let [host "http://localhost:9200"]

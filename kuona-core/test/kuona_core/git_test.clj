@@ -1,9 +1,8 @@
-(ns kuona-collector.git-test
+(ns kuona-core.git-test
   (:require [midje.sweet :refer :all]
-            [kuona-collector.util :refer :all]
-            [kuona-collector.git :as git]))
+            [kuona-core.util :refer :all]
+            [kuona-core.git :as git]))
 
-;"/Users/graham/workspace/d0ed12f3-096a-30c0-83b2-b2ef29bb40d7"
 (facts "about commit history"
        (let [test-repo-path (clojure.string/join "/" [(canonical-path ".") "test-repo"])]
          (println test-repo-path)

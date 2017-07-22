@@ -14,7 +14,7 @@
                  [cheshire "5.6.3"]
                  [org.clojure/tools.cli "0.3.5"]
                  [slingshot "0.12.2"]
-                 [kuona-collector "0.0.1"]]
+                 [kuona-core "0.0.1"]]
   :plugins [[lein-midje "3.0.0"]]
   :profiles {:dev     {:dependencies [[midje "1.9.0-alpha5"]]}
              :uberjar {:aot :all}})

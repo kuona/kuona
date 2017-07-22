@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e -u -x
-#cd kuona-collector-lib
+#cd kuona-core-lib
 ls -la
 lein test
 lein midje

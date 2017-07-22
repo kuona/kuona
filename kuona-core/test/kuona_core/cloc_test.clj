@@ -1,9 +1,9 @@
-(ns kuona-collector.cloc-test
+(ns kuona-core.cloc-test
   (:require [midje.sweet :refer :all]
-            [kuona-collector.cloc :refer :all]
-            [kuona-collector.git :refer :all]
-            [kuona-collector.metric.store :as store]
-            [kuona-collector.util :refer :all]))
+            [kuona-core.cloc :refer :all]
+            [kuona-core.git :refer :all]
+            [kuona-core.metric.store :as store]
+            [kuona-core.util :refer :all]))
 
 (facts "about language name"
        (fact "can be a symbol" (language-name :foo) => "foo")

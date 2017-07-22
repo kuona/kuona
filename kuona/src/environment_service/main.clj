@@ -7,7 +7,7 @@
             [clojure.tools.logging :as log]
             [environment-service.config :as config]
             [environment-service.environments :as env]
-            [kuona-collector.metric.store :as store])
+            [kuona-core.metric.store :as store])
   (:gen-class))
 
 (def cli-options
@@ -56,7 +56,7 @@
   []
   (let [index (store/index "kuona-repositories" "http://localhost:9200")]
     (if (store/has-index? index) nil (store/create-index index {:repositories{}}))))
-  
+
 (defn create-snapshot-index-if-missing
   []
   (let [index (store/index "kuona-snapshots" "http://localhost:9200")]
@@ -82,4 +82,4 @@
       (wrong-options? options) (print-help-and-exit 1 summary)
       errors (exit 1 (error-msg errors))
       :else (start-application (:config options)))))
-      
+

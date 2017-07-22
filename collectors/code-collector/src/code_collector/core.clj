@@ -4,8 +4,8 @@
             [cheshire.core :refer :all]
             [clojure.set :only [rename-keys]]
             [clojure.pprint :only [pprint]]
-            [kuona-collector.cloc :as cloc]
-            [kuona-collector.util :refer :all])
+            [kuona-core.cloc :as cloc]
+            [kuona-core.util :refer :all])
   (:gen-class))
 
 (defn -main

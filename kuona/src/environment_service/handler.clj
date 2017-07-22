@@ -7,7 +7,7 @@
             [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
             [ring.adapter.jetty :as jetty]
             [environment-service.environments :refer :all]
-            [kuona-collector.metric.store :as store])
+            [kuona-core.metric.store :as store])
   (:gen-class))
 
 
@@ -62,7 +62,7 @@
 
   (GET "/api/snapshots/:id" [id] (response (:_source (store/get-document snapshots id))))
   (PUT "/api/snapshots/:id" request (response (store/put-document (get-in request [:body]) snapshots (get-in request [:params :id]))))
-  
+
   (GET "/api/metrics/:mapping" [mapping search page] (response (store/search (store/mapping mapping kuona-index) search 100 page #(page-link (str "/api/mapping/" mapping)) )))
   (GET "/api/metrics/:mapping/count" [mapping] (response (store/get-count (store/mapping mapping kuona-index))))
   (GET "/api/environments" [] (response { :environments (environment-link-decorate-environment-list (list-environments)) }))

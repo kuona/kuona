@@ -1,8 +1,8 @@
-(ns kuona-collector.cloc
+(ns kuona-core.cloc
   (:require [clojure.java.shell :as shell]
             [cheshire.core :refer :all]
             [clojure.tools.logging :as log]
-            [kuona-collector.util :refer :all])
+            [kuona-core.util :refer :all])
   (:gen-class))
 
 (defn clojure-project-file?
@@ -134,7 +134,7 @@
                            :blank-lines   (sum-count metrics :blank-lines)
                            :code-lines    (sum-count metrics :code-lines)
                            :languages     metrics}}
-   :collector {:name    :kuona-collector-cloc
+   :collector {:name    :kuona-core-cloc
                :version "0.1"}})
 
 (defn collect-loc

@@ -1,4 +1,4 @@
-(ns kuona-collector.git
+(ns kuona-core.git
   (:require [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [clj-jgit.porcelain :as git]
@@ -6,9 +6,9 @@
             [clj-time.core :as t]
             [clj-time.coerce :as tc]
             [slingshot.slingshot :refer :all]
-            [kuona-collector.util :refer :all]
-            [kuona-collector.cloc :as cloc]
-            [kuona-collector.metric.store :as store])
+            [kuona-core.util :refer :all]
+            [kuona-core.cloc :as cloc]
+            [kuona-core.metric.store :as store])
   (:gen-class))
 
 (defn local-clone-path

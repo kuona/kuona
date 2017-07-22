@@ -7,10 +7,10 @@
             [clj-jgit.querying :as git-query]
             [clojure.java.shell :as shell]
             [cheshire.core :refer :all]
-            [kuona-collector.metric.store :as store]
-            [kuona-collector.git :refer :all]
-            [kuona-collector.util :refer :all]
-            [kuona-collector.cloc :as cloc])
+            [kuona-core.metric.store :as store]
+            [kuona-core.git :refer :all]
+            [kuona-core.util :refer :all]
+            [kuona-core.cloc :as cloc])
   (:import (java.net InetAddress))
   (:gen-class))
 
