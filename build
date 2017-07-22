@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -e
+pblue="\033[0;34m"
+pgreen="\033[0;32m"
+pgray="\033[0;40m"
+preset="\033[0m"
+
+PWD=`pwd`
+
+LEIN_BUILD="lein midje"
+LEIN_INSTALL="lein install"
+
+if [ ! -d "target" ]; then
+   mkdir target
+fi
+
+find . -iname 'project.clj' -exec echo "»»» Building: " {} \; -execdir ${LEIN_BUILD} \; -exec echo "»»» Installing (local): " {} \; -execdir ${LEIN_INSTALL} \;
+
+find . -iname '*.jar' -not -path './target' -exec cp -f {} ./target \;
+
+echo "${pblue}Binaries collected to ./target${preset}"

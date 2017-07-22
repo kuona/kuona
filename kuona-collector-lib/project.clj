@@ -18,5 +18,6 @@
                  [org.clojure/data.xml "0.0.8"]]
   :plugins [[lein-midje "3.0.0"]]
   :profiles
-  {:dev {:dependencies [[midje "1.9.0-alpha5"]]}})
+  {:dev {:dependencies [[midje "1.9.0-alpha5"]
+                        [com.jcabi/jcabi-log "0.17.1"]]}})
 
