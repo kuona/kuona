@@ -6,16 +6,18 @@ pipeline {
         git(url: 'git@github.com:kuona/kuona-project.git', branch: 'master', poll: true)
       }
     }
-    stage('Dependencies'){
-        steps {
-          dir(path: 'dashboard') {
-            sh '''npm install'''
-          }
-        }
-      }
-     stage('Build') {
+    stage('Dependencies') {
       steps {
-        sh '''build'''
+        dir(path: 'dashboard') {
+          sh 'npm install'
+        }
+        
+      }
+    }
+    stage('Build') {
+      steps {
+        sh 'ls -la'
+        sh 'sh build'
       }
     }
   }
