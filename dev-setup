@@ -7,6 +7,13 @@ preset="\033[0m"
 
 PWD=`pwd`
 
+echo "${pgreen} _   __                        "
+echo "${pgreen}| | / /                        "
+echo "${pgreen}| |/ / _   _  ___  _ __   __ _ "
+echo "${pgreen}|    \| | | |/ _ \| '_ \ / _\` |"
+echo "${pgreen}| |\  \ |_| | (_) | | | | (_| |"
+echo "${pgreen}\_| \_/\__,_|\___/|_| |_|\__,_|${preset}"
+echo
 echo "${pblue}Kuona developer setup${preset} for ${pgreen}${PWD}${preset}"
 
 echo "${pblue}Installing required tools using hombrew and bundle${preset}"
@@ -14,12 +21,18 @@ brew bundle
 echo "${pblue}Setting up web development environment${preset}"
 cd dashboard; sh dev-setup; cd ..
 
-echo "${pblue}Creating logging directory${preset}"
-sudo mkdir -p /var/log/kuona
-sudo chown $(whoami) /var/log/kuona
+LOG_PATH=/var/log/kuona
+
+if [ -d "${LOG_PATH}" ]; then
+   echo "${pblue}Logpath ${LOG_PATH} already exists - skipping${preset}"
+else
+    echo "${pblue}Creating logging directory${LOG_PATH} (requires sudo)${preset}"
+    sudo mkdir -p ${LOG_PATH}
+    sudo chown $(whoami) ${LOG_PATH}
+fi
 
 
-find . -iname 'project.clj' -exec echo "Resolving dependencies for " {} \; -execdir lein deps \;
+find . -iname 'project.clj' -exec echo "Resolving dependencies for: " {} \; -execdir lein deps \;
 
 if [ ! -d "kuona-collector-lib/test-repo" ]; then
    git clone git@github.com:grahambrooks/functional-event-store.git kuona-collector-lib/test-repo
