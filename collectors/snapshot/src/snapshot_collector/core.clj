@@ -7,6 +7,7 @@
             [clj-jgit.querying :as git-query]
             [clojure.java.shell :as shell]
             [cheshire.core :refer :all]
+            [slingshot.slingshot :refer :all]
             [kuona-core.metric.store :as store]
             [kuona-core.git :refer :all]
             [kuona-core.util :refer :all]
@@ -39,15 +40,15 @@
 
 (defn get-repositories
   [url]
-  (-> (parse-json-body (http/get url)) :hits :hits))
+  (parse-json-body (http/get url)))
 
 (defn repository-id
   [r]
-  (:_id r))
+  (:id r))
 
 (defn repository-git-url
   [r]
-  (-> r :_source :url))
+  (-> r :url))
 
 (defn project-metrics
   [project]
@@ -97,24 +98,35 @@
   
 (defn snapshot-repository
   [repo]
-  (let [id        (repository-id repo)
-        url       (repository-git-url repo)
-        local-dir (canonical-path (string/join "/" ["/Volumes/data-drive/workspace" id]))
-        name      (-> repo :_source :project :name)]
-    (log/info "snapshotting " id name "from " url "to " local-dir)
-    (if (directory? local-dir) (git-pull url local-dir) (git-clone url local-dir))
-    (let [loc-data      (cloc/loc-collector (fn [a] a) local-dir "foo")
-          snapshot-data (create-snapshot (-> repo :_source :project) (loc-metrics loc-data))]
-      (log/info "snapshot " (put-snapshot snapshot-data id)))))
+  (try+
+   (let [id        (repository-id repo)
+         url       (repository-git-url repo)
+         local-dir (canonical-path (string/join "/" ["/Volumes/data-drive/workspace" id]))
+         name      (-> repo :project :name)]
+     (log/info "Snapshotting " id name "from " url "to " local-dir)
+     (if (directory? local-dir) (git-pull url local-dir) (git-clone url local-dir))
+     (let [loc-data      (cloc/loc-collector (fn [a] a) local-dir "foo")
+           snapshot-data (create-snapshot (-> repo :project) (loc-metrics loc-data))]
+       (log/info "snapshot " (put-snapshot snapshot-data id))))
+   (catch Object _
+     (log/error (:throwable &throw-context) "Unexpected error"))))
+
+
+
+(defn all-repositories
+  ([uri] (all-repositories uri 1))
+  ([uri page]
+   (let [result (get-repositories (str "http://dashboard.kuona.io/api/repositories?page=" page))
+         count  (-> result :count)
+         items  (-> result :items)]
+    (if (= count 0) items (concat items (all-repositories uri (inc page)))))))
+
 
 (defn -main
   [& args]
   (log/info "Kuona Snapshot Collector")
   
   (let [options          (parse-opts args cli-options)
-        ;config-file      (:config (:options options))
-        ;config           (load-config (file-reader config-file))
-        repositories     (get-repositories "http://dashboard.kuona.io/api/repositories")
-        urls             (map #(-> % :url) repositories)]
+        repositories     (all-repositories "http://dashboard.kuona.io/api/repositories")]
     (log/info "Found " (count repositories) " configured repositories for analysis")
     (doall (map snapshot-repository repositories))))
