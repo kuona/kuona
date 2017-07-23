@@ -4,10 +4,6 @@
             [kuona-core.maven :refer :all]
             [kuona-core.util :refer :all]))
 
-(defn find-tag
-  [m v]
-  (keep #(when (= (val %) v) (key %)) m))
-
 (defn tag
   [name value]
   (element name {} value))
