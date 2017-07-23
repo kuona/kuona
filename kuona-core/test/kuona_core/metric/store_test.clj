@@ -33,7 +33,8 @@
 (facts "pagination"
        (fact (store/pagination-param :size 10 :page nil) => "size=10")
        (fact (store/pagination-param :size 10 :page 2) => "size=10&from=10")
-       (fact (store/pagination-param :size 10 :page 3) => "size=10&from=20"))
+       (fact (store/pagination-param :size 10 :page 3) => "size=10&from=20")
+       (fact (store/pagination-param :size 10 :page "3") => "size=10&from=20"))
 
 
 (facts "search"

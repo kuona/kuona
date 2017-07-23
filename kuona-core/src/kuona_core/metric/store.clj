@@ -115,12 +115,22 @@
     (let [pages (/ count size)]
       (into [] (map f (range 1 (+ pages 1)))))))
 
+
+(defn parse-integer
+  [n]
+  (cond
+    (= (type n) java.lang.Long) n
+    :else (try+ (. Integer parseInt  n)
+                (catch Object _ nil))))
+                                        
+
 (defn pagination-param
   [&{:keys [:size :page]}]
-  (cond
-    (nil? page) (str "size=" size)
-    (= page 1)  (str "size=" size)
-    :else       (str "size=" size "&" "from=" (* (- page 1) size))))
+  (let [page-number (parse-integer page)]
+    (cond
+      (nil? page-number) (str "size=" size)
+      (= page-number 1)  (str "size=" size)
+      :else              (str "size=" size "&" "from=" (* (- page-number 1) size)))))
 
 (defn search
   ([mapping search-term] (search mapping search-term 100))
