@@ -25,7 +25,7 @@ cd ..
 
 echo "${pblue}Building the API${preset}"
 
-cd kuona
+cd kuona-api
 ${LEIN_BUILD}
 ${LEIN_PACKAGE}
 cd ..
