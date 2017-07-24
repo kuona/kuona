@@ -1,16 +1,18 @@
 #!/bin/sh
-
 set -e
-pblue="\033[0;34m"
-pgreen="\033[0;32m"
-pgray="\033[0;40m"
-preset="\033[0m"
+set -o errexit
+set -o nounset
+
+readonly pblue="\033[0;34m"
+readonly pgreen="\033[0;32m"
+readonly pgray="\033[0;40m"
+readonly preset="\033[0m"
 
 PWD=`pwd`
 
-LEIN_BUILD="lein midje"
-LEIN_PACKAGE="lein uberjar"
-LEIN_INSTALL="lein install"
+readonly LEIN_BUILD="lein midje"
+readonly LEIN_PACKAGE="lein uberjar"
+readonly LEIN_INSTALL="lein install"
 
 if [ ! -d "target" ]; then
    mkdir target
@@ -32,6 +34,8 @@ cd ..
 
 
 find collectors -iname 'project.clj' -exec echo "»»» Building: " {} \; -execdir ${LEIN_BUILD} \; -exec echo "»»» Installing (local): " {} \; -execdir ${LEIN_PACKAGE} \;
+
+find . -iname 'gruntfile.js' -not -path '*/node_modules/*' -exec echo "»»» Building: " {} \; -execdir grunt build \;
 
 find . -iname '*standalone.jar' -not -path './target' -exec cp -f {} ./target \;
 
