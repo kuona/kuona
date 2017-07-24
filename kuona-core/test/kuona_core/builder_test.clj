@@ -31,7 +31,7 @@
 </project>"))
              )
        (fact "recognises leiningen"
-             ((build-tool "/fo/project.clj" "/fo/project.clj") "/fo/project.clj") => {:builder "leiningen" :path "/fo/project.clj"}) )
+             ((build-tool "/fo/project.clj" "/fo/project.clj") "/fo/project.clj") => {:builder "Leiningen" :path "/fo/project.clj"}) )
 
 
 (facts "about project scanning"
@@ -41,7 +41,7 @@
                                                       :version "0.0.2"}
                                            :builder "Maven"
                                            :path "/pom.xml"}
-                                          {:builder "leiningen"
+                                          {:builder "Leiningen"
                                            :path "/project.clj"}
                                           {:artifact {:artifactId "kuona-dashboard"
                                                       :groupId "kuona"
