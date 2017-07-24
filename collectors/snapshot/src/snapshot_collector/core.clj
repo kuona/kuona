@@ -12,6 +12,7 @@
             [kuona-core.git :refer :all]
             [kuona-core.util :refer :all]
             [kuona-core.cloc :as cloc]
+            [kuona-core.builder :as builder]
             [clj-http.client :as http])
   (:import (java.net InetAddress))
   (:gen-class))
@@ -66,9 +67,10 @@
    })
 
 (defn create-snapshot
-  [project loc-data]
+  [project loc-data builder-data]
   {:repository (project-metrics project)
-   :content    loc-data})
+   :content    loc-data
+   :build builder-data})
 
 (defn put-snapshot
   [snapshot id]
@@ -106,7 +108,8 @@
      (log/info "Snapshotting " id name "from " url "to " local-dir)
      (if (directory? local-dir) (git-pull url local-dir) (git-clone url local-dir))
      (let [loc-data      (cloc/loc-collector (fn [a] a) local-dir "foo")
-           snapshot-data (create-snapshot (-> repo :project) (loc-metrics loc-data))]
+           build-data    (builder/collect-builder-metrics local-dir)
+           snapshot-data (create-snapshot (-> repo :project) (loc-metrics loc-data) build-data)]
        (log/info "snapshot " (put-snapshot snapshot-data id))))
    (catch Object _
      (log/error (:throwable &throw-context) "Unexpected error"))))

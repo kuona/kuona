@@ -88,17 +88,39 @@
                 <dt>Lines of Code</dt><dd>{{snapshot.content.code_lines | number}}</dd>
               </dl>
               <canvas id="filesBarCanvas"></canvas>
-              <canvas id="codeBarCanvas""></canvas>
+              <canvas id="codeBarCanvas"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="ibox">
+            <div class="ibox-title">
+              <h5><i class="fa fa-file"></i> Build Data</h5>
+            </div>
+            <div class="ibox-content">
+              <div ng-repeat="build in snapshot.build | orderBy:'path'" class="row">
+                <div class="col-lg-1">
+                  <small>{{ build.builder }}</small>
+                </div>
+                <div class="col-lg-3">
+                  <code>{{ build.path }}</code>
+                </div>
+                <div class="col-lg-4" ng-if="build.artifact">
+                  <h5>{{ build.artifact.name }}</h5>
+                </div>
+                <div class="col-lg-4" ng-if="build.artifact">
+                  <small><code>{{ build.artifact.groupid || '[groupId]'}}:{{ build.artifact.artifactid || '[artifactId]'}}:{{ build.artifact.version || '[version]'}}</code></small>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <div ng-include="'/views/common/footer.html'"></div>
     </div>
+    
+    <div ng-include="'/views/common/footer.html'"></div>
   </div>
-  
     
   <!-- jQuery and Bootstrap -->
   <script src="/js/jquery/jquery-2.1.1.min.js"></script>

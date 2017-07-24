@@ -6,9 +6,12 @@
   (:gen-class))
 
 (defn uuid [] (str (java.util.UUID/randomUUID)))
+
 (defn uuid-from
   ([a b] (uuid-from (str a b)))
   ([s] (str (java.util.UUID/nameUUIDFromBytes (.getBytes s)))))
+
+(defn not-nil? [v] (not (nil? v)))
 
 (defn directory?
   "Tests the path for being a directory"
