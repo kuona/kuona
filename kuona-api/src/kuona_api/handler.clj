@@ -34,7 +34,7 @@
     (status (response (decorator value)) 200)
     (status (response {}) 404)))
 
-(def kuona-index (store/index :kuona-data "http://localhost:9200"))
+(def kuona-metrics-index (store/index :kuona-metrics "http://localhost:9200"))
 
 (def repositories (store/mapping :repositories (store/index :kuona-repositories "http://localhost:9200")))
 
@@ -64,8 +64,8 @@
   (GET "/api/snapshots/:id" [id] (response (:_source (store/get-document snapshots id))))
   (PUT "/api/snapshots/:id" request (response (store/put-document (get-in request [:body]) snapshots (get-in request [:params :id]))))
 
-  (GET "/api/metrics/:mapping" [mapping search page] (response (store/search (store/mapping mapping kuona-index) search 100 page #(page-link (str "/api/mapping/" mapping) %))))
-  (GET "/api/metrics/:mapping/count" [mapping] (response (store/get-count (store/mapping mapping kuona-index))))
+  (GET "/api/metrics/:mapping" [mapping search page] (response (store/search (store/mapping mapping kuona-metrics-index) search 100 page #(page-link (str "/api/mapping/" mapping) %))))
+  (GET "/api/metrics/:mapping/count" [mapping] (response (store/get-count (store/mapping mapping kuona-metrics-index))))
   (GET "/api/environments" [] (response { :environments (environment-link-decorate-environment-list (list-environments)) }))
   (GET "/api/environments/:id" [id] (decorate-response decorate-environment (get-environment id)))
   (POST "/api/environments/:id/comments" request (response
