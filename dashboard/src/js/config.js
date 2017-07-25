@@ -25,8 +25,8 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         });
 }
 
-kuona
-    .config(config)
-    .run(function ($rootScope, $state) {
-        $rootScope.$state = $state;
-    });
+//kuona
+//    .config(config)
+//    .run(function ($rootScope, $state) {
+//        $rootScope.$state = $state;
+//    });

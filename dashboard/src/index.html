@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Page title set in pageTitle directive -->
-    <title page-title></title>
+    <title>Kuona | IT analytics dashboard</title>
 
     <!-- Font awesome -->
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -22,8 +22,23 @@
   <!-- ControllerAs syntax -->
   <!-- Main controller with serveral data used in Inspinia theme on diferent view -->
   <body ng-controller="MainController as main" class="top-navigation pace-done">
-    
-    <div ui-view></div><!-- Main view  -->
+    <div class="wrapper">
+      <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
+        <div ng-include="'/views/common/navigation.html'"></div>
+        <div class="wrapper wrapper-content animated fadeInRight">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="text-center m-t-lg">
+                <h1>Welcome to Kuona</h1>
+                <small>Use the navigation to look around :)</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div ng-include="'/views/common/footer.html'"></div>
+
     
     <!-- jQuery and Bootstrap -->
     <script src="js/jquery/jquery-2.1.1.min.js"></script>

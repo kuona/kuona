@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html ng-app="kuona.repositories">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Page title set in pageTitle directive -->
+    <title page-title>Repositories</title>
+
+    <!-- Font awesome -->
+    <link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <!-- Bootstrap and Fonts -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Main Inspinia CSS files -->
+    <link href="/css/animate.css" rel="stylesheet">
+    <link id="loadBefore" href="/css/style.css" rel="stylesheet">
+  </head>
+
+  <body ng-controller="RepositoriesController as controller" class="top-navigation pace-done">
+    <div class="wrapper">
+      <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
+        <div ng-include="'/views/common/navigation.html'"></div>
+        <div class="wrapper wrapper-content animated fadeInRight">
+          <div class="row">
+            <div class="col-lg-1"></div>
+            <div class="col-lg-2">
+              <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <span class="label label-success pull-right">{{ currentDate | date:'yyyy-MM-dd' }}</span>
+                  <h5>Repositories</h5>
+                </div>
+                <div class="ibox-content">
+                  <h1 class="no-margins">{{repository_count}}</h1>
+                  <div class="stat-percent font-bold text-success"><i class="fa fa-bolt"></i></div>
+                  <small>Registered repositories</small>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-lg-2">
+              <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <span class="label label-info pull-right">Current</span>
+                  <h5>Version Control Revision entries</h5>
+                </div>
+                <div class="ibox-content">
+                  <h1 class="no-margins">{{vcs_count | number}}</h1>
+                  <div class="stat-percent font-bold text-success"><i class="fa fa-bolt"></i></div>
+                  <small>Revision history records</small>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-lg-2">
+              <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <span class="label label-primary pull-right">Current</span>
+                  <h5>Code metrics</h5>
+                </div>
+                <div class="ibox-content">
+                  <h1 class="no-margins">{{code_metric_count | number }}</h1>
+                  <div class="stat-percent font-bold text-success"><i class="fa fa-bolt"></i></div>
+                  <small>Number of collected code metrics</small>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-lg-2">
+              <div class="ibox-content">
+                <div class="text-center">
+                  <canvas id="filesPolarChart" height="140"></canvas>
+                </div>
+            </div></div>
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-1"></div>
+          </div>
+          
+          <div class="row">
+            <div class="col-lg-1"></div>
+            <div class="col-lg-10">
+              <form class="form">
+                <h1>Search repository store.</h1>
+                <div class="form-group">
+                  <input type="text" placeholder="Project Name" class="form-control" ng-model="repoterm" ng-change="repoSearch(repoterm)">
+                </div>
+              </form>
+            </div>
+            <div class="col-lg-1"></div>
+          </div>
+          
+          <div class="row">
+            <div class="col-lg-1"></div>
+            <div class="col-lg-10">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Owner</th>
+                    <th>Created</th>
+                    <th>Project</th>
+                    <th></th>
+                    <th align="right"><i class="fa fa-eye" aria-hidden="true"></i></th>
+                    <th><i class="fa fa-bug" aria-hidden="true"></i></th>
+                    <th><i class="fa fa-code-fork" aria-hidden="true"></i></th>
+                    <th align="right">Size</th>
+                    <th>Last&nbsp;Analysed</th>
+                    <th>Snapshot</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  
+                  <tr ng-repeat="i in repositoriesFound.items" class="search-result">
+                    <td class="owner">
+                      <img alt="image" class="img-circle" ng-src="{{i.project.owner.avatar_url}}">
+                    </td>
+                    <td nowrap>{{i.project.created_at  | date:'yyyy-MM-dd'}}</td>
+                    <td nowrap><a href="{{i.project.html_url}}"><i class="fa fa-github" aria-hidden="true"></i>&nbsp;{{i.project.name}}</a></td>
+                    <td><p class="text-muted">{{i.project.description}}</p></td>
+                    <td align="right">{{i.project.watchers | number}}</td>
+                    <td align="right">{{i.project.open_issues_count | number}}</td>
+                    <td align="right">{{i.project.forks | number}}</td>
+                    <td align="right">{{i.project.size | number}}</td>
+                    <td align="right">{{i.last_analysed | date:'yyyy-MM-dd'}}</td>
+                    <td><a href="/snapshot?id={{i.id}}">{{i.project.name}}&nbsp;snapshot</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="col-lg-1"></div>
+          </div>
+          
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="text-center m-t-lg">
+                <h1>
+                  {{controller.helloText}}
+                </h1>
+                <small>
+                  {{controller.descriptionText}}
+                </small>
+              </div>
+            </div>
+          </div>    
+        </div>
+      </div>
+    </div>
+<!-- jQuery and Bootstrap -->
+    <script src="/js/jquery/jquery-2.1.1.min.js"></script>
+    <script src="/js/plugins/jquery-ui/jquery-ui.js"></script>
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    
+    <!-- MetsiMenu -->
+    <script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    
+    <!-- SlimScroll -->
+    <script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    
+    <!-- Custom and plugin javascript -->
+    <script src="/js/inspinia.js"></script>
+    
+    <!-- Main Angular scripts-->
+    <script src="/js/angular/angular.js"></script>
+    <script src="/js/angular/angular-websocket.js"></script>
+    <script src="/js/plugins/oclazyload/dist/ocLazyLoad.min.js"></script>
+    <script src="/js/ui-router/angular-ui-router.min.js"></script>
+    <script src="/js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
+    <script src="/js/angular/angular-resource.min.js"></script>
+    <script src="/js/plugins/bootstrap-markdown/bootstrap-markdown.js"></script>
+    <script src="/js/plugins/bootstrap-markdown/markdown.js"></script>
+    
+    <script src="/js/repositories.js"></script>
+  </body>
+</html>
