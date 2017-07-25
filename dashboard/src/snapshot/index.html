@@ -108,9 +108,13 @@
                 </div>
                 <div class="col-lg-4" ng-if="build.artifact">
                   <h5>{{ build.artifact.name }}</h5>
+                  <p> {{ build.artifact.description || '' }}</p>
+                  <p ng-if="build.artifact.inceptionYear">{{ build.artifact.inceptionYear }}</p>
+                  <a ng-if="build.artifact.url" href="{{build.artifact.url}}">{{build.artifact.url}}</a>
+                  <p ng-if="build.artifact.packaging">{{build.artifact.packaging}}</p>
                 </div>
                 <div class="col-lg-4" ng-if="build.artifact">
-                  <small><code>{{ build.artifact.groupid || '[groupId]'}}:{{ build.artifact.artifactid || '[artifactId]'}}:{{ build.artifact.version || '[version]'}}</code></small>
+                  <small><code>{{ build.artifact.groupId || '[groupId]'}}:{{ build.artifact.artifactId || '[artifactId]'}}:{{ build.artifact.version || '[version]'}}</code></small>
                 </div>
               </div>
             </div>
