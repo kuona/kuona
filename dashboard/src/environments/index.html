@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="kuona.dashboard">
+<html ng-app="kuona.environments">
   <head>
     
     <meta charset="utf-8">
@@ -21,7 +21,7 @@
 
   <!-- ControllerAs syntax -->
   <!-- Main controller with serveral data used in Inspinia theme on diferent view -->
-  <body ng-controller="MainController as main" class="top-navigation pace-done">
+  <body ng-controller="EnvironmentDashboardController" class="top-navigation pace-done">
     <div class="wrapper">
       <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
         <div ng-include="'/views/common/navigation.html'"></div>
@@ -312,10 +312,6 @@
     <script src="/js/plugins/bootstrap-markdown/markdown.js"></script>
     
     <!-- Anglar App Script -->
-    <script src="/js/app.js"></script>
-    <script src="/js/config.js"></script>
-    <script src="/js/directives.js"></script>
-    <script src="/js/controllers.js"></script>
-    
+    <script src="/js/environments.js"></script>
   </body>
 </html>

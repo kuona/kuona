@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -e
+readonly pblue="\033[0;34m"
+readonly pgreen="\033[0;32m"
+readonly preset="\033[0m"
+
+echo "${pgreen} _  __                             _            _             "
+echo "${pgreen}| |/ /   _  ___  _ __   __ _    __| | ___ _ __ | | ___  _   _ "
+echo "${pgreen}| ' / | | |/ _ \| '_ \ / _\` |  / _\` |/ _ \ '_ \| |/ _ \| | | |"
+echo "${pgreen}| . \ |_| | (_) | | | | (_| | | (_| |  __/ |_) | | (_) | |_| |"
+echo "${pgreen}|_|\_\__,_|\___/|_| |_|\__,_|  \__,_|\___| .__/|_|\___/ \__, |"
+echo "${pgreen}                                         |_|            |___/  ${preset}"
+echo ""
+
+echo "${pblue}Deploying Kuona API${preset}"
+ansible-playbook deploy/kuona-api.yml -i hosts
+
+
+echo "${pblue}Deploying Kuona Dashboard${preset}"
+ansible-playbook deploy/dashboard.yml -i hosts
+

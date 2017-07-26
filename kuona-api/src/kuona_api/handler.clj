@@ -71,6 +71,7 @@
   (GET "/api/metrics/:mapping/count" [mapping] (response (store/get-count (store/mapping mapping kuona-metrics-index))))
   (GET "/api/environments" [] (response { :environments (environment-link-decorate-environment-list (store/all-documents environments)) }))
   (GET "/api/environments/:id" [id] (decorate-response decorate-environment (store/get-document environments id)))
+  (GET "/api/environments/:id/comments" request (response (get-comments environment-comments (get-in request [:params :id]))))
   (POST "/api/environments/:id/comments" request (response
                                                   (decorate-environment
                                                    (put-comment environments environment-comments (get-in request [:params :id]) (get-in request [:body :comment])))))
@@ -80,7 +81,6 @@
   (POST "/api/environments/:id/status" request (response
                                                 (decorate-environment
                                                  (put-status environments (get-in request [:params :id]) (get-in request [:body :status])))))
-  (GET "/api/environments/:id/comments" request (response (get-comments environment-comments (get-in request [:params :id]))))
   (POST "/api/environments" request (response (decorate-environment (store/put-document environments (get-in request [:body :environment])))))
   (route/not-found "Not Found"))
 

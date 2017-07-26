@@ -1,34 +1,11 @@
-function MainController($scope, $http) {
-  this.helloText = 'Welcome to Kuona';
-  this.descriptionText = 'Use the navigation to look around :)';
-  $scope.currentDate = new Date();
-  $scope.repository_count = "[loading]";
-  $scope.vcs_count = "[loading]";
-  $scope.repositoriesFound = [];
-  
-  $http.get('/api/repositories/count').then(function(res) {
-    $scope.repository_count = res.data.count;
-  });
-  
-  $http.get('/api/metrics/vcs/count').then(function(res) {
-    $scope.vcs_count = res.data.count;
-  });
+var kuona_environments = angular.module('kuona.environments', [
+    'angular-websocket',
+    'ui.router',                    // Routing
+    'oc.lazyLoad',                  // ocLazyLoad
+    'ui.bootstrap',                 // Ui Bootstrap
+    'ngResource'
+]);
 
-  $http.get('/api/metrics/code/count').then(function(res) {
-    $scope.code_metric_count = res.data.count;
-  });
-
-  $scope.repoSearch = function(term) {
-    console.log("Searching for " + term);
-    $http.get("/api/repositories?search=" + term).then(function(res){
-      $scope.repositoriesFound = res.data;
-    });
-  }
-
-  $scope.repoSearch("");
-};
-
-kuona.controller('MainController',['$scope', '$http', MainController]);
 
 
 var environmentDashboardController = function ($scope, $http) {
@@ -102,10 +79,10 @@ var environmentDashboardController = function ($scope, $http) {
   }
 };
 
-kuona.controller("environmentDashboardController", ['$scope', '$http', environmentDashboardController]);
+kuona_environments.controller("EnvironmentDashboardController", ['$scope', '$http', environmentDashboardController]);
 
 
-kuona.controller('ModalEnvironmentController', function ($uibModal, $log, $document) {
+kuona_environments.controller('ModalEnvironmentController', function ($uibModal, $log, $document) {
   var $ctrl = this;
   $ctrl.environment = { name: null };
 //  $ctrl.environment.name = undefined;
@@ -209,9 +186,9 @@ var modalInstanceController = function ($uibModalInstance, $http, environment) {
   };
 }
 
-kuona.controller('ModalInstanceCtrl', ['$uibModalInstance','$http', modalInstanceController]);
+kuona_environments.controller('ModalInstanceCtrl', ['$uibModalInstance','$http', modalInstanceController]);
 
-kuona.controller('ModalStatusController', function ($uibModal, $log, $document) {
+kuona_environments.controller('ModalStatusController', function ($uibModal, $log, $document) {
   var $status = this;
   $status.environment = { name: null };
 
@@ -305,5 +282,5 @@ var modalStatusInstanceController = function ($uibModalInstance, $document, envi
   };
 }
 
-kuona.controller('ModalStatusInstanceCtrl', ['$uibModalInstance','$http', modalStatusInstanceController]);
+kuona_environments.controller('ModalStatusInstanceCtrl', ['$uibModalInstance','$http', modalStatusInstanceController]);
 

@@ -36,6 +36,23 @@ module.exports = function (grunt) {
         }
       }
     },
+    localBrowserSync: {
+      options: {
+        port: 8080,
+        middleware: [require('http-proxy-middleware')('/api', {target: 'http://localhost:9001'})]
+      },
+      dev: {
+        bsFiles: {
+          src : [
+            'out/**'
+          ]
+        },
+        options: {
+          watchTask: true,
+          server: './out'
+        }
+      }
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-clean');
@@ -43,5 +60,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', ['clean', 'copy']);
   grunt.registerTask('dev', ['build', 'browserSync', 'watch']);
+  grunt.registerTask('dev-local', ['build', 'localBrowserSync', 'watch']);
   grunt.registerTask('default', ['build']);
 };

@@ -57,7 +57,7 @@
         comment-entry {:assessment (:assessment comment) :message (:message comment) :username (:username comment) :timestamp (timestamp) :tags ["ENVIRONMENT" id]}
         entry (store/get-document env-mapping id)
         updated-entry (assoc entry :comment comment-entry)]
-    (store/put-document env-mapping updated-entry)
+    (store/put-document env-mapping id updated-entry)
     (store/put-document comment-mapping comment-id comment-entry)
     updated-entry))
 
