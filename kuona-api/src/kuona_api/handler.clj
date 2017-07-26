@@ -36,6 +36,9 @@
 
 (def kuona-metrics-index (store/index :kuona-metrics "http://localhost:9200"))
 
+(def environments (store/mapping :environments (store/index :kuona-env "http://localhost:9200")))
+(def environment-comments (store/mapping :comments (store/index :kuona-env "http://localhost:9200")))
+
 (def repositories (store/mapping :repositories (store/index :kuona-repositories "http://localhost:9200")))
 
 (def snapshots (store/mapping :snapshots (store/index :kuona-snapshots "http://localhost:9200")))
@@ -66,19 +69,19 @@
 
   (GET "/api/metrics/:mapping" [mapping search page] (response (store/search (store/mapping mapping kuona-metrics-index) search 100 page #(page-link (str "/api/mapping/" mapping) %))))
   (GET "/api/metrics/:mapping/count" [mapping] (response (store/get-count (store/mapping mapping kuona-metrics-index))))
-  (GET "/api/environments" [] (response { :environments (environment-link-decorate-environment-list (list-environments)) }))
-  (GET "/api/environments/:id" [id] (decorate-response decorate-environment (get-environment id)))
+  (GET "/api/environments" [] (response { :environments (environment-link-decorate-environment-list (store/all-documents environments)) }))
+  (GET "/api/environments/:id" [id] (decorate-response decorate-environment (store/get-document environments id)))
   (POST "/api/environments/:id/comments" request (response
                                                   (decorate-environment
-                                                   (put-comment (get-in request [:params :id]) (get-in request [:body :comment])))))
+                                                   (put-comment environments environment-comments (get-in request [:params :id]) (get-in request [:body :comment])))))
   (POST "/api/environments/:id/version" request (response
                                                   (decorate-environment
-                                                   (put-version (get-in request [:params :id]) (get-in request [:body :version])))))
+                                                   (put-version environments (get-in request [:params :id]) (get-in request [:body :version])))))
   (POST "/api/environments/:id/status" request (response
                                                 (decorate-environment
-                                                 (put-status (get-in request [:params :id]) (get-in request [:body :status])))))
-  (GET "/api/environments/:id/comments" request (response (get-comments (get-in request [:params :id]))))
-  (POST "/api/environments" request (response (decorate-environment (put-environment (get-in request [:body :environment])))))
+                                                 (put-status environments (get-in request [:params :id]) (get-in request [:body :status])))))
+  (GET "/api/environments/:id/comments" request (response (get-comments environment-comments (get-in request [:params :id]))))
+  (POST "/api/environments" request (response (decorate-environment (store/put-document environments (get-in request [:body :environment])))))
   (route/not-found "Not Found"))
 
 (def app

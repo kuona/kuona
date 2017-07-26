@@ -69,12 +69,15 @@
      (log/error (:throwable &throw-context) "unexpected error")
      (throw+))))
 
+
+(def json-headers {"content-type" "application/json; charset=UTF-8"})
+
 (defn create-index
   "Creates the currently configured index if it does not already
   exist."
   [index types]
   (try+
-   (parse-json-body (http/put index {:headers {"content-type" "application/json; charset=UTF-8"}
+   (parse-json-body (http/put index {:headers json-headers
                                      :body (generate-string {:mappings types})}))
    (catch Object _
        (log/error (:throwable &throw-context) "unexpected error")
@@ -97,14 +100,23 @@
   ([metric mapping id]
    (let [url (clojure.string/join "/" [mapping id])]
      (log/info "put-document " mapping id url)
-     (parse-json-body (http/put url {:headers {"content-type" "application/json; charset=UTF-8"}
+     (parse-json-body (http/put url {:headers json-headers
                                      :body (generate-string metric)})))))
+
+
+(defn put-partial-document
+  [mapping id update]
+  (let [url (clojure.string/join "/" [mapping id "_update"])
+        request {:doc update}]
+    (log/info "put-partial-update " mapping id)
+    (parse-json-body (http/post url {:headers json-headers
+                                     :body (generate-string request)}))))
 
 (defn get-count
   [mapping]
   (let [url (clojure.string/join "/" [mapping "_count"]) ]
     (log/info "Reading document count for " url)
-    (parse-json-body (http/get url {:headers {"content-type" "application/json; charset=UTF-8"}}))))
+    (parse-json-body (http/get url {:headers json-headers}))))
 
 (defn page-links
   [f & {:keys [size count]}]
@@ -140,7 +152,7 @@
          all-url (str base-url "?" (pagination-param :size size :page page))
          url (if (clojure.string/blank? search-term) all-url search-url)]
      (log/info "Reading document count for " url)
-     (let [json-response (parse-json-body (http/get url {:headers {"content-type" "application/json; charset=UTF-8"}}))
+     (let [json-response (parse-json-body (http/get url {:headers json-headers}))
            result-count (-> json-response :hits :total)
            documents (map #(merge {:id (:_id %)} (:_source %)) (-> json-response :hits :hits))
            ]
