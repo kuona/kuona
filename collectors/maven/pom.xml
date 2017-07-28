@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>kuona</groupId>
-    <artifactId>maven-analyser</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>maven-dependency-analyser</artifactId>
+    <version>1.0</version>
     <build>
         <plugins>
             <plugin>

@@ -50,4 +50,3 @@
                                                              :version "0.10-SNAPSHOT"}}
                (provided (load-pom-file "some/path") => data))))
              
-             

@@ -15,6 +15,8 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,11 +69,11 @@ public class PomFile {
 
   public PomFile() {
     dependencies = new ArrayList<>();
-    dependencies.add(new PomElement("/project/dependencyManagement/dependencies/.", DEPENDENCY_ELEMENT));
-    dependencies.add(new PomElement("/project/build/pluginManagement/plugins/.", PLUGIN_ELEMENT));
-    dependencies.add(new PomElement("/project/reporting/plugins/.", REPORT_ELEMENT));
-    dependencies.add(new PomElement("/project/reporting/.", PLUGIN_REPORT_ELEMENT));
-    dependencies.add(new PomElement("/project", REPORTING_ELEMENT));
+    dependencies.add(new PomElement("/project/dependencyManagement/dependencies", DEPENDENCY_ELEMENT));
+    dependencies.add(new PomElement("/project/build/pluginManagement/plugins", PLUGIN_ELEMENT));
+    dependencies.add(new PomElement("/project/reporting/plugins", REPORT_ELEMENT));
+//    dependencies.add(new PomElement("/project/reporting/plugins", PLUGIN_REPORT_ELEMENT));
+//    dependencies.add(new PomElement("/project", REPORTING_ELEMENT));
     dependencies.add(new PomElement("/project/build/pluginManagement/plugins", HELP_PLUGIN_ELEMENT));
     dependencies.add(new PomElement("/project/build/plugins", HELP_PLUGIN_ELEMENT2));
 
@@ -113,6 +115,12 @@ public class PomFile {
     return db.parse(originalPomFile);
   }
 
+  private Document readPomDom(InputStream originalPomFile) throws ParserConfigurationException, SAXException, IOException {
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    DocumentBuilder db = dbf.newDocumentBuilder();
+    return db.parse(originalPomFile);
+  }
+
   private void writePomFile(File pomFile, DOMSource source) throws TransformerException, IOException {
     final FileOutputStream outputStream = new FileOutputStream(pomFile);
     StreamResult result = new StreamResult(outputStream);
@@ -121,5 +129,29 @@ public class PomFile {
     Transformer transformer = transformerFactory.newTransformer();
     transformer.transform(source, result);
     outputStream.close();
+  }
+
+  private void writePom(OutputStream output, DOMSource source) throws TransformerException, IOException {
+    StreamResult result = new StreamResult(output);
+
+    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    Transformer transformer = transformerFactory.newTransformer();
+    transformer.transform(source, result);
+    output.close();
+  }
+
+  public void inject(InputStream input, OutputStream output) {
+    try {
+      Document doc = readPomDom(input);
+
+      dependencies.stream().forEach(d -> d.apply(doc));
+
+      DOMSource source = new DOMSource(doc);
+
+      writePom(output, source);
+    } catch (ParserConfigurationException | TransformerException | SAXException | IOException e) {
+      e.printStackTrace();
+      throw new RuntimeException("Injection failed", e);
+    }
   }
 }

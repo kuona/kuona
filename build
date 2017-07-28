@@ -13,10 +13,18 @@ PWD=`pwd`
 readonly LEIN_BUILD="lein midje"
 readonly LEIN_PACKAGE="lein uberjar"
 readonly LEIN_INSTALL="lein install"
+readonly MAVEN_BUILD="mvn clean install"
+
 
 if [ ! -d "target" ]; then
    mkdir target
 fi
+
+echo "${pblue}Building the dependencies${preset}"
+
+find collectors/maven -iname 'pom.xml' -not -path '*/test/*' -execdir ${MAVEN_BUILD} \;
+
+find collectors/lib -iname 'pom.xml' -not -path '*/test/*' -execdir ${MAVEN_BUILD} \;
 
 echo "${pblue}Building the core${preset}"
 
@@ -31,7 +39,6 @@ cd kuona-api
 ${LEIN_BUILD}
 ${LEIN_PACKAGE}
 cd ..
-
 
 find collectors -iname 'project.clj' -exec echo "»»» Building: " {} \; -execdir ${LEIN_BUILD} \; -exec echo "»»» Installing (local): " {} \; -execdir ${LEIN_PACKAGE} \;
 

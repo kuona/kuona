@@ -113,10 +113,12 @@
                 <div class="col-lg-12" ng-if="build.artifact">
                   <h5>{{ build.artifact.name }} <small ng-if="build.artifact.inceptionYear">{{ build.artifact.inceptionYear }}</small></h5>
                   <p ng-if="build.artifact.description"> {{ build.artifact.description || '' }} <a ng-if="build.artifact.url" href="{{build.artifact.url}}">{{build.artifact.url}}</a></p>
-
-                  
                   <span ng-if="build.artifact.packaging" class="label label-success pull-right ng-binding">{{build.artifact.packaging}}</span>
                 </div>
+                <div class="col-lg-12" ng-if="build.dependencyTree">
+                  <dependency-chart data='build.dependencyTree'></dependency-chart>
+                </div>
+                
               </div>
             </div>
           </div>
@@ -151,7 +153,7 @@
   <script src="/js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
   <script src="/js/angular/angular-resource.min.js"></script>
 
-  <script src="/js/d3.min.js"></script>
+  <script src="/js/d3.js"></script>
   <script src="/js/d3pie.min.js"></script>
   <script src="/js/plugins/chartjs/Chart.min.js"></script>
   <!-- Anglar App Script -->

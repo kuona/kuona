@@ -28,6 +28,10 @@
   [path] 
   (.getCanonicalPath (io/file path)))
 
+(defn absolute-path
+  [path]
+  (.getAbsolutePath (io/file path)))
+
 (defn file-reader
   [path]
   (clojure.java.io/reader path))
