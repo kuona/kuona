@@ -31,25 +31,6 @@
 
 
 (facts "about project scanning"
-       (collect-builder-metrics ".") =>  [{:artifact {:artifactId    "kuona-core"
-                                                      :groupId       "kuona-core"
-                                                      :name          "kuona-core"
-                                                      :version       "0.0.2"
-                                                      :description   "Kuona core library"
-                                                      :inceptionYear nil
-                                                      :packaging     "jar"
-                                                      :url           "http://example.com/FIXME"}
-                                           :builder  "Maven"
-                                           :path     "/pom.xml"}
-                                          {:builder "Leiningen"
-                                           :path    "/project.clj"}
-                                          {:artifact {:artifactId    "kuona-dashboard"
-                                                      :groupId       "kuona"
-                                                      :name          "Kuona analytics for software development teams"
-                                                      :version       "0.1"
-                                                      :description   nil
-                                                      :inceptionYear nil
-                                                      :packaging     "pom"
-                                                      :url           nil}
-                                           :builder  "Maven"
-                                           :path     "/test/pom.xml"}])
+       (fact
+        (let [result (collect-builder-metrics ".")]
+          (:artifactId (:artifact (first result)))  =>  "kuona-core")))

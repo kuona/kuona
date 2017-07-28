@@ -40,13 +40,14 @@
 
        (fact "reads artifact data"
              (let [data (xml/parse (java.io.StringReader. graph-hopper))]
-               (analyse-pom-file "some/path") => {:artifact {:artifactId "graphhopper-parent"
-                                                             :description "Super pom of GraphHopper, the fast and flexible routing engine"
-                                                             :groupId "com.graphhopper"
-                                                             :inceptionYear "2012"
-                                                             :name "GraphHopper Parent Project"
-                                                             :packaging "pom"
-                                                             :url "https://www.graphhopper.com"
-                                                             :version "0.10-SNAPSHOT"}}
+               (analyse-pom-file "some/path") =>  {:artifact {:artifactId "graphhopper-parent"
+                                                              :description "Super pom of GraphHopper, the fast and flexible routing engine"
+                                                              :groupId "com.graphhopper"
+                                                              :inceptionYear "2012"
+                                                              :name "GraphHopper Parent Project"
+                                                              :packaging "pom"
+                                                              :url "https://www.graphhopper.com"
+                                                              :version "0.10-SNAPSHOT"}
+                                                   :dependencies {}}
                (provided (load-pom-file "some/path") => data))))
              
