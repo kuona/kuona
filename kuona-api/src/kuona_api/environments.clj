@@ -1,9 +1,9 @@
 (ns kuona-api.environments
-  (:require [slingshot.slingshot :refer :all]
-            [clojure.tools.logging :as log]
-            [kuona-core.util :refer :all]
+  (:require [clojure.tools.logging :as log]
+            [kuona-api.mapping :refer :all]
             [kuona-core.metric.store :as store]
-            [kuona-api.mapping :refer :all])
+            [kuona-core.util :refer :all]
+            [slingshot.slingshot :refer :all])
   (:gen-class))
 
 ;(defn create-index

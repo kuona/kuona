@@ -1,13 +1,14 @@
 (ns kuona-api.handler
-  (:require [compojure.core :refer :all]
-            [compojure.route :as route]
+  (:require [clojure.tools.logging :as log]
+            [compojure.core :refer :all]
             [compojure.handler :as handler]
-            [ring.util.response :refer [resource-response response status]]
-            [ring.middleware.json :as middleware]
-            [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
-            [ring.adapter.jetty :as jetty]
+            [compojure.route :as route]
             [kuona-api.environments :refer :all]
-            [kuona-core.metric.store :as store])
+            [kuona-core.metric.store :as store]
+            [ring.adapter.jetty :as jetty]
+            [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
+            [ring.middleware.json :as middleware]
+            [ring.util.response :refer [resource-response response status]])
   (:gen-class))
 
 
@@ -51,11 +52,21 @@
   [base page-number]
   (str base "?page=" page-number))
 
-(defn get-repository-count [] (store/get-count repositories))
+(defn- get-repository-count [] (store/get-count repositories))
 
-(defn get-repositories
+(defn- get-repositories
   [search page]
   (response (store/search repositories search 100 page repository-page-link)))
+
+(defn- build-tool-buckets
+  []
+  (log/info "build-tool-buckets")
+  (let [result (store/internal-search snapshots { :size        0
+                                                 :aggregations {:builder { :terms { :field "build.builder" }}}})
+        buckets (-> result :aggregations :builder :buckets)]
+    (log/info "build-tool-buckets" result)
+    (log/info "buckets" buckets)
+    (response {:buckets buckets})))
 
 (defroutes app-routes
   (GET "/" [] (response service-data))
@@ -64,6 +75,7 @@
   (GET "/api/repositories/:id" [id] (response (:_source (store/get-document repositories id))))
   (PUT "/api/repositories/:id" request (response (store/put-document (get-in request [:body]) repositories (get-in request [:params :id]))))
 
+  (GET "/api/build/tools" [] (build-tool-buckets))
   (GET "/api/snapshots/:id" [id] (response (:_source (store/get-document snapshots id))))
   (PUT "/api/snapshots/:id" request (response (store/put-document (get-in request [:body]) snapshots (get-in request [:params :id]))))
 

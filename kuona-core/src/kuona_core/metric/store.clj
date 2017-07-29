@@ -1,9 +1,9 @@
 (ns kuona-core.metric.store
-  (:require [clj-http.client :as http]
-            [slingshot.slingshot :refer :all]
+  (:require [cheshire.core :refer :all]
+            [clj-http.client :as http]
             [clojure.tools.logging :as log]
-            [cheshire.core :refer :all]
-            [kuona-core.util :refer :all])
+            [kuona-core.util :refer :all]
+            [slingshot.slingshot :refer :all])
   (:gen-class))
 
 (def es-string-type
@@ -143,6 +143,14 @@
       (nil? page-number) (str "size=" size)
       (= page-number 1)  (str "size=" size)
       :else              (str "size=" size "&" "from=" (* (- page-number 1) size)))))
+
+(defn internal-search
+  [mapping query]
+  (log/info "internal-search" mapping)
+  (let [url (clojure.string/join "/" [mapping "_search"])
+        response (http/post url {:headers json-headers :body (generate-string query)})]
+    (log/info "internal-search result" response)
+    (parse-json-body response)))
 
 (defn search
   ([mapping search-term] (search mapping search-term 100))
