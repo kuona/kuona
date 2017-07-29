@@ -209,15 +209,10 @@ var dependencyTreeChart = function(treeData, treeContainer) {
   var width = 600;
   var height = 600;
   var svg = treeContainer.append("svg").attr("width", width).attr("height", height);
-  var g = svg.append("g").attr("transform", "translate(40,0)");
-
-  //var svg = d3.select("svg"),
-//  width = +svg.attr("width");
-//  height = +svg.attr("height");
-  
+  var g = svg.append("g").attr("transform", "translate(150,0)");
 
   var tree = d3.cluster()
-      .size([height, width - 200]);
+      .size([height, width - 400]);
 
   var stratify = d3.stratify(treeData)
       .id(toDependencyId)
@@ -233,8 +228,8 @@ var dependencyTreeChart = function(treeData, treeContainer) {
       .attr("class", "link")
       .attr("d", function(d) {
         return "M" + d.y + "," + d.x
-          + "C" + (d.parent.y + 50) + "," + d.x
-          + " " + (d.parent.y + 50) + "," + d.parent.x
+          + "C" + (d.parent.y + 10) + "," + d.x
+          + " " + (d.parent.y + 10) + "," + d.parent.x
           + " " + d.parent.y + "," + d.parent.x;
       });
 
@@ -259,7 +254,8 @@ var dependencyTreeChart = function(treeData, treeContainer) {
       }
       return d.children ? -8 : 8; })
     .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
-    .text(function(d) { return d.id.substring(d.id.lastIndexOf(".") + 1); });
+    .text(function(d) { return d.id; });
+//    .text(function(d) { return d.id.substring(d.id.lastIndexOf(".") + 1); });
 }
 
 
