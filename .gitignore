@@ -18,6 +18,7 @@ out/
 pom.xml
 pom.xml.asc
 test/test-repo/
+test/dependency-test-repo/
 target/
 .idea/
 \#*
