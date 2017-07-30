@@ -16,6 +16,7 @@
     <!-- Main Inspinia CSS files -->
     <link href="/css/animate.css" rel="stylesheet">
     <link id="loadBefore" href="/css/style.css" rel="stylesheet">
+    <base href="/repositories/index.html">
   </head>
 
   <body ng-controller="RepositoriesController as controller" class="top-navigation pace-done">
@@ -23,6 +24,14 @@
       <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
         <div ng-include="'/views/common/navigation.html'"></div>
         <div class="wrapper wrapper-content animated fadeInRight">
+          <div class="row">
+            <div class="col-lg-12">
+                <h1>Source Repositories</h1>
+                <small>
+                  This initial list of source repositories was obtained by querying the GitHub API for started projects. The repository count represents repositries returned from those queries. Version control entries refer to historical data points captured for revisions from a very small repository set. Capturing this data takes a very long time (see <a href="http://www.grahambrooks.com/2017/07/07/path-to-a-million.html">path to a million.</a>). Code metrics is similar but refers to code line counts. Each repsitory head revision is scanned for files that indicate modules e.g. pom.xml implies a maven module. Each of these module files is examined to understand the module's dependencies. (currently only maven is supported)
+                </small>
+            </div>
+          </div>
           <div class="row">
             <div class="col-lg-1"></div>
             <div class="col-lg-2">
@@ -33,7 +42,6 @@
                 </div>
                 <div class="ibox-content">
                   <h1 class="no-margins">{{repository_count}}</h1>
-                  <div class="stat-percent font-bold text-success"><i class="fa fa-bolt"></i></div>
                   <small>Registered repositories</small>
                 </div>
               </div>
@@ -42,12 +50,10 @@
             <div class="col-lg-2">
               <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                  <span class="label label-info pull-right">Current</span>
                   <h5>Version Control Revision entries</h5>
                 </div>
                 <div class="ibox-content">
                   <h1 class="no-margins">{{vcs_count | number}}</h1>
-                  <div class="stat-percent font-bold text-success"><i class="fa fa-bolt"></i></div>
                   <small>Revision history records</small>
                 </div>
               </div>
@@ -56,26 +62,28 @@
             <div class="col-lg-2">
               <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                  <span class="label label-primary pull-right">Current</span>
                   <h5>Code metrics</h5>
                 </div>
                 <div class="ibox-content">
                   <h1 class="no-margins">{{code_metric_count | number }}</h1>
-                  <div class="stat-percent font-bold text-success"><i class="fa fa-bolt"></i></div>
                   <small>Number of collected code metrics</small>
                 </div>
               </div>
             </div>
-            
-            <div class="col-lg-2">
-              <div class="ibox-content">
-                <div class="text-center">
-                  <canvas id="filesPolarChart" height="140"></canvas>
+
+            <div class="col-lg-4">
+              <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <h5>Build Tools</h5>
                 </div>
-            </div></div>
-            <div class="col-lg-2">
+                <div class="ibox-content">
+                  <div class="text-center">
+                    <canvas id="buildToolCanvas"></canvas>
+                  </div>
+                  <small>Data obtained by scanning the files in the latest version of each repository an matching file names to build tools.</small>
+                </div>
+              </div>
             </div>
-            <div class="col-lg-1"></div>
           </div>
           
           <div class="row">
@@ -167,9 +175,12 @@
     <script src="/js/ui-router/angular-ui-router.min.js"></script>
     <script src="/js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
     <script src="/js/angular/angular-resource.min.js"></script>
-    <script src="/js/plugins/bootstrap-markdown/bootstrap-markdown.js"></script>
-    <script src="/js/plugins/bootstrap-markdown/markdown.js"></script>
-    
+
+    <script src="/js/d3.js"></script>
+    <script src="/js/d3pie.min.js"></script>
+    <script src="/js/plugins/chartjs/Chart.min.js"></script>
+
+    <script src="/js/charts.js"></script>
     <script src="/js/repositories.js"></script>
   </body>
 </html>

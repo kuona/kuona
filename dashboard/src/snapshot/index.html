@@ -22,7 +22,7 @@
 
 <!-- ControllerAs syntax -->
 <!-- Main controller with serveral data used in Inspinia theme on diferent view -->
-<body ng-controller="SnapshotController" class="top-navigation pace-done">
+<body ng-controller="SnapshotController as controller" class="top-navigation pace-done">
   <div class="wrapper">
     <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
       <div ng-include="'/views/common/navigation.html'"></div>
@@ -118,7 +118,7 @@
                 <div class="col-lg-12" ng-if="build.dependencyTree">
                   <dependency-chart data='build.dependencyTree'></dependency-chart>
                 </div>
-                
+
               </div>
             </div>
           </div>
@@ -127,7 +127,7 @@
       </div>
     </div>
   </div>
-    
+
   <!-- jQuery and Bootstrap -->
   <script src="/js/jquery/jquery-2.1.1.min.js"></script>
   <script src="/js/plugins/jquery-ui/jquery-ui.js"></script>
@@ -138,9 +138,6 @@
 
   <!-- SlimScroll -->
   <script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-  <!-- Peace JS -->
-  <!--<script src="/js/plugins/pace/pace.min.js"></script>-->
 
   <!-- Custom and plugin javascript -->
   <script src="/js/inspinia.js"></script>
@@ -156,7 +153,8 @@
   <script src="/js/d3.js"></script>
   <script src="/js/d3pie.min.js"></script>
   <script src="/js/plugins/chartjs/Chart.min.js"></script>
-  <!-- Anglar App Script -->
+
+  <script src="/js/charts.js"></script>
   <script src="/js/snapshot.js"></script>
 </body>
 </html>
