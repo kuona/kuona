@@ -21,20 +21,33 @@
 
   <body ng-controller="RepositoriesController as controller" class="top-navigation pace-done">
     <div class="wrapper">
-      <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
+      <div id="page-wrapper" class="{{$state.current.name}}">
         <div ng-include="'/views/common/navigation.html'"></div>
         <div class="wrapper wrapper-content animated fadeInRight">
           <div class="row">
             <div class="col-lg-12">
                 <h1>Source Repositories</h1>
                 <small>
-                  This initial list of source repositories was obtained by querying the GitHub API for started projects. The repository count represents repositries returned from those queries. Version control entries refer to historical data points captured for revisions from a very small repository set. Capturing this data takes a very long time (see <a href="http://www.grahambrooks.com/2017/07/07/path-to-a-million.html">path to a million.</a>). Code metrics is similar but refers to code line counts. Each repsitory head revision is scanned for files that indicate modules e.g. pom.xml implies a maven module. Each of these module files is examined to understand the module's dependencies. (currently only maven is supported)
+                  This initial list of source repositories was
+                  obtained by querying the GitHub API for started
+                  projects. The repository count represents
+                  repositries returned from those queries. Version
+                  control entries refer to historical data points
+                  captured for revisions from a very small repository
+                  set. Capturing this data takes a very long time
+                  (see <a href="http://www.grahambrooks.com/2017/07/07/path-to-a-million.html">path
+                  to a million.</a>). Code metrics is similar but
+                  refers to code line counts. Each repsitory head
+                  revision is scanned for files that indicate modules
+                  e.g. pom.xml implies a maven module. Each of these
+                  module files is examined to understand the module's
+                  dependencies. (currently only maven is supported)
                 </small>
             </div>
           </div>
           <div class="row">
             <div class="col-lg-1"></div>
-            <div class="col-lg-2">
+            <div class="col-lg-4">
               <div class="ibox float-e-margins">
                 <div class="ibox-title">
                   <span class="label label-success pull-right">{{ currentDate | date:'yyyy-MM-dd' }}</span>
@@ -45,9 +58,7 @@
                   <small>Registered repositories</small>
                 </div>
               </div>
-            </div>
-            
-            <div class="col-lg-2">
+
               <div class="ibox float-e-margins">
                 <div class="ibox-title">
                   <h5>Version Control Revision entries</h5>
@@ -57,9 +68,7 @@
                   <small>Revision history records</small>
                 </div>
               </div>
-            </div>
-            
-            <div class="col-lg-2">
+
               <div class="ibox float-e-margins">
                 <div class="ibox-title">
                   <h5>Code metrics</h5>
@@ -69,9 +78,10 @@
                   <small>Number of collected code metrics</small>
                 </div>
               </div>
+
             </div>
 
-            <div class="col-lg-4">
+            <div class="col-lg-6">
               <div class="ibox float-e-margins">
                 <div class="ibox-title">
                   <h5>Build Tools</h5>
@@ -90,9 +100,9 @@
             <div class="col-lg-1"></div>
             <div class="col-lg-10">
               <form class="form">
-                <h1>Search repository store.</h1>
+                <h1>Search the repository store</h1>
                 <div class="form-group">
-                  <input type="text" placeholder="Project Name" class="form-control" ng-model="repoterm" ng-change="repoSearch(repoterm)">
+                  <input placeholder="Project Name" class="form-control" ng-model="repoterm" ng-change="repoSearch(repoterm)">
                 </div>
               </form>
             </div>
@@ -109,16 +119,11 @@
                     <th>Created</th>
                     <th>Project</th>
                     <th></th>
-                    <th align="right"><i class="fa fa-eye" aria-hidden="true"></i></th>
-                    <th><i class="fa fa-bug" aria-hidden="true"></i></th>
-                    <th><i class="fa fa-code-fork" aria-hidden="true"></i></th>
-                    <th align="right">Size</th>
-                    <th>Last&nbsp;Analysed</th>
+                    <th align="right">Stats</th>
                     <th>Snapshot</th>
                   </tr>
                 </thead>
                 <tbody>
-                  
                   <tr ng-repeat="i in repositoriesFound.items" class="search-result">
                     <td class="owner">
                       <img alt="image" class="img-circle" ng-src="{{i.project.owner.avatar_url}}">
@@ -126,12 +131,11 @@
                     <td nowrap>{{i.project.created_at  | date:'yyyy-MM-dd'}}</td>
                     <td nowrap><a href="{{i.project.html_url}}"><i class="fa fa-github" aria-hidden="true"></i>&nbsp;{{i.project.name}}</a></td>
                     <td><p class="text-muted">{{i.project.description}}</p></td>
-                    <td align="right">{{i.project.watchers | number}}</td>
-                    <td align="right">{{i.project.open_issues_count | number}}</td>
-                    <td align="right">{{i.project.forks | number}}</td>
-                    <td align="right">{{i.project.size | number}}</td>
-                    <td align="right">{{i.last_analysed | date:'yyyy-MM-dd'}}</td>
-                    <td><a href="/snapshot?id={{i.id}}">{{i.project.name}}&nbsp;snapshot</a></td>
+                    <td align="right" nowrap>{{i.project.watchers | number}}&nbsp;watchers<br/>
+                      {{i.project.open_issues_count | number}} open issues<br/>
+                      {{i.project.forks | number}} forks<br/>
+                      {{i.project.size | number}} Size</td>
+                    <td nowrap><a href="/snapshot?id={{i.id}}"><i class="fa fa-file-image-o" aria-hidden="true"></i>&nbsp;Snapshot</a></td>
                   </tr>
                 </tbody>
               </table>
