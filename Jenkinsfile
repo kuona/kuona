@@ -1,5 +1,6 @@
 pipeline {
   agent any
+  env.JAVA_HOME = tool 'jdk-8-oracle'
   stages {
     stage('Checkout') {
       steps {
