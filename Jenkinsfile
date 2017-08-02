@@ -11,7 +11,9 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh './build'
+                wrap([$class: 'AnsiColorBuildWrapper', 'xterm': 'xterm']) {
+                    sh './build'
+                }
             }
         }
     }
