@@ -24,6 +24,8 @@ echo "${pblue}Building the dependencies${preset}"
 
 find collectors/maven -iname 'pom.xml' -not -path '*/test/*' -execdir ${MAVEN_BUILD} \;
 
+echo "${pblue}Building the collector library dependencies${preset}"
+
 find collectors/lib -iname 'pom.xml' -not -path '*/test/*' -execdir ${MAVEN_BUILD} \;
 
 echo "${pblue}Building the core${preset}"
@@ -40,7 +42,7 @@ ${LEIN_BUILD}
 ${LEIN_PACKAGE}
 cd ..
 
-find collectors -iname 'project.clj' -exec echo "»»» Building: " {} \; -execdir ${LEIN_BUILD} \; -exec echo "»»» Installing (local): " {} \; -execdir ${LEIN_PACKAGE} \;
+find collectors -in ame 'project.clj' -exec echo "»»» Building: " {} \; -execdir ${LEIN_BUILD} \; -exec echo "»»» Installing (local): " {} \; -execdir ${LEIN_PACKAGE} \;
 
 find . -iname 'gruntfile.js' -not -path '*/node_modules/*' -exec echo "»»» Building: " {} \; -execdir grunt build \;
 
