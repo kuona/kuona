@@ -1,5 +1,5 @@
 node {
-    env.JAVA_HOME="${tool 'java 8'}"
+    env.JAVA_HOME="${tool 'java jdk-8u144'}"
     env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
     sh 'java -version'
     
