@@ -6,12 +6,12 @@ pipeline {
     stages {
         stage('Setup') {
             steps {
-                sh 'dev-setup'
+                sh './dev-setup'
             }
         }
         stage('Build') {
             steps {
-                sh 'build'
+                sh './build'
             }
         }
     }
