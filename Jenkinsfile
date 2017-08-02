@@ -1,16 +1,18 @@
 pipeline {
-  agent any
-  stages {
-    stage('Setup') {
-      steps {
-        sh 'dev-setup'
-      }
+    agent any
+    tools {
+        jdk 'jdk8'
     }
-    stage('Build') {
-      steps {
-        tool(name: 'Java 8', type: 'JDK')
-        sh 'build'
-      }
+    stages {
+        stage('Setup') {
+            steps {
+                sh 'dev-setup'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'build'
+            }
+        }
     }
-  }
 }
