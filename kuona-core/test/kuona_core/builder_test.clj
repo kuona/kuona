@@ -32,5 +32,7 @@
 
 (facts "about project scanning"
        (fact
-        (let [result (collect-builder-metrics ".")]
-          (:artifactId (:artifact (first result)))  =>  "kuona-core")))
+        (let [result (collect-builder-metrics "./test")]
+          (-> (first result) :artifact :groupId) => "kuona"
+          (-> (first result) :artifact :version) => "0.1"
+          (-> (first result) :artifact :artifactId)  =>  "kuona-dashboard")))
