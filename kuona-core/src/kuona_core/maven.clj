@@ -23,7 +23,11 @@
 (defn maven-dependency-tree
   [pom-file-path dot-file]
   (log/info "maven-dependency-tree " pom-file-path " to " dot-file)
-  (let [result (shell/sh "mvn" "--file" pom-file-path "dependency:tree" (str "-DoutputFile=" dot-file) "-DoutputType=dot")]
+  (let [result (shell/sh "mvn"
+                         "--file" pom-file-path
+                         "dependency:tree"
+                         (str "-DoutputFile=" dot-file)
+                         "-DoutputType=dot")]
     result))
 
 
