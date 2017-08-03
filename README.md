@@ -1,4 +1,5 @@
-![Kuona Project Logo]:(http://dashboard.kuona.io/favicon.png)
+![Kuona Project Logo](http://dashboard.kuona.io/favicon.png)
+
 # kuona-project
 Kuona is the [Shona](https://en.wikipedia.org/wiki/Shona_language) word that means "To see". This project is about providing valuable actionable insight into software delivery.
 
