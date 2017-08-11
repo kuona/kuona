@@ -103,7 +103,7 @@
               <form class="form">
                 <h1>Search the repository store</h1>
                 <div class="form-group">
-                  <input placeholder="Project Name" class="form-control" ng-model="repoterm" ng-change="repoSearch(repoterm)">
+                  <input placeholder="search text" class="form-control" ng-model="repoterm" ng-change="repoSearch(repoterm)">
                 </div>
               </form>
             </div>
@@ -135,7 +135,7 @@
                     <td align="right" nowrap>{{i.project.watchers | number}}&nbsp;watchers<br/>
                       {{i.project.open_issues_count | number}} open issues<br/>
                       {{i.project.forks | number}} forks<br/>
-                      {{i.project.size | number}} Size</td>
+                      {{i.project.size | number}} kb</td>
                     <td nowrap><a href="/snapshot?id={{i.id}}"><i class="fa fa-file-image-o" aria-hidden="true"></i>&nbsp;Snapshot</a></td>
                   </tr>
                 </tbody>

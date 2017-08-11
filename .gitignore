@@ -24,3 +24,4 @@ target/
 \#*
 .\#*
 .lein-repl-history
+checkouts/

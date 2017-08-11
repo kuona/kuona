@@ -80,6 +80,20 @@
                                {:headers {"content-type" "application/json; charset=UTF-8"}
                                 :body    (generate-string snapshot)}))))
 
+(defn has-snapshot?
+  [id]
+  (let [url (string/join "/" ["http://dashboard.kuona.io/api/snapshots" id])]
+    (try+
+     (log/info "has-snapshot? " url)
+     (http/get url)
+     true
+     (catch Object _
+       false))))
+
+(defn requires-snapshot?
+  [id]
+  (not (has-snapshot? id)))
+
 (defn language-x-count
   [item k]
 ;  (log/info "language-x-count " item k)
@@ -114,7 +128,10 @@
    (catch Object _
      (log/error (:throwable &throw-context) "Unexpected error"))))
 
-
+(defn requires-snapshot-filter
+  [repo]
+  (let [id (repository-id repo)]
+    (requires-snapshot? id)))
 
 (defn all-repositories
   ([uri] (all-repositories uri 1))
@@ -132,4 +149,4 @@
   (let [options          (parse-opts args cli-options)
         repositories     (all-repositories "http://dashboard.kuona.io/api/repositories")]
     (log/info "Found " (count repositories) " configured repositories for analysis")
-    (doall (map snapshot-repository repositories))))
+    (doall (map snapshot-repository (filter requires-snapshot-filter repositories)))))

@@ -81,6 +81,19 @@
           (f repo-path (.getName log) (:time (git-query/commit-info repo log)))
           (git/git-checkout repo "master")))))
 
+(defn commit-history
+  ([repo]
+   (let [log  (git/git-log repo)
+         keys [:email :time :branches :changed_files :merge false :author :id :message]]
+     (map (fn[c] (select-keys (git-query/commit-info repo c) keys)) log)))
+  ([repo start]
+   (let [commits (commit-history repo)]
+     (drop-while (fn [c] (not= (:id c) start)) commits)))
+  ([repo start end]
+   (let [commits (commit-history repo start)
+         group   (take-while (fn [c] (not= (:id c) end)) commits)]
+     (concat group [(first (drop (count group) commits))]))))
+
 
 
 (defn commits

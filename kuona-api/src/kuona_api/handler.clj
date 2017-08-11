@@ -1,5 +1,6 @@
 (ns kuona-api.handler
-  (:require [clojure.tools.logging :as log]
+  (:require [cheshire.core :refer :all]
+            [clojure.tools.logging :as log]
             [compojure.core :refer :all]
             [compojure.handler :as handler]
             [compojure.route :as route]
@@ -12,8 +13,9 @@
   (:gen-class))
 
 
-(def service-data
-  { :links [{:href "/api/environments" :rel "environments"}]})
+(defn service-data
+  []
+  (response { :links [{:href "/api/environments" :rel "environments"}]}))
 
 (defn environment-links
   [e]
@@ -41,6 +43,7 @@
 (def environment-comments (store/mapping :comments (store/index :kuona-env "http://localhost:9200")))
 
 (def repositories (store/mapping :repositories (store/index :kuona-repositories "http://localhost:9200")))
+(def commits (store/mapping :commits (store/index :kuona-repositories "http://localhost:9200")))
 
 (def snapshots (store/mapping :snapshots (store/index :kuona-snapshots "http://localhost:9200")))
 
@@ -52,48 +55,126 @@
   [base page-number]
   (str base "?page=" page-number))
 
-(defn- get-repository-count [] (store/get-count repositories))
+(defn- get-repository-count [] (response (store/get-count repositories)))
 
 (defn- get-repositories
   [search page]
+  (log/info "get repositories" search page)
   (response (store/search repositories search 100 page repository-page-link)))
 
 (defn- build-tool-buckets
   []
   (log/info "build-tool-buckets")
-  (let [result (store/internal-search snapshots { :size        0
-                                                 :aggregations {:builder { :terms { :field "build.builder" }}}})
+  (let [result  (store/internal-search snapshots { :size        0
+                                                  :aggregations {:builder { :terms { :field "build.builder" }}}})
         buckets (-> result :aggregations :builder :buckets)]
     (log/info "build-tool-buckets" result)
     (log/info "buckets" buckets)
     (response {:buckets buckets})))
 
+(defn bad-request
+  [error]
+  {:status  400
+   :headers {"Content-Type" "application-json"}
+   :body    (generate-string {:error error})})
+
+(defn put-commit!
+  [id commit]
+  (log/info "new commit for repository " id)
+  (let [commit-id (-> commit :id)
+        entity (merge commit {:repository_id id})]
+    (cond
+      (nil? commit-id) (bad-request "malformed request - missing commit identity")
+      :else            (response (store/put-document entity commits commit-id)))))
+
+(defn commits-page-link
+  [id page-number]
+  (str "/api/repositories/" id "/commits?page=" page-number))
+
+(defn get-commits
+  [id page]
+  (log/info "finding commits for repository " id " page " page)
+  (response (store/search commits (str "repository_id:" id) 100 page #(commits-page-link id %))))
+
+(defn get-repository-by-id
+  [id]
+  (response (:_source (store/get-document repositories id))))
+
+(defn put-repository!
+  [id repo]
+  (response (store/put-document repo repositories id)))
+
+(defn get-snapshot-by-id
+  [id]
+  (response (:_source (store/get-document snapshots id))))
+
+(defn put-snapshot!
+  [id snapshot]
+  (response (store/put-document snapshot snapshots id)))
+
+(defn get-metrics
+  [mapping, search page]
+  (response (store/search (store/mapping mapping kuona-metrics-index) search 100 page #(page-link (str "/api/mapping/" mapping) %))))
+
+(defn get-metrics-count
+  [mapping]
+  (response (store/get-count (store/mapping mapping kuona-metrics-index))))
+
+(defn get-environments
+  []
+  (response { :environments (environment-link-decorate-environment-list (store/all-documents environments)) }))
+
+(defn get-environment-by-id
+  [id]
+  (decorate-response decorate-environment (store/get-document environments id)))
+
+(defn get-environment-comments
+  [id]
+  (response (get-comments environment-comments id)))
+
+(defn put-environment-comment!
+  [id comment]
+  (response
+   (decorate-environment (put-comment environments environment-comments id comment))))
+
+(defn put-environment-version!
+  [id version]
+  (response  (decorate-environment (put-version environments id version))))
+
+(defn put-environment-status!
+  [id status]
+  (response (decorate-environment (put-status environments id status))))
+
+(defn put-environment!
+  [environment]
+  (response (decorate-environment (store/put-document environments environment))))
+
 (defroutes app-routes
-  (GET "/" [] (response service-data))
-  (GET "/api/repositories/count" [] (response (get-repository-count)))
+  (GET "/" [] (service-data))
+  (GET "/api/repositories/count" [] (get-repository-count))
   (GET "/api/repositories" [search page] (get-repositories search page))
-  (GET "/api/repositories/:id" [id] (response (:_source (store/get-document repositories id))))
-  (PUT "/api/repositories/:id" request (response (store/put-document (get-in request [:body]) repositories (get-in request [:params :id]))))
+  (GET "/api/repositories/:id" [id] (get-repository-by-id id))
+  (PUT "/api/repositories/:id" request (put-repository! (get-in request [:params :id])  (get-in request [:body])))
+
+  (GET "/api/repositories/:id/commits" request (get-commits (get-in request [:params :id]) 1))
+  (PUT "/api/repositories/:id/commits" request (put-commit! (get-in request [:params :id]) (get-in request [:body])))
 
   (GET "/api/build/tools" [] (build-tool-buckets))
-  (GET "/api/snapshots/:id" [id] (response (:_source (store/get-document snapshots id))))
-  (PUT "/api/snapshots/:id" request (response (store/put-document (get-in request [:body]) snapshots (get-in request [:params :id]))))
 
-  (GET "/api/metrics/:mapping" [mapping search page] (response (store/search (store/mapping mapping kuona-metrics-index) search 100 page #(page-link (str "/api/mapping/" mapping) %))))
-  (GET "/api/metrics/:mapping/count" [mapping] (response (store/get-count (store/mapping mapping kuona-metrics-index))))
-  (GET "/api/environments" [] (response { :environments (environment-link-decorate-environment-list (store/all-documents environments)) }))
-  (GET "/api/environments/:id" [id] (decorate-response decorate-environment (store/get-document environments id)))
-  (GET "/api/environments/:id/comments" request (response (get-comments environment-comments (get-in request [:params :id]))))
-  (POST "/api/environments/:id/comments" request (response
-                                                  (decorate-environment
-                                                   (put-comment environments environment-comments (get-in request [:params :id]) (get-in request [:body :comment])))))
-  (POST "/api/environments/:id/version" request (response
-                                                  (decorate-environment
-                                                   (put-version environments (get-in request [:params :id]) (get-in request [:body :version])))))
-  (POST "/api/environments/:id/status" request (response
-                                                (decorate-environment
-                                                 (put-status environments (get-in request [:params :id]) (get-in request [:body :status])))))
-  (POST "/api/environments" request (response (decorate-environment (store/put-document environments (get-in request [:body :environment])))))
+  (GET "/api/snapshots/:id" [id] (get-snapshot-by-id id))
+  (PUT "/api/snapshots/:id" request (put-snapshot! (get-in request [:params :id]) (get-in request [:body])))
+
+  (GET "/api/metrics/:mapping" [mapping search page] (get-metrics mapping search page))
+  (GET "/api/metrics/:mapping/count" [mapping] (get-metrics-count mapping))
+  
+  (GET "/api/environments" [] (get-environments))
+  (GET "/api/environments/:id" [id] (get-environment-by-id id))
+  (GET "/api/environments/:id/comments" request (get-environment-comments (get-in request [:params :id])))
+  (POST "/api/environments/:id/comments" request (put-environment-comment! (get-in request [:params :id]) (get-in request [:body :comment])))
+  (POST "/api/environments/:id/version" request (put-environment-version! (get-in request [:params :id]) (get-in request [:body :version])))
+  (POST "/api/environments/:id/status" request (put-environment-status! (get-in request [:params :id]) (get-in request [:body :status])))
+  (POST "/api/environments" request (put-environment! (get-in request [:body :environment])))
+
   (route/not-found "Not Found"))
 
 (def app

@@ -155,6 +155,7 @@
 (defn search
   ([mapping search-term] (search mapping search-term 100))
   ([mapping search-term size page page-fn]
+   (log/info "document-search" search-term size page)
    (let [base-url (clojure.string/join "/" [mapping "_search"])
          search-url (str base-url "?" "q=" search-term "&" (pagination-param :size size :page page))
          all-url (str base-url "?" (pagination-param :size size :page page))
