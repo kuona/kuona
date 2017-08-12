@@ -54,5 +54,23 @@ if ! [ -d "test/dependency-test-repo" ]; then
     git clone git@github.com:grahambrooks/java-nio-socket-server.git test/dependency-test-repo
 fi
 
+function symlink_core {
+    local p=$1
+    
+    if ! [ -d "${p}/checkouts" ]; then
+        mkdir "${p}/checkouts"
+    fi
+
+    if ! [ -h "${p}/checkouts/kuona-core" ]; then
+        ln -s "${PWD}/kuona-core" "${p}/checkouts/kuona-core"
+    fi
+}
+
+symlink_core "collectors/snapshot/"
+symlink_core "collectors/code/"
+symlink_core "collectors/git/"
+symlink_core "collectors/http/"
+symlink_core "collectors/jenkins/"
+symlink_core "kuona-api"
 
 echo "${pgreen}Ready to develop! Start with the readme.${preset}"
