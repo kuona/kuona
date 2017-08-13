@@ -141,6 +141,22 @@
           </div>
         </div>
       </div>
+
+      <div class="row">
+        <div class="col-lg-12" ng-repeat="c in commits | orderBy : '-timestamp' | limitTo: 5">
+          <div class="ibox">
+            <div class="ibox-title">
+              <small>{{ c.time  | date:'yyyy-MM-dd' }}</small>
+              <small>{{ c.branches }}</small>
+              <small>{{ c.author }}</small>
+            </div>
+            <div class="ibox-content">
+              <small>Affected {{ c.changed_files.length | number }} files</small>
+              <p style="white-space: pre;">{{ c.message }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
       
       <div class="row">
         <div ng-repeat="build in snapshot.build | orderBy: 'artifact.name'" class="col-lg-4">

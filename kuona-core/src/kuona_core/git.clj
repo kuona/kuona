@@ -94,8 +94,6 @@
          group   (take-while (fn [c] (not= (:id c) end)) commits)]
      (concat group [(first (drop (count group) commits))]))))
 
-
-
 (defn commits
   [repo-path]
   (log/info "commits " repo-path)

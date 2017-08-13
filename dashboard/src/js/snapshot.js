@@ -50,6 +50,7 @@ function SnapshotController($scope, $http, $location) {
   $scope.repository = {}
   $scope.snapshot = {};
   $scope.avatar_url = "";
+  $scope.commits = [];
   
   $http.get("/api/snapshots/" + $scope.id).then(function(res){
     $scope.snapshot = res.data;
@@ -67,7 +68,6 @@ function SnapshotController($scope, $http, $location) {
     $scope.code_piechart_data = [];
     for (var i = 0; i < $scope.snapshot.content.code_line_details.length; i++) {
       var item = $scope.snapshot.content.code_line_details[i];
-      console.log(item);
       $scope.code_piechart_data.push({"label": item.language, "color": colors[i], "value": item.count
       });
     }
@@ -80,6 +80,15 @@ function SnapshotController($scope, $http, $location) {
   $http.get("/api/repositories/" + $scope.id).then(function(res){
     $scope.repository = res.data;
     $scope.avatar_url = $scope.repository.project.owner.avatar_url
+  });
+
+  $http.get("/api/repositories/" + $scope.id + "/commits").then(function(res){
+    $scope.commits = res.data.items;
+
+    for (var i in $scope.commits) {
+      var c = $scope.commits[i];
+      c.timestamp = Date.parse(c.time);
+    }
   });
 }
 
@@ -95,7 +104,6 @@ kuonaSnapshot.directive('dependencyChart', function () {
         link: function (scope, element, attrs) {
           // We lookup .myTemplate starting from element
           dependencyTreeChart(scope.data, d3.select(element[0]));//.select('.myTemplate'))
-            console.log()
         }
     };
 });

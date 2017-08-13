@@ -80,6 +80,14 @@
                                {:headers {"content-type" "application/json; charset=UTF-8"}
                                 :body    (generate-string snapshot)}))))
 
+(defn put-commit!
+  [repo-id commit]
+  (let [url (string/join "/" ["http://dashboard.kuona.io/api/repositories" repo-id "commits"])]
+    (log/info "put-commit " url)
+    (parse-json-body (http/put url
+                               {:headers {"content-type" "application/json; charset=UTF-8"}
+                                :body    (generate-string commit)}))))
+
 (defn has-snapshot?
   [id]
   (let [url (string/join "/" ["http://dashboard.kuona.io/api/snapshots" id])]
@@ -124,7 +132,9 @@
      (let [loc-data      (cloc/loc-collector (fn [a] a) local-dir "foo")
            build-data    (builder/collect-builder-metrics local-dir)
            snapshot-data (create-snapshot (-> repo :project) (loc-metrics loc-data) build-data)]
-       (log/info "snapshot " (put-snapshot snapshot-data id))))
+       (doall (map #(put-commit! id %) (commit-history (git/load-repo local-dir))))
+       (log/info "snapshot " (put-snapshot snapshot-data id))
+       ))
    (catch Object _
      (log/error (:throwable &throw-context) "Unexpected error"))))
 
@@ -146,7 +156,8 @@
   [& args]
   (log/info "Kuona Snapshot Collector")
   
-  (let [options          (parse-opts args cli-options)
-        repositories     (all-repositories "http://dashboard.kuona.io/api/repositories")]
+  (let [options      (parse-opts args cli-options)
+        repositories (all-repositories "http://dashboard.kuona.io/api/repositories")]
     (log/info "Found " (count repositories) " configured repositories for analysis")
-    (doall (map snapshot-repository (filter requires-snapshot-filter repositories)))))
+    (doall (map snapshot-repository (filter (fn [r] true) repositories)))))
+;    (doall (map snapshot-repository (filter requires-snapshot-filter repositories)))))
