@@ -1,0 +1,23 @@
+<div class="ibox">
+  <div class="ibox-title">
+    <h5><i class="fa fa-github"></i> Repository Content</h5>
+  </div>
+  <div class="ibox-content">
+    <div class="row">
+      <div class="col-sm-6"><i class="fa fa-file-o"></i> Files</div>
+      <div class="col-sm-6 text-navy">{{ content.file_count }}</div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6"><i class="fa fa-comments-o" aria-hidden="true"></i> Lines of comments</div>
+      <div class="col-sm-6 text-navy">{{ content.comment_lines | number }}</div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6"><i class="fa fa-circle-o" aria-hidden="true"></i> Blank lines</div>
+      <div class="col-sm-6 text-navy">{{ content.blank_lines | number }}</div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6"><i class="fa fa-code" aria-hidden="true"></i> Lines of Code</div>
+      <div class="col-sm-6 text-navy">{{ content.code_lines | number }}</div>
+    </div>
+  </div>
+</div>

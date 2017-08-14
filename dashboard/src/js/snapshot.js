@@ -95,15 +95,65 @@ function SnapshotController($scope, $http, $location) {
 kuonaSnapshot.controller('SnapshotController',['$scope', '$http', '$location',  SnapshotController]);
 
 kuonaSnapshot.directive('dependencyChart', function () {
-    return {
-        restrict: 'E',
-        scope: {
-            data: '='
-        },
-//        template: '<div class="myTemplate"></div>',
-        link: function (scope, element, attrs) {
-          // We lookup .myTemplate starting from element
-          dependencyTreeChart(scope.data, d3.select(element[0]));//.select('.myTemplate'))
-        }
-    };
+  return {
+    restrict: 'E',
+    scope: {
+      data: '='
+    },
+    link: function (scope, element, attrs) {
+      dependencyTreeChart(scope.data, d3.select(element[0]));
+    }
+  };
 });
+
+kuonaSnapshot.directive('commitsPanel', function () {
+  return {
+    restrict: 'E',
+    scope: {
+      commits: '='
+    },
+    templateUrl: '/directives/commits.html'
+  };
+});
+
+kuonaSnapshot.directive('repositoryPanel', function () {
+  return {
+    restrict: 'E',
+    scope: {
+      repository: '='
+    },
+    templateUrl: '/directives/repository-panel.html'
+  };
+});
+
+kuonaSnapshot.directive('contentPanel', function () {
+  return {
+    restrict: 'E',
+    scope: {
+      content: '='
+    },
+    templateUrl: '/directives/content-panel.html'
+  };
+});
+
+kuonaSnapshot.directive('buildPanel', function () {
+  return {
+    restrict: 'E',
+    scope: {
+      build: '='
+    },
+    templateUrl: '/directives/build-panel.html'
+  };
+});
+
+kuonaSnapshot.directive('artifactPanel', function () {
+  return {
+    restrict: 'E',
+    scope: {
+      artifact: '=',
+      dependencyTree: '='
+    },
+    templateUrl: '/directives/build-artifact-panel.html'
+  };
+});
+

@@ -53,69 +53,22 @@
 
       <div class="row">
         <div class="col-lg-2">
-          <div class="ibox">
-            <div class="ibox-title">
-              <h5><i class="fa fa-github"></i> Project data
-                <small>last updated {{snapshot.repository.updated_at  | date:'yyyy-MM-dd'}}.</small>
-              </h5>
+          
+          <div class="row">
+            <div class="col-lg-12">
+              <repository-panel repository="snapshot.repository"/>
             </div>
-            <div class="ibox-content">
-              <div class="row">
-                <div class="col-sm-6"><i class="fa fa-bug" aria-hidden="true"></i>&nbsp;Open&nbsp;Issues</div>
-                <div class="col-sm-6 text-navy">{{snapshot.repository.open_issues_count}}</div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6"><i class="fa fa-code-fork" aria-hidden="true"></i> Forks</div>
-                <div class="col-sm-6 text-navy">{{snapshot.repository.forks_count}}</div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6"><i class="fa fa-eye" aria-hidden="true"></i> Watchers</div>
-                <div class="col-sm-6 text-navy">{{snapshot.repository.watchers_count}}</div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6"><i class="fa fa-star" aria-hidden="true"></i> Stars</div>
-                <div class="col-sm-6 text-navy">{{snapshot.repository.stargazers_count | number}}</div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6"><i class="fa fa-circle-o" aria-hidden="true"></i>Size (kb)</div>
-                <div class="col-sm-6 text-navy">{{snapshot.repository.size | number}}</div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6"><i class="fa fa-clock-o" aria-hidden="true"></i> Updated</div>
-                <div class="col-sm-6 text-navy">{{snapshot.repository.updated_at  | date:'yyyy-MM-dd'}}</div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6"><i class="fa fa-clock-o" aria-hidden="true"></i> Pushed at</div>
-                <div class="col-sm-6 text-navy">{{snapshot.repository.pushed_at | date:'yyyy-MM-dd' }}</div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6"><i class="fa fa-circle-o" aria-hidden="true"></i> Language</div>
-                <div class="col-sm-6 text-navy">{{snapshot.repository.language}}</div>
-              </div>
-              <hr/>
-              <div class="row">
-                <div class="col-sm-6"><i class="fa fa-file-o"></i> Files</div>
-                <div class="col-sm-6 text-navy">{{snapshot.content.file_count}}</div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6"><i class="fa fa-comments-o" aria-hidden="true"></i> Lines of comments</div>
-                <div class="col-sm-6 text-navy">{{snapshot.content.comment_lines | number}}</div>
-                </div>
-              <div class="row">
-                <div class="col-sm-6"><i class="fa fa-circle-o" aria-hidden="true"></i> Blank lines</div>
-                <div class="col-sm-6 text-navy">{{snapshot.content.blank_lines | number}}</div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6"><i class="fa fa-code" aria-hidden="true"></i> Lines of Code</div>
-                <div class="col-sm-6 text-navy">{{snapshot.content.code_lines | number}}</div>
-              </div>
-              <hr/>
-              
-              <div class="row">
-                <div class="col-sm-6"><i class="fa fa-cog"></i> Build Modules</div>
-                <div class="col-sm-6 text-navy">{{snapshot.build.length | number}}</div>
-              </div>
-              
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <content-panel content="snapshot.content"/>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <build-panel build="snapshot.build"/>
             </div>
           </div>
         </div>
@@ -143,46 +96,14 @@
       </div>
 
       <div class="row">
-        <div class="col-lg-12" ng-repeat="c in commits | orderBy : '-timestamp' | limitTo: 5">
-          <div class="ibox">
-            <div class="ibox-title">
-              <small>{{ c.time  | date:'yyyy-MM-dd' }}</small>
-              <small>{{ c.branches }}</small>
-              <small>{{ c.author }}</small>
-            </div>
-            <div class="ibox-content">
-              <small>Affected {{ c.changed_files.length | number }} files</small>
-              <p style="white-space: pre;">{{ c.message }}</p>
-            </div>
-          </div>
+        <div class="col-lg-12">
+          <commits-panel commits="commits"/>
         </div>
       </div>
-      
+
       <div class="row">
         <div ng-repeat="build in snapshot.build | orderBy: 'artifact.name'" class="col-lg-4">
-          <div class="ibox">
-            <div class="ibox-title">
-              <span ng-if="build.artifact.packaging" class="label label-success pull-right ng-binding">{{build.artifact.packaging}}</span>
-              <h5>{{ build.artifact.name }} <small ng-if="build.artifact.inceptionYear">{{ build.artifact.inceptionYear }}</small></h5>
-            </div>
-            <div class="ibox-content">
-              <h5><i class="fa fa-file"></i> <code>{{ build.path }}</code></h5>
-              <div ng-if="build.artifact">
-                <small><code>{{ build.artifact.groupId || '[groupId]'}}:{{ build.artifact.artifactId || '[artifactId]'}}:{{ build.artifact.version || '[version]'}}</code></small>
-              </div>
-              <div ng-if="build.artifact">
-                <h5>{{ build.artifact.name }} <small ng-if="build.artifact.inceptionYear">{{ build.artifact.inceptionYear }}</small></h5>
-                <p ng-if="build.artifact.description"> {{ build.artifact.description || '' }} <a ng-if="build.artifact.url" href="{{build.artifact.url}}">{{build.artifact.url}}</a></p>
-              </div>
-              <div ng-if="build.dependencyTree">
-                <dependency-chart data='build.dependencyTree'></dependency-chart>
-              </div>
-              <div ng-if="!build.dependencyTree">
-                <small>Dependency data gathering is still under development. Maven modules (pom.xml files) is supported.</small>
-              </div>
-
-            </div>
-          </div>
+          <artifact-panel artifact="build.artifact" dependency-tree="build.dependencyTree"></artifact-panel>
         </div>
       </div>
       
