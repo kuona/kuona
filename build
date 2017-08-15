@@ -15,6 +15,8 @@ readonly LEIN_PACKAGE="lein uberjar"
 readonly LEIN_INSTALL="lein install"
 readonly MAVEN_BUILD="mvn clean install"
 
+# Having a namespace call snapshot is possibly the cause of this error
+export LEIN_SNAPSHOTS_IN_RELEASE=
 
 if [ ! -d "target" ]; then
    mkdir target
@@ -41,6 +43,8 @@ cd kuona-api
 ${LEIN_BUILD}
 ${LEIN_PACKAGE}
 cd ..
+
+figlet Collectors
 
 find collectors -iname 'project.clj' -exec echo "»»» Building: " {} \; -execdir ${LEIN_BUILD} \; -exec echo "»»» Installing (local): " {} \; -execdir ${LEIN_PACKAGE} \;
 

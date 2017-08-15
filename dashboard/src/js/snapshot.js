@@ -110,7 +110,8 @@ kuonaSnapshot.directive('commitsPanel', function () {
   return {
     restrict: 'E',
     scope: {
-      commits: '='
+      commits: '=',
+      count: '='
     },
     templateUrl: '/directives/commits.html'
   };

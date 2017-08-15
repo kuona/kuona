@@ -3,12 +3,16 @@
     <h5>Commits</h5>
     <table class="table table-stripped small m-t-md">
       <tbody>
-        <tr ng-repeat="commit in commits | orderBy : '-timestamp' | limitTo: 5">
+        <tr ng-repeat="commit in commits | orderBy : '-timestamp' | limitTo: count">
           <td class="no-borders"><i class="fa fa-github text-navy"></i></td>
           <td class="no-borders">{{ commit.time  | date:'yyyy-MM-dd' }}</td>
           <td class="no-borders">{{ commit.branches }}</td>
           <td class="no-borders">{{ commit.author }}</td>
-          <td class="no-borders">Affected {{ commit.changed_files.length | number }} files</td>
+          <td class="no-borders">Affected {{ commit.changed_files.length | number }} files
+            <ul class="list-unstyled file-list">
+              <li ng-repeat="f in commit.changed_files">{{f[0]}}</li>
+            </ul>
+          </td>
           <td class="no-borders"><p style="white-space: pre;">{{ commit.message }}</p></td>
         </tr>
       </tbody>
