@@ -134,7 +134,7 @@
                     <div class="panel-body">
                       <div class="row">
                         <div ng-repeat="build in snapshot.build | orderBy: 'artifact.name'" class="col-lg-4">
-                          <artifact-panel artifact="build.artifact" dependency-tree="build.dependencyTree"></artifact-panel>
+                          <artifact-panel path="build.path" artifact="build.artifact" dependency-tree="build.dependencyTree"></artifact-panel>
                         </div>
                       </div>
                     </div>

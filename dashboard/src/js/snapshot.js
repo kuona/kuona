@@ -151,6 +151,7 @@ kuonaSnapshot.directive('artifactPanel', function () {
   return {
     restrict: 'E',
     scope: {
+      path: '=',
       artifact: '=',
       dependencyTree: '='
     },

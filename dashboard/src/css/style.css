@@ -11174,15 +11174,25 @@ body.md-skin {
 
 /* line 64, ../../sass/style.sass */
 .node text {
-  stroke: #676a6c;
+  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  stroke: none;
+  color: #676a6c;
 }
 
-/* line 67, ../../sass/style.sass */
+/* line 69, ../../sass/style.sass */
+.node text-anchor {
+  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  stroke: none;
+  color: #676a6c;
+  font-weight: normal;
+}
+
+/* line 75, ../../sass/style.sass */
 .node--internal circle {
   fill: darkred;
 }
 
-/* line 70, ../../sass/style.sass */
+/* line 78, ../../sass/style.sass */
 .link {
   fill: none;
   stroke: blue;
