@@ -1,15 +1,14 @@
-<div class="ibox" ng-transclude>
-  <div class="ibox-title">
+<div class="panel panel-default" ng-if="artifact">
+  <div class="panel-heading">
     <span ng-if="artifact.packaging" class="label label-success pull-right ng-binding">{{artifact.packaging}}</span>
-    <h5>{{ artifact.name }} <small ng-if="artifact.inceptionYear">{{ artifact.inceptionYear }}</small></h5>
+    <h5>Module: {{ artifact.name }} <small ng-if="artifact.inceptionYear">{{ artifact.inceptionYear }}</small></h5>
   </div>
-  <div class="ibox-content">
+  <div class="panel-body">
     <h5><i class="fa fa-file"></i> <code>{{ path }}</code></h5>
     <div ng-if="artifact">
       <small><code>{{ artifact.groupId || '[groupId]'}}:{{ artifact.artifactId || '[artifactId]'}}:{{ artifact.version || '[version]'}}</code></small>
     </div>
     <div ng-if="artifact">
-      <h5>{{ artifact.name }} <small ng-if="artifact.inceptionYear">{{ artifact.inceptionYear }}</small></h5>
       <p ng-if="artifact.description"> {{ artifact.description || '' }} <a ng-if="artifact.url" href="{{artifact.url}}">{{artifact.url}}</a></p>
     </div>
     <div ng-if="dependencyTree">

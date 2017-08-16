@@ -1,10 +1,10 @@
-<div class="ibox">
-  <div class="ibox-title">
+<div class="panel panel-default">
+  <div class="panel-heading">
     <h5><i class="fa fa-github"></i> Project data
       <small>last updated {{ repository.updated_at  | date:'yyyy-MM-dd' }}.</small>
     </h5>
   </div>
-  <div class="ibox-content">
+  <div class="panel-body">
     <div class="row">
       <div class="col-sm-6"><i class="fa fa-bug" aria-hidden="true"></i>&nbsp;Open&nbsp;Issues</div>
       <div class="col-sm-6 text-navy">{{ repository.open_issues_count }}</div>

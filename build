@@ -8,6 +8,14 @@ readonly pgreen="\033[0;32m"
 readonly pgray="\033[0;40m"
 readonly preset="\033[0m"
 
+function banner() {
+    local text=$1
+
+    echo "${pblue}"
+    figlet -f cybermedium "${text}"
+    echo "${preset}"
+}
+
 PWD=`pwd`
 
 readonly LEIN_BUILD="lein midje"
@@ -22,29 +30,27 @@ if [ ! -d "target" ]; then
    mkdir target
 fi
 
-echo "${pblue}Building the dependencies${preset}"
+
+banner "Building collector libs"
 
 find collectors/maven -iname 'pom.xml' -not -path '*/test/*' -execdir ${MAVEN_BUILD} \;
-
-echo "${pblue}Building the collector library dependencies${preset}"
-
 find collectors/lib -iname 'pom.xml' -not -path '*/test/*' -execdir ${MAVEN_BUILD} \;
 
-echo "${pblue}Building the core${preset}"
+banner "Building core"
 
 cd kuona-core
 ${LEIN_BUILD}
 ${LEIN_INSTALL}
 cd ..
 
-echo "${pblue}Building the API${preset}"
+banner "Building the API"
 
 cd kuona-api
 ${LEIN_BUILD}
 ${LEIN_PACKAGE}
 cd ..
 
-figlet Collectors
+banner "Building Collectors"
 
 find collectors -iname 'project.clj' -exec echo "»»» Building: " {} \; -execdir ${LEIN_BUILD} \; -exec echo "»»» Installing (local): " {} \; -execdir ${LEIN_PACKAGE} \;
 
