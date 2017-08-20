@@ -6,6 +6,7 @@
             [compojure.route :as route]
             [kuona-api.environments :refer :all]
             [kuona-core.metric.store :as store]
+            [kuona-core.util :as util]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
             [ring.middleware.json :as middleware]
@@ -149,6 +150,28 @@
   [environment]
   (response (decorate-environment (store/put-document environments environment))))
 
+
+(defn get-value-stream
+  "Returns a single valuestream object identified by the supplied id"
+  [id]
+  (response
+   {
+    :id          (util/uuid)
+    :artifact    {:id "some-unique-identifier" :version "1.0.1"}
+    :lead_time   91237842
+    :commits     []
+    :build       {:timestamp (util/timestamp)
+                  :duration  234234
+                  :builder   "Jenkins"
+                  :build_url "http://jenkins.com/stage/job"
+                  }
+    :deployments [{:timestamp   (util/timestamp)
+                   :environment {:name "PROD"}
+                   :duration    234523}]
+    })
+  )
+
+
 (defroutes app-routes
   (GET "/" [] (service-data))
   (GET "/api/repositories/count" [] (get-repository-count))
@@ -174,6 +197,8 @@
   (POST "/api/environments/:id/version" request (put-environment-version! (get-in request [:params :id]) (get-in request [:body :version])))
   (POST "/api/environments/:id/status" request (put-environment-status! (get-in request [:params :id]) (get-in request [:body :status])))
   (POST "/api/environments" request (put-environment! (get-in request [:body :environment])))
+
+  (GET "/api/valuestreams/:id" [id] (get-value-stream id))
 
   (route/not-found "Not Found"))
 
