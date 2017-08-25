@@ -49,3 +49,7 @@ The [Dashboard](http://dashboard.kuona.io) is in two parts.
 
 Most components are written in [Clojure](https://clojure.org) but there are some small Java libraries that are built using maven.
 Each collector has its own directory in /collectors
+
+## License
+
+kuona-project is licensed under the Apache License 2.0

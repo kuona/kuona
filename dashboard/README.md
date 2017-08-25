@@ -1,5 +1,6 @@
-# dashboard
-Kuona's UI Dashboard project
+# Dashboard
+
+Kuona's UI Dashboard project. The dashboard relies on the kuona-api for data.
 
 ## Environment setup
 ```bash

@@ -3,8 +3,8 @@
   :url "http://github.com/kuona/http-collector"
   :main http-collector.core
   :uberjar {:aot :all}
-  :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :license {:name "Apache License 2.0"
+            :url  "http://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/tools.cli "0.3.5"]
                  [org.clojure/tools.logging "0.3.1"]
@@ -16,5 +16,5 @@
                  [cheshire "5.6.3"]
                  [clojurewerkz/quartzite "2.0.0"]]
   :plugins [[lein-midje "3.0.0"]]
-  :profiles {:dev {:dependencies [[midje "1.9.0-alpha5"]]}
+  :profiles {:dev     {:dependencies [[midje "1.9.0-alpha5"]]}
              :uberjar {:aot :all}})

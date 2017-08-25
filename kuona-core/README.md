@@ -15,9 +15,3 @@ The library contains some utilities `kuona-core.util` and an elastic search wrap
 
 Checkout http://kuona.io for more details on the project.
 
-## License
-
-Copyright © 2017 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.

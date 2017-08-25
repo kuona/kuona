@@ -1,3 +1,5 @@
+# Contributing to the Kuona project
+
 Thank you so much for considering contributing to the development of Kuona. This project can only succeed through community contributions from developers like yourself.
 
 There are may ways to contribute:

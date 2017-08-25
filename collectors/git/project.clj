@@ -2,8 +2,8 @@
   :description "Kuona Git collector"
   :url "https://github.com/kuona/git-collector"
   :main git-collector.core
-  :license {:name "Eclipse Public License"
-            :url  "http://www.eclipse.org/legal/epl-v10.html"}
+  :license {:name "Apache License 2.0"
+            :url  "http://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/tools.logging "0.3.1"]
                  [log4j/log4j "1.2.17" :exclusions [javax.mail/mail

@@ -1,4 +1,4 @@
-# environment-service
+# Kuona API
 
 FIXME
 
@@ -28,7 +28,5 @@ or
 For local development, the [kuona-project](https://github.com/kuona/kuona-project) with a dev-config. You can use the following command to run the service for development
 
   lein run -- -c ../dev-config.json
-
-## License
 
 Copyright © 2016 Kuona.io
