@@ -1,18 +1,15 @@
 (ns snapshot-collector.snapshot
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
-            [clojure.java.io :as io]
             [clj-jgit.porcelain :as git]
-            [clj-jgit.querying :as git-query]
-            [clojure.java.shell :as shell]
             [cheshire.core :refer :all]
             [slingshot.slingshot :refer :all]
+            [clj-http.client :as http]
             [kuona-core.metric.store :as store]
             [kuona-core.git :refer :all]
             [kuona-core.util :refer :all]
             [kuona-core.cloc :as cloc]
-            [kuona-core.builder :as builder]
-            [clj-http.client :as http])
+            [kuona-core.builder :as builder])
   (:gen-class))
 
 (defn get-repositories
@@ -52,11 +49,15 @@
   [api-url id]
   (string/join "/" [api-url "api/snapshots" id]))
 
+(defn build-json-request
+  [content]
+  {:headers {"content-type" "application/json; charset=UTF-8"}
+   :body    (generate-string content)})
+
 (defn put-snapshot!
   [snapshot url]
   (log/info "put-snapshot " url)
-  (let [request {:headers {"content-type" "application/json; charset=UTF-8"}
-                 :body    (generate-string snapshot)}]
+  (let [request (build-json-request snapshot)]
     (parse-json-body (http/put url request))))
 
 (defn snapshot-commits-url
@@ -66,13 +67,12 @@
 (defn put-commit!
   [commit url]
   (log/info "put-commit " url)
-  (let [request {:headers {"content-type" "application/json; charset=UTF-8"}
-                 :body    (generate-string commit)}]
+  (let [request (build-json-request commit)]
     (parse-json-body (http/put url request))))
 
 (defn has-snapshot?
-  [id]
-  (let [url (string/join "/" ["http://dashboard.kuona.io/api/snapshots" id])]
+  [id api-url]
+  (let [url (string/join "/" [api-url "api/snapshots" id])]
     (try+
       (log/info "has-snapshot? " url)
       (http/get url)
@@ -120,9 +120,9 @@
       (log/error (:throwable &throw-context) "Unexpected error"))))
 
 (defn requires-snapshot?
-  [repo]
+  [repo api-url]
   (let [id (repository-id repo)]
-    (not (has-snapshot? id))))
+    (not (has-snapshot? id api-url))))
 
 (defn all-repositories
   ([api-uri] (all-repositories api-uri 1))
@@ -145,7 +145,7 @@
   (let [api-url (:api-url options)
         workspace (:workspace options)
         force-update (:force options)
-        requires-update (fn [r] (if force-update true (requires-snapshot? r)))]
+        requires-update (fn [r] (if force-update true (requires-snapshot? r api-url)))]
     (log/info "Updating " api-url " using " workspace " for repository data")
     (let [repositories (all-repositories api-url)]
       (log/info "Found " (count repositories) " configured repositories for analysis")
