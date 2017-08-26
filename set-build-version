@@ -18,5 +18,5 @@ function banner() {
 
 PWD=`pwd`
 
-banner Build #{BUILD_NUMBER}
+banner "Build ${BUILD_NUMBER}"
 
