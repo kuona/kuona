@@ -29,6 +29,7 @@
   (let [repo (git/load-repo path)]
     (log/debug "Updating local repository for" url)
     (git/git-checkout repo "master")
+    (git/git-reset repo "master" :hard)
     (git/git-pull repo)))
 
 (defn changes-to-map

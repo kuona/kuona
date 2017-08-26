@@ -47,18 +47,13 @@
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
     (cond
       (:help options) {:exit-message (usage summary) :ok? true}
-      errors  {:exit-message (error-msg errors)}
+      errors {:exit-message (error-msg errors)}
       :else options)))
 
 (defn exit [status msg]
   (println msg)
   (System/exit status))
 
-(defn load-config
-  [config-stream]
-  (let [parsed (parse-stream config-stream true)]
-    {:workspace   (:workspace parsed)
-     :collections (into [] (:git parsed))}))
 
 (defn get-repositories
   [url]
@@ -165,19 +160,32 @@
     (requires-snapshot? id)))
 
 (defn all-repositories
-  ([uri] (all-repositories uri 1))
-  ([uri page]
-   (let [result (get-repositories (str "http://dashboard.kuona.io/api/repositories?page=" page))
-         count (-> result :count)
-         items (-> result :items)]
-     (if (= count 0) items (concat items (all-repositories uri (inc page)))))))
+  ([api-uri] (all-repositories api-uri 1))
+  ([api-uri page]
+   (do
+     (log/info "Reading repository page " page)
+     (let [result (get-repositories (str api-uri "/api/repositories?page=" page))
+           count (-> result :count)
+           items (-> result :items)]
+       (if (= count 0) items (concat items (all-repositories api-uri (inc page))))))))
 
 
-(defn snapshot
-  [optons]
-  (let [repositories (all-repositories "http://dashboard.kuona.io/api/repositories")]
-    (log/info "Found " (count repositories) " configured repositories for analysis")
-    (doall (map snapshot-repository (filter (fn [r] true) repositories)))))
+(defn- snapshot-repositories
+  [repositories]
+  (log/info "Creating snapshots for " (count repositories) " repositories")
+  (doall (map snapshot-repository repositories)))
+
+(defn run-snapshot
+  [options]
+  (let [api-url (:api-url options)
+        workspace (:workspace options)
+        force-update (:force options)
+        update-filter (fn [r] (if force-update true (requires-snapshot-filter r)))]
+    (log/info "Updating " api-url " using " workspace " for repository data")
+    (let [repositories (all-repositories api-url)]
+      (log/info "Found " (count repositories) " configured repositories for analysis")
+      (snapshot-repositories (filter update-filter repositories)))
+    ))
 
 (defn -main
   [& args]
@@ -185,6 +193,5 @@
   (let [options (validate-args args)]
     (cond
       (contains? options :exit-message) (exit (if (:ok? options) 0 1) (:exit-message options))
-      :else (snapshot options)
+      :else (run-snapshot options)
       )))
-;    (doall (map snapshot-repository (filter requires-snapshot-filter repositories)))))
