@@ -1,5 +1,5 @@
 (ns snapshot-collector.core
-    (:require [clojure.string :as string]
+  (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.java.io :as io]
@@ -19,6 +19,8 @@
 
 (def cli-options
   [["-c" "--config FILE" "Configuration file JSON format" :default "properties.json"]
+   ["-a" "--api-url URL" "The URL of the back end Kuona API" :default "http://dashboard.kuona.io"]
+
    ["-h" "--help"]])
 
 (defn usage
@@ -32,6 +34,44 @@
         ""
         "Please refer to the manual page for more information."]
        (string/join \newline)))
+
+
+(defn error-msg [errors]
+  (str "The following errors occurred while parsing your command:\n\n"
+       (string/join \newline errors)))
+
+(defn- validate-args
+  "Validate command line arguments. Either return a map indicating the program
+  should exit (with a error message, and optional ok status), or a map
+  indicating the action the program should take and the options provided."
+  [args]
+  (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
+    (cond
+      (:help options) {:exit-message (usage summary) :ok? true}
+      errors                                                ; errors => exit with description of errors
+      {:exit-message (error-msg errors)}
+      ;; custom validation on arguments
+      (and (= 1 (count arguments))
+           (#{"start" "stop" "status"} (first arguments)))
+      {:action (first arguments) :options options}
+      :else                                                 ; failed custom validation => exit with usage summary
+      {:exit-message (usage summary)})))
+
+(defn exit [status msg]
+  (println msg)
+  (System/exit status))
+
+(defn -main [& args]
+  (let [{:keys [action options exit-message ok?]} (validate-args args)]
+    (if exit-message
+      (exit (if ok? 0 1) exit-message)
+      (case action
+        "start" (server/start! options)
+        "stop" (server/stop! options)
+        "status" (server/status! options)))))
+
+
+
 
 (defn load-config
   [config-stream]
@@ -70,7 +110,7 @@
   [project loc-data builder-data]
   {:repository (project-metrics project)
    :content    loc-data
-   :build builder-data})
+   :build      builder-data})
 
 (defn put-snapshot
   [snapshot id]
@@ -92,11 +132,11 @@
   [id]
   (let [url (string/join "/" ["http://dashboard.kuona.io/api/snapshots" id])]
     (try+
-     (log/info "has-snapshot? " url)
-     (http/get url)
-     true
-     (catch Object _
-       false))))
+      (log/info "has-snapshot? " url)
+      (http/get url)
+      true
+      (catch Object _
+        false))))
 
 (defn requires-snapshot?
   [id]
@@ -104,7 +144,7 @@
 
 (defn language-x-count
   [item k]
-;  (log/info "language-x-count " item k)
+  ;  (log/info "language-x-count " item k)
   {:language (:language item) :count (k item)})
 
 (defn loc-metrics
@@ -119,24 +159,24 @@
      :comment_line_details (into [] (map #(language-x-count % :comment-lines) (:languages content)))
      :code_line_details    (into [] (map #(language-x-count % :code-lines) (:languages content)))
      }))
-  
+
 (defn snapshot-repository
   [repo]
   (try+
-   (let [id        (repository-id repo)
-         url       (repository-git-url repo)
-         local-dir (canonical-path (string/join "/" ["/Volumes/data-drive/workspace" id]))
-         name      (-> repo :project :name)]
-     (log/info "Snapshotting " id name "from " url "to " local-dir)
-     (if (directory? local-dir) (git-pull url local-dir) (git-clone url local-dir))
-     (let [loc-data      (cloc/loc-collector (fn [a] a) local-dir "foo")
-           build-data    (builder/collect-builder-metrics local-dir)
-           snapshot-data (create-snapshot (-> repo :project) (loc-metrics loc-data) build-data)]
-       (doall (map #(put-commit! id %) (commit-history (git/load-repo local-dir))))
-       (log/info "snapshot " (put-snapshot snapshot-data id))
-       ))
-   (catch Object _
-     (log/error (:throwable &throw-context) "Unexpected error"))))
+    (let [id (repository-id repo)
+          url (repository-git-url repo)
+          local-dir (canonical-path (string/join "/" ["/Volumes/data-drive/workspace" id]))
+          name (-> repo :project :name)]
+      (log/info "Snapshotting " id name "from " url "to " local-dir)
+      (if (directory? local-dir) (git-pull url local-dir) (git-clone url local-dir))
+      (let [loc-data (cloc/loc-collector (fn [a] a) local-dir "foo")
+            build-data (builder/collect-builder-metrics local-dir)
+            snapshot-data (create-snapshot (-> repo :project) (loc-metrics loc-data) build-data)]
+        (doall (map #(put-commit! id %) (commit-history (git/load-repo local-dir))))
+        (log/info "snapshot " (put-snapshot snapshot-data id))
+        ))
+    (catch Object _
+      (log/error (:throwable &throw-context) "Unexpected error"))))
 
 (defn requires-snapshot-filter
   [repo]
@@ -147,16 +187,16 @@
   ([uri] (all-repositories uri 1))
   ([uri page]
    (let [result (get-repositories (str "http://dashboard.kuona.io/api/repositories?page=" page))
-         count  (-> result :count)
-         items  (-> result :items)]
-    (if (= count 0) items (concat items (all-repositories uri (inc page)))))))
+         count (-> result :count)
+         items (-> result :items)]
+     (if (= count 0) items (concat items (all-repositories uri (inc page)))))))
 
 
 (defn -main
   [& args]
   (log/info "Kuona Snapshot Collector")
-  
-  (let [options      (parse-opts args cli-options)
+
+  (let [options (parse-opts args cli-options)
         repositories (all-repositories "http://dashboard.kuona.io/api/repositories")]
     (log/info "Found " (count repositories) " configured repositories for analysis")
     (doall (map snapshot-repository (filter (fn [r] true) repositories)))))

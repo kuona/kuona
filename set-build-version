@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -e
+set -o errexit
+set -o nounset
+
+readonly pblue="\033[0;34m"
+readonly pgreen="\033[0;32m"
+readonly preset="\033[0m"
+
+function banner() {
+    local text=$1
+
+    echo "${pblue}"
+    figlet -f cybermedium "${text}"
+    echo "${preset}"
+}
+
+PWD=`pwd`
+
+banner Build #{BUILD_NUMBER}
+
