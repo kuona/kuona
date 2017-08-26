@@ -18,10 +18,10 @@
   (:gen-class))
 
 (def cli-options
-  [["-c" "--config FILE" "Configuration file JSON format" :default "properties.json"]
-   ["-a" "--api-url URL" "The URL of the back end Kuona API" :default "http://dashboard.kuona.io"]
-
-   ["-h" "--help"]])
+  [["-a" "--api-url URL" "The URL of the back end Kuona API" :default "http://dashboard.kuona.io"]
+   ["-f" "--force" "Force updates. Ignore collected snapshots and re-create. Use when additional data is collected as part of a snapshot" :default false]
+   ["-w" "--workspace PATH" "workspace folder for git clones and source operations" :default "/Volumes/data-drive/workspace"]
+   ["-h" "--help" "Display this message and exit"]])
 
 (defn usage
   [options-summary]
@@ -31,8 +31,7 @@
         ""
         "Options:"
         options-summary
-        ""
-        "Please refer to the manual page for more information."]
+        ""]
        (string/join \newline)))
 
 
@@ -40,7 +39,7 @@
   (str "The following errors occurred while parsing your command:\n\n"
        (string/join \newline errors)))
 
-(defn- validate-args
+(defn validate-args
   "Validate command line arguments. Either return a map indicating the program
   should exit (with a error message, and optional ok status), or a map
   indicating the action the program should take and the options provided."
@@ -48,30 +47,12 @@
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
     (cond
       (:help options) {:exit-message (usage summary) :ok? true}
-      errors                                                ; errors => exit with description of errors
-      {:exit-message (error-msg errors)}
-      ;; custom validation on arguments
-      (and (= 1 (count arguments))
-           (#{"start" "stop" "status"} (first arguments)))
-      {:action (first arguments) :options options}
-      :else                                                 ; failed custom validation => exit with usage summary
-      {:exit-message (usage summary)})))
+      errors  {:exit-message (error-msg errors)}
+      :else options)))
 
 (defn exit [status msg]
   (println msg)
   (System/exit status))
-
-(defn -main [& args]
-  (let [{:keys [action options exit-message ok?]} (validate-args args)]
-    (if exit-message
-      (exit (if ok? 0 1) exit-message)
-      (case action
-        "start" (server/start! options)
-        "stop" (server/stop! options)
-        "status" (server/status! options)))))
-
-
-
 
 (defn load-config
   [config-stream]
@@ -192,12 +173,18 @@
      (if (= count 0) items (concat items (all-repositories uri (inc page)))))))
 
 
+(defn snapshot
+  [optons]
+  (let [repositories (all-repositories "http://dashboard.kuona.io/api/repositories")]
+    (log/info "Found " (count repositories) " configured repositories for analysis")
+    (doall (map snapshot-repository (filter (fn [r] true) repositories)))))
+
 (defn -main
   [& args]
   (log/info "Kuona Snapshot Collector")
-
-  (let [options (parse-opts args cli-options)
-        repositories (all-repositories "http://dashboard.kuona.io/api/repositories")]
-    (log/info "Found " (count repositories) " configured repositories for analysis")
-    (doall (map snapshot-repository (filter (fn [r] true) repositories)))))
+  (let [options (validate-args args)]
+    (cond
+      (contains? options :exit-message) (exit (if (:ok? options) 0 1) (:exit-message options))
+      :else (snapshot options)
+      )))
 ;    (doall (map snapshot-repository (filter requires-snapshot-filter repositories)))))
