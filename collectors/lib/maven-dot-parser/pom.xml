@@ -7,8 +7,10 @@
   <groupId>kuona</groupId>
   <artifactId>maven-dot-parser</artifactId>
   <version>0.1</version>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
   <build>
-
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
