@@ -18,5 +18,12 @@ function banner() {
 
 PWD=`pwd`
 
-banner "Build ${BUILD_NUMBER}"
+if [ -z "$BUILD_NUMBER" ]
+   then
+         echo "SNAPSHOT BUILD"
+   else
+    build=$BUILD_NUMBER
+    echo "Versioned build ${build}"
+    find . -iname 'project.clj' -exec sed -i '' -e "s/-SNAPSHOT/\.${build}/g" {} \;
+  fi
 
