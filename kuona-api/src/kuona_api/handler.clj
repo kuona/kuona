@@ -150,13 +150,12 @@
   [environment]
   (response (decorate-environment (store/put-document environments environment))))
 
-
-(defn get-value-stream
-  "Returns a single valuestream object identified by the supplied id"
-  [id]
-  (response
-   {
+(defn value-stream
+  []
+  {
     :id          (util/uuid)
+    :name        "unique-name"
+    :timestamp   (util/timestamp)
     :artifact    {:id "some-unique-identifier" :version "1.0.1"}
     :lead_time   91237842
     :commits     []
@@ -169,8 +168,18 @@
                    :environment {:name "PROD"}
                    :duration    234523}]
     })
-  )
 
+(defn get-value-streams
+  "Returns a list of currently defined value streams"
+  []
+  (response {:valuestreams [(value-stream)
+                            (value-stream)
+                            (value-stream)]}))
+
+(defn get-value-stream
+  "Returns a single valuestream object identified by the supplied id"
+  [id]
+  (response (value-stream)))
 
 (defroutes app-routes
   (GET "/" [] (service-data))
@@ -198,6 +207,7 @@
   (POST "/api/environments/:id/status" request (put-environment-status! (get-in request [:params :id]) (get-in request [:body :status])))
   (POST "/api/environments" request (put-environment! (get-in request [:body :environment])))
 
+  (GET "/api/valuestreams" [] (get-value-streams))
   (GET "/api/valuestreams/:id" [id] (get-value-stream id))
 
   (route/not-found "Not Found"))
