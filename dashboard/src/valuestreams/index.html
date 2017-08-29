@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html ng-app="kuona.valuestream">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Page title set in pageTitle directive -->
+    <title>Kuona | Value Stream</title>
+
+    <!-- Font awesome -->
+    <link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <!-- Bootstrap and Fonts -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Main Inspinia CSS files -->
+    <link href="/css/animate.css" rel="stylesheet">
+    <link id="loadBefore" href="/css/style.css" rel="stylesheet">
+    <base href="/valuestream/index.html">
+</head>
+
+<body ng-controller="ValueStreamController as controller" class="top-navigation pace-done">
+  <div class="wrapper">
+    <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
+      <div ng-include="'/views/common/navigation.html'"></div>
+      <div class="row">
+            <div class="col-lg-12">
+              <h1>Value Streams</h1>
+              <p>
+                Status: <strong>Incubating</strong>
+              </p>
+              <small>
+                Measuring lead time for features and stories into production is a key organisational metric.
+              </small>
+            </div>
+          </div>
+      <div class="row wrapper border-bottom page-heading">
+        <div class="col-lg-12">
+          <row ng-repeat="vc in valuestreams">
+            {{ vc.name }}
+            <div class="col-lg-12">
+              <valuestream-summary-panel valuestream="vc"></valuestreamSummaryPanel>
+            </div>
+          </row>
+          
+        </div>
+      </div>      
+      <div ng-include="'/views/common/footer.html'"></div>
+      
+    </div>
+  </div>
+
+  <!-- jQuery and Bootstrap -->
+  <script src="/js/jquery/jquery-2.1.1.min.js"></script>
+  <script src="/js/plugins/jquery-ui/jquery-ui.js"></script>
+  <script src="/js/bootstrap/bootstrap.min.js"></script>
+
+  <!-- MetsiMenu -->
+  <script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+
+  <!-- SlimScroll -->
+  <script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+  <!-- Custom and plugin javascript -->
+  <script src="/js/inspinia.js"></script>
+
+  <!-- Main Angular scripts-->
+  <script src="/js/angular/angular.js"></script>
+  <script src="/js/angular/angular-websocket.js"></script>
+  <script src="/js/plugins/oclazyload/dist/ocLazyLoad.min.js"></script>
+  <script src="/js/ui-router/angular-ui-router.min.js"></script>
+  <script src="/js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
+  <script src="/js/angular/angular-resource.min.js"></script>
+
+  <script src="/js/d3.js"></script>
+  <script src="/js/d3pie.min.js"></script>
+  <script src="/js/plugins/chartjs/Chart.min.js"></script>
+
+  <script src="/js/charts.js"></script>
+  <script src="/js/valuestream.js"></script>
+</body>
+</html>

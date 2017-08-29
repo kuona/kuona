@@ -1,0 +1,83 @@
+<div class="ibox float-e-margins">
+  <div class="ibox-title">
+    <h5><i class="fa fa-clock"></i>{{valuestream.name}}<small class="m-l-sm">value stream lead time <strong>{{ valuestream.lead_time | elapsed }}</strong></small></h5>
+    <div class="ibox-tools">
+      {{ valuestream.timestamp | date:'yyyy-MM-dd HH:MM:ss'}}
+    </div>
+  </div>
+  <div class="ibox-content no-padding">
+    <ul class="list-group">
+      <li class="list-group-item">
+        <div class="progress progress-default active">
+          <div style="width: 30%" class="progress-bar progress-bar-waiting">
+            <span class="sr-only">30% Waiting</span>
+          </div>
+          <div style="width: 5%" class="progress-bar progress-bar-primary">
+            <span class="sr-only">5% Building</span>
+          </div>
+          <div style="width: 60%" class="progress-bar progress-bar-waiting">
+            <span class="sr-only">60% Waiting</span>
+          </div>
+          <div style="width: 5%" class="progress-bar progress-bar-danger">
+            <span class="sr-only">5% Building</span>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <div class="timeline-item">
+      <div class="row">
+        <div class="col-xs-3 date">
+          <i class="fa fa-git"></i>
+          6:00 am
+          <br>
+          <small class="text-navy">2 hour ago</small>
+        </div>
+        <div class="col-xs-7 content no-top-border">
+          <p class="m-b-xs"><strong>Commits in build</strong></p>
+          <commits-panel commits="valuestream.commits" count=5></commits-panel>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="row">
+        <div class="col-xs-3 date">
+          <i class="fa fa-cogs"></i>
+          {{ valuestream.build.timestamp | date:'yyyy-MM-dd HH:mm:ss'}}
+          <br>
+          <small class="text-navy">{{ valuestream.build.timestamp | age }}</small>
+        </div>
+        <div class="col-xs-7 content no-top-border">
+          <p class="m-b-xs"><strong>Build</strong></p>
+          {{ valuestream.build.builder }}
+          {{ valuestream.build.duration | elapsed }}
+        </div>
+      </div>
+    </div>
+
+
+    <div class="timeline-item" ng-repeat="deployment in valuestream.deployments">
+      <div class="row">
+        <div class="col-xs-3 date">
+          <i class="fa fa-cloud"></i>
+          {{ deployment.timestamp | date:'yyyy-MM-dd HH:mm:ss'}}
+          <br>
+          <small class="text-navy">{{ deployment.timestamp | age }}</small>
+        </div>
+        <div class="col-xs-7 content no-top-border">
+          <p class="m-b-xs">Deployment to <strong class="text-navy">{{ deployment.environment.name }}</strong></p>
+          {{ deployment.duration | elapsed }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ibox-footer">
+    <span class="pull-right">
+      <span class="label">Waiting</span>
+      <span class="label label-primary">Build</span>
+      <span class="label label-danger">Deploy</span>
+    </span>
+    This is simple footer example
+  </div>
+</div>
+

@@ -10,8 +10,7 @@
 
 
 (def cli-options
-  [["-c" "--config FILE" "Configuration file JSONformat"
-    :default "properties.json"]
+  [["-c" "--config FILE" "JSON formatted configuration file" :default "properties.json"]
    ["-h" "--help"]])
 
 (defn config-file-stream
@@ -25,11 +24,11 @@
 
 (defn -main
   [& args]
-  (let [options (parse-opts args cli-options)
+  (let [options     (parse-opts args cli-options)
         config-file (:config (:options options))
-        config (config/load-config (config-file-stream config-file))
-        index (store/index :kuona-metrics "http://localhost:9200")
-        mapping (store/mapping :build index)]
+        config      (config/load-config (config-file-stream config-file))
+        index       (store/index :kuona-metrics "http://localhost:9200")
+        mapping     (store/mapping :build index)]
     (log/info "Jenkins Collector - starting")
     (log/info "Using configruation" config-file)
     (if (not (store/has-index? index)) (store/create-index index store/metric-mapping-type))
