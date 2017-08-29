@@ -21,33 +21,28 @@
 </head>
 
 <body ng-controller="ValueStreamController as controller" class="top-navigation pace-done">
-  <div class="wrapper">
-    <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
+  <div class="container-fluid">
+    <div class="row gray-bg {{$state.current.name}}">
       <div ng-include="'/views/common/navigation.html'"></div>
-      <div class="row">
-            <div class="col-lg-12">
-              <h1>Value Streams</h1>
-              <p>
-                Status: <strong>Incubating</strong>
-              </p>
-              <small>
-                Measuring lead time for features and stories into production is a key organisational metric.
-              </small>
-            </div>
-          </div>
-      <div class="row wrapper border-bottom page-heading">
-        <div class="col-lg-12">
-          <row ng-repeat="vc in valuestreams">
-            {{ vc.name }}
+      <div class="col-lg-12">
+        <h1>Value Streams</h1>
+        <p>
+          Status: <strong>Incubating</strong>
+        </p>
+        <p class="small">
+          Measuring lead time for features and stories into production is a key organisational metric.
+        </p>
+      </div>
+      <div class="col-lg-12">
+        <row ng-repeat="vc in valuestreams">
+          {{ vc.name }}
+          <div class="row">
             <div class="col-lg-12">
               <valuestream-summary-panel valuestream="vc"></valuestreamSummaryPanel>
             </div>
-          </row>
-          
-        </div>
-      </div>      
-      <div ng-include="'/views/common/footer.html'"></div>
-      
+          </div>
+        </row>
+      </div>
     </div>
   </div>
 

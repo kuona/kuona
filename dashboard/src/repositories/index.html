@@ -20,14 +20,14 @@
   </head>
 
   <body ng-controller="RepositoriesController as controller" class="top-navigation pace-done">
-    <div class="wrapper">
-      <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
+    <div class="container-fluid">
+      <div class="row gray-bg {{$state.current.name}}">
         <div ng-include="'/views/common/navigation.html'"></div>
-        <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="col-sm-12 animated fadeInRight">
           <div class="row">
-            <div class="col-lg-12">
-                <h1>Source Repositories</h1>
-                <small>
+            <div class="col-sm-12">
+              <h1>Source Repositories</h1>
+              <p class="small">
                   This initial list of source repositories was
                   obtained by querying the GitHub API for started
                   projects. The repository count represents
@@ -42,24 +42,22 @@
                   e.g. pom.xml implies a maven module. Each of these
                   module files is examined to understand the module's
                   dependencies. (currently only maven is supported)
-                </small>
+              </p>
             </div>
           </div>
-
           <div class="row">
-            <div class="col-lg-12">
+            <div class="col-sm-12">
               <div class="tabs-container">
                 <ul class="nav nav-tabs">
                   <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true">Search</a></li>
                   <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">Stats</a></li>
                 </ul>
 
-
                 <div class="tab-content">
                   <div id="tab-1" class="tab-pane active">
                     <div class="panel-body">
                       <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-sm-12">
                           <form class="form">
                             <h1>Search the repository store</h1>
                             <div class="form-group">
@@ -70,7 +68,7 @@
                       </div>
 
                       <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-sm-12">
                           <table class="table">
                             <thead>
                               <tr>
@@ -105,7 +103,7 @@
                   <div id="tab-2" class="tab-pane active">
                     <div class="panel-body">
                       <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-md-6">
                           <div class="ibox float-e-margins">
                             <div class="ibox-title">
                               <span class="label label-success pull-right">{{ currentDate | date:'yyyy-MM-dd' }}</span>
@@ -139,7 +137,7 @@
 
                         </div>
 
-                        <div class="col-lg-6">
+                        <div class="col-md-6">
                           <div class="panel panel-default float-e-margins">
                             <div class="panel-heading">
                               <h5>Build Tools</h5>
@@ -154,39 +152,21 @@
                         </div>
                       </div>
                     </div>
-
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          <div class="row">
-            <div class="col-lg-12">
-              <div class="text-center m-t-lg">
-                <h1>
-                  {{controller.helloText}}
-                </h1>
-                <small>
-                  {{controller.descriptionText}}
-                </small>
-              </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="text-center m-t-lg">
+              <h1>
+                {{controller.helloText}}
+              </h1>
+              <small>
+                {{controller.descriptionText}}
+              </small>
             </div>
           </div>
         </div>
