@@ -10,8 +10,6 @@ kuonaRepositories.directive('kuonaBarChart', function() {
     template: '<canvas class="build-tool-canvas" height="140"></canvas>',
     scope: {
       data: '='
-//      title: '=',
-//      description: '='
     },
     link: function (scope, element, attrs) {
       barChart(d3.select(element[0]).select('.buid-tool-canvas'), scope.title, scope.description, scope.data);
@@ -29,6 +27,14 @@ function RepositoriesController($scope, $http) {
   $scope.repositoriesFound = [];
   $scope.buildTools = []
 
+  $scope.repoSearch = function(term) {
+    $http.get("/api/repositories?search=" + term).then(function(res){
+      $scope.repositoriesFound = res.data;
+    });
+  };
+
+  $scope.repoSearch("");
+  
   $http.get('/api/build/tools').then(function(res) {
     $scope.buildTools = [];
     var data = res.data.buckets;
@@ -52,15 +58,6 @@ function RepositoriesController($scope, $http) {
   $http.get('/api/metrics/code/count').then(function(res) {
     $scope.code_metric_count = res.data.count;
   });
-
-
-  $scope.repoSearch = function(term) {
-    $http.get("/api/repositories?search=" + term).then(function(res){
-      $scope.repositoriesFound = res.data;
-    });
-  };
-
-  $scope.repoSearch("");
 }
 
 kuonaRepositories.controller('RepositoriesController',['$scope', '$http', RepositoriesController]);
