@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html ng-app="kuona.environments">
   <head>
-    
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- Page title set in pageTitle directive -->
     <title page-title>Environment Management</title>
 
@@ -20,192 +20,159 @@
   </head>
 
   <body ng-controller="EnvironmentDashboardController" class="top-navigation pace-done">
-    <div class="wrapper">
-      <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
+    <div class="container-fluid">
+      <div class="row gray-bg {{$state.current.name}}">
         <div ng-include="'/views/common/navigation.html'"></div>
-
-
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="wrapper wrapper-content animated fadeInUp">
-              <div class="row">
-                <div class="col-lg-4"  ng-repeat="environment in environments">
-                  <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                      
-                      <button type="button" class="btn btn-primary btn-xs" ng-click="$status.open('lg')"><i class="fa fa-wrench"></i></button>
-                      
-                      <span class="label pull-right" ng-click="$status.open('lg')"><i class="fa fa-wrench"></i></span>
-                      
-                      <span ng-If="environment.environment.comment" class="label pull-right label-{{environment.environment.comment.colour}}">{{environment.environment.comment.assessment}}</span>
-                      <span ng-if="environment.environment.status == 'UP'" class="label label-primary pull-right">{{ environment.environment.status }}
-                        <i class="fa fa-thumbs-{{ environment.environment.status | lowercase }}"></i>
-                      </span>
-                      
-                      <span ng-if="environment.environment.status == 'DOWN'" class="label label-danger pull-right">{{ environment.environment.status }}
-                        <i class="fa fa-thumbs-{{ environment.environment.status | lowercase }}"></i>
-                      </span>
-                      <h5>{{environment.environment.name}}</h5>
-                    </div>
-                    <div class="ibox-content no-padding">
-                      
-                      <ul class="list-group">
-                        
-                        <li ng-If="environment.environment.comment && (environment.environment.comment.username || environment.environment.comment.message)" class="list-group-item">
-                          <span class="text-info">@{{environment.environment.comment.username}}</span>
-                          &nbsp;{{environment.environment.comment.message}}
-                        </li>
-                        
-                        <li ng-If="environment.environment.comment && environment.environment.comment.timestamp" class="list-group-item">
-                          <small class="block text-muted">
-                            <i class="fa fa-clock-o"></i>&nbsp;{{environment.environment.comment.timestamp | date:'medium' }}</small>
-                        </li>
-                        
-                        <li ng-If="environment.environment.version" class="list-group-item">
-                          <small class="block text-muted">
-                            Version <strong class="text-navy">{{environment.environment.version}}</strong></small>
-                        </li>
-                      </ul>
-                    </div>
+          <div class="col-lg-12 animated fadeInUp">
+            <div class="col-sm-12">
+              <h1>Environments</h1>
+            </div>
+            <div class="row">
+              <div class="col-md-4"  ng-repeat="environment in environments">
+                <div class="ibox float-e-margins">
+                  <div class="ibox-title">
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="$status.open('lg')"><i class="fa fa-wrench"></i></button>
+                    <span class="label pull-right" ng-click="$status.open('lg')"><i class="fa fa-wrench"></i></span>
+                    <span ng-If="environment.environment.comment" class="label pull-right label-{{environment.environment.comment.colour}}">{{environment.environment.comment.assessment}}</span>
+                    <span ng-if="environment.environment.status == 'UP'" class="label label-primary pull-right">{{ environment.environment.status }}
+                      <i class="fa fa-thumbs-{{ environment.environment.status | lowercase }}"></i>
+                    </span>
+                    <span ng-if="environment.environment.status == 'DOWN'" class="label label-danger pull-right">{{ environment.environment.status }}
+                      <i class="fa fa-thumbs-{{ environment.environment.status | lowercase }}"></i>
+                    </span>
+                    <h5>{{environment.environment.name}}</h5>
+                  </div>
+                  <div class="ibox-content no-padding">
+                    <ul class="list-group">
+                      <li ng-If="environment.environment.comment && (environment.environment.comment.username || environment.environment.comment.message)" class="list-group-item">
+                        <span class="text-info">@{{environment.environment.comment.username}}</span>
+                        &nbsp;{{environment.environment.comment.message}}
+                      </li>
+                      <li ng-If="environment.environment.comment && environment.environment.comment.timestamp" class="list-group-item">
+                        <small class="block text-muted">
+                          <i class="fa fa-clock-o"></i>&nbsp;{{environment.environment.comment.timestamp | date:'medium' }}
+                        </small>
+                      </li>
+                      <li ng-If="environment.environment.version" class="list-group-item">
+                        <small class="block text-muted">
+                          Version <strong class="text-navy">{{environment.environment.version}}</strong>
+                        </small>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
-              
-              <div class="ibox">
-                <div class="ibox-title">
-                  <h5>Environments</h5>
-                  <div class="ibox-tools">
-
-                    <div ng-controller="ModalStatusController as $status" class="modal-status">
-                      <script type="text/ng-template" id="modalStatus.html">
-                        <form role="form" class="form" id="StatusForm" class="form-horizontal">
-                          <div class="modal-content">
-                            
-                            <div class="modal-header">
-                              <h3 class="modal-title" id="modal-title">Environment Status</h3>
-                            </div>
-                            
-                            <div class="modal-body" id="modal-body">
-                              
-                              <div class="form-group">
-                                <label for="envname" class="col-md-3 control-label">Username</label>
-                                <div class="col-md-9">
-                                  <div class="input-group m-r-xs">
-	                            <span class="input-group-addon">@</span>
-	                            <input type="text" name="username" id="username" placeholder="Username" class="form-control input-s-sm" ng-model="environment.username" required="true" ng-required="true">
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="ibox">
+                  <div class="ibox-title">
+                    <h5>Environments</h5>
+                    <div class="ibox-tools">
+                      <div ng-controller="ModalStatusController as $status" class="modal-status">
+                        <script type="text/ng-template" id="modalStatus.html">
+                          <form role="form" class="form" id="StatusForm" class="form-horizontal">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h3 class="modal-title" id="modal-title">Environment Status</h3>
+                              </div>
+                              <div class="modal-body" id="modal-body">
+                                <div class="form-group">
+                                  <label for="envname" class="col-md-3 control-label">Username</label>
+                                  <div class="col-md-9">
+                                    <div class="input-group m-r-xs">
+    	                                <span class="input-group-addon">@</span>
+    	                                <input type="text" name="username" id="username" placeholder="Username" class="form-control input-s-sm" ng-model="environment.username" required="true" ng-required="true">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group">
+                                  <label for="envname" class="col-md-3 control-label">Message</label>
+                                  <div class="col-md-9">
+                                    <textarea name="comment" id="comment-area-markdown" data-provide="markdown" data-iconlibrary="fa" class="col-md-9" rows="10" onClick="$('#comment-area-markdown').markdown({autofocus:false,savable:false});"></textarea>
                                   </div>
                                 </div>
                               </div>
-                              
-                              <div class="form-group">
-                                <label for="envname" class="col-md-3 control-label">Message</label>
-                                <div class="col-md-9">
-                                  <textarea name="comment" id="comment-area-markdown" data-provide="markdown" data-iconlibrary="fa" class="col-md-9" rows="10" onClick="$('#comment-area-markdown').markdown({autofocus:false,savable:false});"></textarea>
-                                </div>
+                              <div class="modal-footer">
+        	                      <button class="btn btn-primary" type="submit" ng-click="markOnline(environment);"><i class="fa fa-thumbs-up"></i> Available</button>
+        	                      <button class="btn btn-warning" type="submit"  ng-click="markCaution(environment);"><i class="fa fa-hourglass"></i> May have problems</button>
+        	                      <button class="btn btn-danger" type="submit" ng-click="markOffline(environment);"><i class="fa fa-thumbs-down"></i> Not health</button>
                               </div>
                             </div>
-                            
-                            <div class="modal-footer">
-	                      <button class="btn btn-primary" type="submit" ng-click="markOnline(environment);"><i class="fa fa-thumbs-up"></i> Available</button>
-	                      <button class="btn btn-warning" type="submit"  ng-click="markCaution(environment);"><i class="fa fa-hourglass"></i> May have problems</button>
-	                      <button class="btn btn-danger" type="submit" ng-click="markOffline(environment);"><i class="fa fa-thumbs-down"></i> Not health</button>
-                            </div>
-                            
+                          </form>
+                        </script>
+                        <script type="text/ng-template" id="stackedModal.html">
+                          <div class="modal-header">
+                            <h3 class="modal-title" id="modal-title-{{name}}">The {{name}} modal!</h3>
                           </div>
-                          
-                        </form>
-
-                      </script>
-                      <script type="text/ng-template" id="stackedModal.html">
-                        <div class="modal-header">
-                          <h3 class="modal-title" id="modal-title-{{name}}">The {{name}} modal!</h3>
+                          <div class="modal-body" id="modal-body-{{name}}">
+                            Having multiple modals open at once is probably bad UX but it's technically possible.
+                          </div>
+                        </script>
+                        <button type="button" class="btn btn-primary btn-xs" ng-click="$status.open('lg')">Status</button>
+                        <div class="modal-parent">
                         </div>
-                        <div class="modal-body" id="modal-body-{{name}}">
-                          Having multiple modals open at once is probably bad UX but it's technically possible.
-                        </div>
-                      </script>
-                      
-                      <button type="button" class="btn btn-primary btn-xs" ng-click="$status.open('lg')">Status</button>
-
-                      <div class="modal-parent">
                       </div>
-                      
-                    </div>
 
-
-                    <div ng-controller="ModalEnvironmentController as $ctrl" class="modal-demo">
-                      <script type="text/ng-template" id="myModalContent.html">
-                        <form role="form" class="form" id="AddEnvironmentForm" class="form-horizontal">
-                          <div class="modal-content">
-
-                            <div class="modal-header">
-                              <h3 class="modal-title" id="modal-title">Add Environment</h3>
-                            </div>
-                            
-                            <div class="modal-body" id="modal-body">
-
-                              <div class="form-group">
-                                <label for="envname" class="col-lg-2 control-label">Environment Name</label>
-                                <div class="col-lg-10">
-		                  <input type="text" name="envname" id="envname" placeholder="Environment Name" class="form-control" ng-model="$ctrl.environment.name">
-                                  <span class="help-block m-b-none">Kuona uses this as the primary key so alpha numerics and simple punctuation only please.</span>
-                                </div>
+                      <div ng-controller="ModalEnvironmentController as $ctrl" class="modal-demo">
+                        <script type="text/ng-template" id="myModalContent.html">
+                          <form role="form" class="form" id="AddEnvironmentForm" class="form-horizontal">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h3 class="modal-title" id="modal-title">Add Environment</h3>
                               </div>
-                              
-
-                              <div class="form-group">
-                                <label for="status_url" class="col-lg-2 control-label">Status URL</label>
-                                
-                                <div class="col-lg-10">
-                                  <div class="input-group m-b">
-                                    <span class="input-group-addon">HTTP</span>
-                                    <input type="url" name="status_url" ng-model="$ctrl.environment.status_url" placeholder="http://test-service.kuona.io/status" class="form-control">
+                              <div class="modal-body" id="modal-body">
+                                <div class="form-group">
+                                  <label for="envname" class="col-lg-2 control-label">Environment Name</label>
+                                  <div class="col-lg-10">
+    		                            <input type="text" name="envname" id="envname" placeholder="Environment Name" class="form-control" ng-model="$ctrl.environment.name">
+                                    <span class="help-block m-b-none">Kuona uses this as the primary key so alpha numerics and simple punctuation only please.</span>
                                   </div>
-                                  <span class="help-block m-b-none">Kuona uses this URL to understand the health of the services within the environment.</span>
                                 </div>
-                              </div>
-                              
-                              <div class="form-group">
-                                <label for="info_url" class="col-lg-2 control-label">Info URL</label>
-                                <div class="col-lg-10">
-                                  <div class="input-group m-b">
-                                    <span class="input-group-addon">HTTP</span>
-                                    <input type="url" name="info_url" ng-model="$ctrl.environment.info_url" placeholder="http://test-service.kuona.io/info" class="form-control">
+                                <div class="form-group">
+                                  <label for="status_url" class="col-lg-2 control-label">Status URL</label>
+                                  <div class="col-lg-10">
+                                    <div class="input-group m-b">
+                                      <span class="input-group-addon">HTTP</span>
+                                      <input type="url" name="status_url" ng-model="$ctrl.environment.status_url" placeholder="http://test-service.kuona.io/status" class="form-control">
+                                    </div>
+                                    <span class="help-block m-b-none">Kuona uses this URL to understand the health of the services within the environment.</span>
                                   </div>
-                                  <span class="help-block m-b-none">Kuona uses this URL to understand more about the environment like version, services etc.</span>
                                 </div>
-                              </div>
-
-
-                              <div class="form-group">
-                                <label for="envname" class="col-lg-2 control-label">Version</label>
-                                <div class="col-lg-10">
-		                  <input type="text" name="version" id="version" placeholder="0.0.1" class="form-control" ng-model="$ctrl.environment.version">
-                                  <span class="help-block m-b-none">Version number to be displayed for the environment. If a status URL is provided then the version will be updated if found from a /info endpoint</span>
+                                <div class="form-group">
+                                  <label for="info_url" class="col-lg-2 control-label">Info URL</label>
+                                  <div class="col-lg-10">
+                                    <div class="input-group m-b">
+                                      <span class="input-group-addon">HTTP</span>
+                                      <input type="url" name="info_url" ng-model="$ctrl.environment.info_url" placeholder="http://test-service.kuona.io/info" class="form-control">
+                                    </div>
+                                    <span class="help-block m-b-none">Kuona uses this URL to understand more about the environment like version, services etc.</span>
+                                  </div>
                                 </div>
-                              </div>
-                              
-                              
-                              <div class="form-group">
-                                <label for="status" class="col-lg-2">Status</label>
-                                <div class="col-lg-10">
-                                  <select class="form-control m-b" name="status" ng-model="$ctrl.environment.status">
-                                    <option>UP</option>
-                                    <option>DOWN</option>
-                                  </select>
+                                <div class="form-group">
+                                  <label for="envname" class="col-lg-2 control-label">Version</label>
+                                  <div class="col-lg-10">
+    		                            <input type="text" name="version" id="version" placeholder="0.0.1" class="form-control" ng-model="$ctrl.environment.version">
+                                    <span class="help-block m-b-none">Version number to be displayed for the environment. If a status URL is provided then the version will be updated if found from a /info endpoint</span>
+                                  </div>
+                                </div>
+                                <div class="form-group">
+                                  <label for="status" class="col-lg-2">Status</label>
+                                  <div class="col-lg-10">
+                                    <select class="form-control m-b" name="status" ng-model="$ctrl.environment.status">
+                                      <option>UP</option>
+                                      <option>DOWN</option>
+                                    </select>
                                   <span class="help-block m-b-none">Environment status: Optional. Status will be read from status and URL</span>
                                 </div>
-		              </div>
+    		                      </div>
                             </div>
-                            
                             <div class="modal-footer">
                               <button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">OK</button>
                               <button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">Cancel</button>
                             </div>
-                            
                           </div>
-		        </form>
-                        
+    		                </form>
                       </script>
                       <script type="text/ng-template" id="stackedModal.html">
                         <div class="modal-header">
@@ -215,33 +182,27 @@
                           Having multiple modals open at once is probably bad UX but it's technically possible.
                         </div>
                       </script>
-                      
-                      <button type="button" class="btn btn-primary btn-xs" ng-click="$ctrl.open('lg')">Add Envirionment</button>
 
+                      <button type="button" class="btn btn-primary btn-xs" ng-click="$ctrl.open('lg')">Add Envirionment</button>
                       <div class="modal-parent">
                       </div>
                     </div>
                   </div>
                 </div>
-                
                 <div class="ibox-content">
                   <div class="project-list">
-	            
                     <table class="table table-hover">
                       <tbody>
                         <tr ng-repeat="environment in environments">
-		          
                           <td class="project-status">
                             <span class="label label-primary">{{ environment.environment.status }}</span>
                             <span ng-If="environment.environment.version">
                               Version <strong class="text-navy">{{environment.environment.version}}</strong>
                             </span>
                           </td>
-		          
                           <td class="project-title">
                             <h5 class="text-navy">{{environment.environment.name}}</h5>
                           </td>
-		          
                           <td>
                             <div ng-If="environment.environment.comment">
                               <span class="label label-{{environment.environment.comment.colour}}">{{environment.environment.comment.assessment}}</span>
@@ -250,30 +211,27 @@
                               &nbsp;{{environment.environment.comment.timestamp | date}}
                             </div>
                           </td>
-		          
                           <td class="project-actions">
-		            
-		            <form role="form" class="form-inline" id={{environment.environment.name}}Form>
-		              <div class="form-group">
-			        <div class="input-group m-r-xs">
-			          <span class="input-group-addon">@</span>
-			          <input type="text" name="username" id="username" placeholder="Username" class="form-control input-s-sm" ng-model="environment.username" required="true" ng-required="true">
-			        </div>
-			        <div class="input-group m-r-xs">
-			          <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-			          <input type="text" id="message" placeholder="Message" class="form-control" ng-model="environment.message">
-			        </div>
-                                
-			        <div class="input-group">
-			          <button class="btn btn-xs btn-primary pull-right m-t-n-xs" type="submit" ng-click="markOnline(environment);"><i class="fa fa-thumbs-up"></i></button>
-			          <button class="btn btn-xs btn-warning pull-right m-t-n-xs" type="submit"  ng-click="markCaution(environment);"><i class="fa fa-hourglass"></i></button>
-			          <button class="btn btn-xs btn-danger pull-right m-t-n-xs" type="submit" ng-click="markOffline(environment);"><i class="fa fa-thumbs-down"></i></button>
+    		                    <form role="form" class="form-inline" id={{environment.environment.name}}Form>
+    		                      <div class="form-group">
+                  			        <div class="input-group m-r-xs">
+                  			          <span class="input-group-addon">@</span>
+                  			          <input type="text" name="username" id="username" placeholder="Username" class="form-control input-s-sm" ng-model="environment.username" required="true" ng-required="true">
+                  			        </div>
+                  			        <div class="input-group m-r-xs">
+                  			          <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                  			          <input type="text" id="message" placeholder="Message" class="form-control" ng-model="environment.message">
+                  			        </div>
+                  			        <div class="input-group">
+                  			          <button class="btn btn-xs btn-primary pull-right m-t-n-xs" type="submit" ng-click="markOnline(environment);"><i class="fa fa-thumbs-up"></i></button>
+                  			          <button class="btn btn-xs btn-warning pull-right m-t-n-xs" type="submit"  ng-click="markCaution(environment);"><i class="fa fa-hourglass"></i></button>
+                  			          <button class="btn btn-xs btn-danger pull-right m-t-n-xs" type="submit" ng-click="markOffline(environment);"><i class="fa fa-thumbs-down"></i></button>
                                 </div>
-		              </div>
-		            </form>
-		          </td>
+    		                      </div>
+    		                    </form>
+    		                  </td>
                         </tr>
-	              </tbody>
+    	                </tbody>
                     </table>
                   </div>
                 </div>
@@ -281,24 +239,23 @@
             </div>
           </div>
         </div>
-        
       </div>
     </div>
-    
+
     <!-- jQuery and Bootstrap -->
     <script src="/js/jquery/jquery-2.1.1.min.js"></script>
     <script src="/js/plugins/jquery-ui/jquery-ui.js"></script>
     <script src="/js/bootstrap/bootstrap.min.js"></script>
-    
+
     <!-- MetsiMenu -->
     <script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    
+
     <!-- SlimScroll -->
     <script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-    
+
     <!-- Custom and plugin javascript -->
     <script src="/js/inspinia.js"></script>
-    
+
     <!-- Main Angular scripts-->
     <script src="/js/angular/angular.js"></script>
     <script src="/js/angular/angular-websocket.js"></script>
@@ -308,7 +265,7 @@
     <script src="/js/angular/angular-resource.min.js"></script>
     <script src="/js/plugins/bootstrap-markdown/bootstrap-markdown.js"></script>
     <script src="/js/plugins/bootstrap-markdown/markdown.js"></script>
-    
+
     <!-- Anglar App Script -->
     <script src="/js/environments.js"></script>
   </body>
