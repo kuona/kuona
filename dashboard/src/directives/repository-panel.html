@@ -1,7 +1,8 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h5><i class="fa fa-github"></i> Project data
-      <small>last updated {{ repository.updated_at  | date:'yyyy-MM-dd' }}.</small>
+    <h5>
+      <i class="fa fa-github"></i> Project data
+      <small class="pull-right">Last updated <span class="label label-primary">{{ repository.updated_at  | date:'yyyy-MM-dd' }}</span></small>
     </h5>
   </div>
   <div class="panel-body">
@@ -22,7 +23,7 @@
       <div class="col-sm-6 text-navy">{{ repository.stargazers_count | number }}</div>
     </div>
     <div class="row">
-      <div class="col-sm-6"><i class="fa fa-circle-o" aria-hidden="true"></i>Size (kb)</div>
+      <div class="col-sm-6"><i class="fa fa-circle-o" aria-hidden="true"></i> Size (kb)</div>
       <div class="col-sm-6 text-navy">{{ repository.size | number }}</div>
     </div>
     <div class="row">
