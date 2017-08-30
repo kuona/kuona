@@ -25,103 +25,86 @@
     <div class="row gray-bg {{$state.current.name}}">
       <div ng-include="'/views/common/navigation.html'"></div>
         <div class="col-sm-12 animated fadeIn">
-          <div class="row ibox">
-            <div class="col-sm-12 ibox-title owner">
-              <table>
-                <tr>
-                  <td>
-                    <img alt="image" class="img-circle" ng-src="{{ avatar_url }}">
-                  </td>
-                  <td>
-                    <h2>{{snapshot.repository.name}} Snapshot</h2>
-                    <p class="small text-muted">{{snapshot.repository.description}}</p>
-                    <a href="{{repository.project.html_url}}"> {{repository.project.html_url}} <i class="fa fa-github"></i></a>
-                  </td>
-                </tr>
-              </table>
+          <div class="row owner">
+            <div class="col-sm-6">
+              <h1><img alt="image" class="img-circle" ng-src="{{ avatar_url }}">{{snapshot.repository.name}} Snapshot</h1>
             </div>
-            <div class="col-sm-12 ibox-content">
-              <div class="row">
-                <div class="col-lg-12 owner"></div>
-                <div class="col-lg-12">
-                  <div class="tabs-container">
-                    <ul class="nav nav-tabs">
-                      <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true">Repository Info</a></li>
-                      <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">Recent History</a></li>
-                      <li class=""><a data-toggle="tab" href="#tab-3" aria-expanded="false">Modules</a></li>
-                    </ul>
-                    <div class="tab-content">
-                      <div id="tab-1" class="tab-pane active">
-                        <div class="panel-body">
-                          <div class="row">
-                            <div class="col-lg-2">
-                              <div class="row">
-                                <div class="col-lg-12">
-                                  <repository-panel repository="snapshot.repository"/>
-                                </div>
-                              </div>
-
-                              <div class="row">
-                                <div class="col-lg-12">
-                                  <content-panel content="snapshot.content"/>
-                                </div>
-                              </div>
-
-                              <div class="row">
-                                <div class="col-lg-12">
-                                  <build-panel build="snapshot.build"/>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="col-lg-5">
-                              <div class="panel panel-primary">
-                                <div class="panel-heading">
-                                  <h5><i class="fa fa-file"></i>&nbsp;File Counts</h5>
-                                </div>
-                                <div class="panel-content">
-                                  <canvas id="filesBarCanvas"></canvas>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="col-lg-5">
-                              <div class="panel panel-info">
-                                <div class="panel-heading">
-                                  <h5><i class="fa fa-file"></i> Lines of code</h5>
-                                </div>
-                                <div class="panel-content">
-                                  <canvas id="codeBarCanvas"></canvas>
-                                </div>
-                              </div>
-                            </div>
-
+            <div class="col-sm-6 description">
+              <p class="small text-muted">{{snapshot.repository.description}}<br>
+              <a href="{{repository.project.html_url}}">{{repository.project.html_url}} <i class="fa fa-github"></i></a>
+              </p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="tabs-container">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true">Repository Info</a></li>
+                  <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">Recent History</a></li>
+                  <li class=""><a data-toggle="tab" href="#tab-3" aria-expanded="false">Modules</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div id="tab-1" class="tab-pane active">
+                    <div class="panel-body">
+                      <div class="row">
+                        <div class="col-lg-4">
+                          <div>
+                              <repository-panel repository="snapshot.repository"/>
+                          </div>
+                          <div>
+                              <content-panel content="snapshot.content"/>
+                          </div>
+                          <div>
+                              <build-panel build="snapshot.build"/>
                           </div>
                         </div>
-                      </div>
 
-                      <div id="tab-2" class="tab-pane">
-                        <div class="panel-body">
-                          <div class="row">
-                            <div class="col-lg-12">
-                              <commits-panel commits="commits" count='7'/>
+                        <div class="col-lg-4">
+                          <div class="panel panel-primary">
+                            <div class="panel-heading">
+                              <h5><i class="fa fa-file"></i>&nbsp;File Counts</h5>
+                            </div>
+                            <div class="panel-content">
+                              <canvas id="filesBarCanvas"></canvas>
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div id="tab-3" class="tab-pane">
-                        <div class="panel-body">
-                          <div class="row">
-                            <div ng-repeat="build in snapshot.build | orderBy: 'artifact.name'" class="col-lg-4">
-                              <artifact-panel path="build.path" artifact="build.artifact" dependency-tree="build.dependencyTree"></artifact-panel>
+                        <div class="col-lg-4">
+                          <div class="panel panel-info">
+                            <div class="panel-heading">
+                              <h5><i class="fa fa-file"></i> Lines of code</h5>
+                            </div>
+                            <div class="panel-content">
+                              <canvas id="codeBarCanvas"></canvas>
                             </div>
                           </div>
                         </div>
-                      </div>
 
+                      </div>
                     </div>
                   </div>
+
+                  <div id="tab-2" class="tab-pane">
+                    <div class="panel-body">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <commits-panel commits="commits" count='7'/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="tab-3" class="tab-pane">
+                    <div class="panel-body">
+                      <div class="row">
+                        <div ng-repeat="build in snapshot.build | orderBy: 'artifact.name'" class="col-lg-4">
+                          <artifact-panel path="build.path" artifact="build.artifact" dependency-tree="build.dependencyTree"></artifact-panel>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </div>
