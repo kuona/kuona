@@ -18,4 +18,3 @@ function pageTitle($rootScope, $timeout) {
   }
 }
 
-kuona.directive('pageTitle', pageTitle);

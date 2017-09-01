@@ -5,18 +5,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Page title set in pageTitle directive -->
     <title>Kuona | IT analytics dashboard</title>
 
-    <!-- Font awesome -->
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-
-    <!-- Bootstrap and Fonts -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Main Inspinia CSS files -->
     <link href="css/animate.css" rel="stylesheet">
-
     <link id="loadBefore" href="css/style.css" rel="stylesheet">
     <link rel="apple-touch-icon-precomposed" sizes="57x57" href="favicon-apple-touch-114.png">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="favicon-apple-touch-114.png">
@@ -27,11 +21,9 @@
     <link rel="icon" href="favicon.png" type="image/x-icon">
   </head>
 
-  <!-- ControllerAs syntax -->
-  <!-- Main controller with serveral data used in Inspinia theme on diferent view -->
   <body ng-controller="MainController as main" class="top-navigation pace-done">
     <div class="container-fluid">
-      <div class="row">
+      <div class="row gray-bg">
         <div ng-include="'/views/common/navigation.html'"></div>
         <div class="col-sm-12 animated fadeInRight">
           <div class="row">
@@ -39,6 +31,60 @@
               <div class="text-center m-t-lg">
                 <h1>Welcome to Kuona</h1>
                 <small>Use the navigation to look around :)</small>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="ibox float-e-margins">
+                      <div class="ibox-title">
+                        <span class="label label-success pull-right">{{ currentDate | date:'yyyy-MM-dd' }}</span>
+                        <h5>Repositories</h5>
+                      </div>
+                      <div class="ibox-content">
+                        <h1 class="no-margins">{{repository_count}}</h1>
+                        <small>Registered repositories</small>
+                      </div>
+                    </div>
+
+                    <div class="ibox float-e-margins">
+                      <div class="ibox-title">
+                        <h5>Version Control Revision entries</h5>
+                      </div>
+                      <div class="ibox-content">
+                        <h1 class="no-margins">{{vcs_count | number}}</h1>
+                        <small>Revision history records</small>
+                      </div>
+                    </div>
+
+                    <div class="ibox float-e-margins">
+                      <div class="ibox-title">
+                        <h5>Code metrics</h5>
+                      </div>
+                      <div class="ibox-content">
+                        <h1 class="no-margins">{{code_metric_count | number }}</h1>
+                        <small>Number of collected code metrics</small>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="panel panel-default float-e-margins">
+                      <div class="panel-heading">
+                        <h5>Build Tools</h5>
+                      </div>
+                      <div class="panel-content">
+                        <div class="text-center">
+                          <canvas id="buildToolCanvas"></canvas>
+                        </div>
+                        <small>Data obtained by scanning the files in the latest version of each repository an matching file names to build tools.</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -75,11 +121,12 @@
     <script src="js/plugins/bootstrap-markdown/bootstrap-markdown.js"></script>
     <script src="js/plugins/bootstrap-markdown/markdown.js"></script>
 
-    <!-- Anglar App Script -->
-    <script src="js/app.js"></script>
-    <script src="js/config.js"></script>
-    <script src="js/directives.js"></script>
-    <script src="js/controllers.js"></script>
+    <script src="/js/d3.js"></script>
+    <script src="/js/d3pie.min.js"></script>
+    <script src="/js/plugins/chartjs/Chart.min.js"></script>
 
+    <script src="/js/charts.js"></script>
+
+    <script src="js/landing.js"></script>
   </body>
 </html>
