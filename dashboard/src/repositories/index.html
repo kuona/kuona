@@ -47,111 +47,47 @@
           </div>
           <div class="row">
             <div class="col-sm-12">
-              <div class="tabs-container">
-                <ul class="nav nav-tabs">
-                  <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true">Search</a></li>
-                  <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">Stats</a></li>
-                </ul>
-
-                <div class="tab-content">
-                  <div id="tab-1" class="tab-pane active">
-                    <div class="panel-body">
-                      <div class="row">
-                        <div class="col-sm-12">
-                          <form class="form">
-                            <h1>Search the repository store</h1>
-                            <div class="form-group">
-                              <input placeholder="search text" class="form-control" ng-model="repoterm" ng-change="repoSearch(repoterm)">
-                            </div>
-                          </form>
-                        </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <form class="form">
+                      <h1>Search the repository store</h1>
+                      <div class="form-group">
+                        <input placeholder="search text" class="form-control" ng-model="repoterm" ng-change="repoSearch(repoterm)">
                       </div>
-
-                      <div class="row">
-                        <div class="col-sm-12">
-                          <table class="table">
-                            <thead>
-                              <tr>
-                                <th>Owner</th>
-                                <th>Created</th>
-                                <th>Project</th>
-                                <th align="right">Stats</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr ng-repeat="i in repositoriesFound.items" class="search-result">
-                                <td class="owner">
-                                  <img alt="image" class="img-circle" ng-src="{{i.project.owner.avatar_url}}">
-                                </td>
-                                <td class="created-at">{{i.project.created_at  | date:'yyyy-MM-dd'}}</td>
-                                <td>
-                                  <h3>{{i.project.name}}</h3><a href="/snapshot?id={{i.id}}"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;Snapshot</a>&nbsp;&vert;&nbsp;<a href="{{i.project.html_url}}"><i class="fa fa-github" aria-hidden="true"></i>&nbsp;Github</a>
-                                  <p class="text-muted">{{i.project.description}}</p>
-                                </td>
-                                <td align="right" class="stats">{{i.project.watchers | number}}&nbsp;watchers<br/>
-                                  {{i.project.open_issues_count | number}} open issues<br/>
-                                  {{i.project.forks | number}} forks<br/>
-                                  {{i.project.size | number}} kb
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
+                    </form>
                   </div>
-                  <div id="tab-2" class="tab-pane">
-                    <div class="panel-body">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="ibox float-e-margins">
-                            <div class="ibox-title">
-                              <span class="label label-success pull-right">{{ currentDate | date:'yyyy-MM-dd' }}</span>
-                              <h5>Repositories</h5>
-                            </div>
-                            <div class="ibox-content">
-                              <h1 class="no-margins">{{repository_count}}</h1>
-                              <small>Registered repositories</small>
-                            </div>
-                          </div>
+                </div>
 
-                          <div class="ibox float-e-margins">
-                            <div class="ibox-title">
-                              <h5>Version Control Revision entries</h5>
-                            </div>
-                            <div class="ibox-content">
-                              <h1 class="no-margins">{{vcs_count | number}}</h1>
-                              <small>Revision history records</small>
-                            </div>
-                          </div>
-
-                          <div class="ibox float-e-margins">
-                            <div class="ibox-title">
-                              <h5>Code metrics</h5>
-                            </div>
-                            <div class="ibox-content">
-                              <h1 class="no-margins">{{code_metric_count | number }}</h1>
-                              <small>Number of collected code metrics</small>
-                            </div>
-                          </div>
-
-                        </div>
-
-                        <div class="col-md-6">
-                          <div class="panel panel-default float-e-margins">
-                            <div class="panel-heading">
-                              <h5>Build Tools</h5>
-                            </div>
-                            <div class="panel-content">
-                              <div class="text-center">
-                                <canvas id="buildToolCanvas"></canvas>
-                              </div>
-                              <small>Data obtained by scanning the files in the latest version of each repository an matching file names to build tools.</small>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th>Owner</th>
+                        <th>Created</th>
+                        <th>Project</th>
+                        <th align="right">Stats</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr ng-repeat="i in repositoriesFound.items" class="search-result">
+                        <td class="owner">
+                          <img alt="image" class="img-circle" ng-src="{{i.project.owner.avatar_url}}">
+                        </td>
+                        <td class="created-at">{{i.project.created_at  | date:'yyyy-MM-dd'}}</td>
+                        <td>
+                          <h3>{{i.project.name}}</h3><a href="/snapshot?id={{i.id}}"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;Snapshot</a>&nbsp;&vert;&nbsp;<a href="{{i.project.html_url}}"><i class="fa fa-github" aria-hidden="true"></i>&nbsp;Github</a>
+                          <p class="text-muted">{{i.project.description}}</p>
+                        </td>
+                        <td align="right" class="stats">{{i.project.watchers | number}}&nbsp;watchers<br/>
+                          {{i.project.open_issues_count | number}} open issues<br/>
+                          {{i.project.forks | number}} forks<br/>
+                          {{i.project.size | number}} kb
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
