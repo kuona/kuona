@@ -1,6 +1,7 @@
 (ns kuona-api.handler
   (:require [cheshire.core :refer :all]
             [clojure.tools.logging :as log]
+            [clj-http.client :as http]
             [compojure.core :refer :all]
             [compojure.handler :as handler]
             [compojure.route :as route]
@@ -196,6 +197,12 @@
   [id]
   (response (value-stream)))
 
+(defn get-api-info
+  []
+  (let [es (util/parse-json-body (http/get "http://localhost:9200"))]
+    (response {:kuona_api      {:version (System/getProperty "kuona-api.version")}
+               :elastic_search es})))
+
 (defroutes app-routes
   (GET "/" [] (service-data))
   (GET "/api/repositories/count" [] (get-repository-count))
@@ -213,7 +220,7 @@
 
   (GET "/api/metrics/:mapping" [mapping search page] (get-metrics mapping search page))
   (GET "/api/metrics/:mapping/count" [mapping] (get-metrics-count mapping))
-  
+
   (GET "/api/environments" [] (get-environments))
   (GET "/api/environments/:id" [id] (get-environment-by-id id))
   (GET "/api/environments/:id/comments" request (get-environment-comments (get-in request [:params :id])))
@@ -224,6 +231,7 @@
 
   (GET "/api/valuestreams" [] (get-value-streams))
   (GET "/api/valuestreams/:id" [id] (get-value-stream id))
+  (GET "/api/info" [] (get-api-info))
 
   (route/not-found "Not Found"))
 
