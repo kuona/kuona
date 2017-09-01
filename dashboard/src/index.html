@@ -30,9 +30,38 @@
             <div class="col-sm-12">
               <div class="text-center m-t-lg">
                 <h1>Welcome to Kuona</h1>
-                <small>Use the navigation to look around :)</small>
               </div>
             </div>
+
+
+            <div class="col-md-12">
+              <div class="widget  p-lg text-center">
+                <ul class="list-unstyled m-t-md">
+                  <li>
+                    <label>Kuona API version:</label>
+                    {{ info.kuona_api.version }}
+                  </li>
+                  <li>
+                    <label>Clojure version:</label>
+                    {{ info.clojure.version }}
+                  </li>
+                  <li>
+                    <label>Elasticsearch:</label>
+                    {{ info.elastic_search.name }}
+                    <label>version</label>
+                    {{ info.elastic_search.version.number }}
+                    (lucene {{ info.elastic_search.version.lucene_version }})
+                    <label>built</label>
+                    {{ info.elastic_search.version.build_timestamp | date:'yyyy-MM-dd' }}
+                  </li>
+                  <li>
+                    <label>Cluster UUID:</label>
+                    {{ info.elastic_search.cluster_uuid }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+
 
             <div class="col-lg-12">
               <div class="panel-body">

@@ -14,8 +14,8 @@ function MainController($scope, $http) {
   $scope.currentDate = new Date();
   $scope.repository_count = "[loading]";
   $scope.vcs_count = "[loading]";
-  $scope.repositoriesFound = [];
   $scope.buildTools = []
+  $scope.info = {}
 
   $http.get('/api/build/tools').then(function(res) {
     $scope.buildTools = [];
@@ -40,7 +40,12 @@ function MainController($scope, $http) {
   $http.get('/api/metrics/code/count').then(function(res) {
     $scope.code_metric_count = res.data.count;
   });
-};
+
+  $http.get('/api/info').then(function(res) {
+    $scope.info = res.data;
+  });
+
+  };
 
 kuona.controller('MainController',['$scope', '$http', MainController]);
 
