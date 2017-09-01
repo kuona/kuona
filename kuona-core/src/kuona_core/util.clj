@@ -3,6 +3,7 @@
             [clojure.java.shell :as shell]
             [clojure.tools.logging :as log]
             [cheshire.core :refer :all])
+  (:import java.util.Properties)
   (:gen-class))
 
 (defn uuid [] (str (java.util.UUID/randomUUID)))
@@ -43,3 +44,16 @@
 (defn parse-json-body
   [response]
   (parse-string (:body response) true))
+
+(defn get-project-version
+  "Reads the project version for the supplied dependency
+  
+  usage (get-project-version 'projectname)"
+  [dep]
+  (let [path  (str "META-INF/maven/" (or (namespace dep) (name dep))
+                   "/" (name dep) "/pom.properties")
+        props (io/resource path)]
+    (when props
+      (with-open [stream (io/input-stream props)]
+        (let [props (doto (Properties.) (.load stream))]
+          (.getProperty props "version"))))))
