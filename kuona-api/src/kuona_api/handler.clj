@@ -1,6 +1,7 @@
 (ns kuona-api.handler
   (:require [cheshire.core :refer :all]
             [clojure.tools.logging :as log]
+            [clojure.java.io :as io]
             [clj-http.client :as http]
             [compojure.core :refer :all]
             [compojure.handler :as handler]
@@ -12,8 +13,8 @@
             [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
             [ring.middleware.json :as middleware]
             [ring.util.response :refer [resource-response response status]])
+  (:import java.util.Properties)
   (:gen-class))
-
 
 (defn service-data
   []
@@ -197,10 +198,21 @@
   [id]
   (response (value-stream)))
 
+
+(defn get-version [dep]
+  (let [path (str "META-INF/maven/" (or (namespace dep) (name dep))
+                  "/" (name dep) "/pom.properties")
+        props (io/resource path)]
+    (when props
+      (with-open [stream (io/input-stream props)]
+        (let [props (doto (Properties.) (.load stream))]
+          (.getProperty props "version"))))))
+
 (defn get-api-info
   []
   (let [es (util/parse-json-body (http/get "http://localhost:9200"))]
-    (response {:kuona_api      {:version (System/getProperty "kuona-api.version")}
+    (response {:kuona_api      {:version (get-version 'kuona-api)}
+               :clojure        {:version (get-version 'org.clojure/clojure)}
                :elastic_search es})))
 
 (defroutes app-routes
