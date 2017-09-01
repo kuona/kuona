@@ -6,16 +6,21 @@ set -o nounset
 
 readonly pblue="\033[0;34m"
 readonly pgreen="\033[0;32m"
+readonly pgray="\033[0;40m"
 readonly preset="\033[0m"
+
+function banner() {
+    local text=$1
+
+    echo "${pblue}"
+    figlet -f cybermedium "${text}"
+    echo "${preset}"
+}
 
 PWD=`pwd`
 
-echo "${pgreen} _   __                        "
-echo "${pgreen}| | / /                        "
-echo "${pgreen}| |/ / _   _  ___  _ __   __ _ "
-echo "${pgreen}|    \| | | |/ _ \| '_ \ / _\` |"
-echo "${pgreen}| |\  \ |_| | (_) | | | | (_| |"
-echo "${pgreen}\_| \_/\__,_|\___/|_| |_|\__,_|${preset}"
+banner "Kuona dev setup"
+
 echo
 echo "${pblue}Kuona developer setup${preset} for ${pgreen}${PWD}${preset}"
 
