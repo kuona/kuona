@@ -30,12 +30,15 @@
             <div class="col-sm-12">
               <div class="text-center m-t-lg">
                 <h1>Welcome to Kuona</h1>
+                <small>Please see <a href="http://kuona.io"><i class="fa fa-home text-navy"></i> kuona.io</a> and <a href="https://github.com/kuona/kuona-project"><i class="fa fa-github text-navy"></i> https://github.com/kuona/kuona-project</a> for project background and objectives</small>
               </div>
             </div>
+          </div>
 
-
-            <div class="col-md-12">
-              <div class="widget  p-lg text-center">
+          <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+              <div class="widget lazur-bg text-center">
                 <ul class="list-unstyled m-t-md">
                   <li>
                     <label>Kuona API version:</label>
@@ -61,50 +64,45 @@
                 </ul>
               </div>
             </div>
+          </div>
 
-
-            <div class="col-lg-12">
-              <div class="panel-body">
-                <div class="row">
-                  <div class="col-md-3"></div>
-                  <div class="col-md-3">
-
-                    <div class="widget navy-bg no-padding">
-                      <div class="p-m">
-                        <h1 class="m-xs">{{repository_count | number}}</h1>
-                        <h3 class="font-bold no-margins">Github Git Repositories</h3>
-                        <small>Repositories are cloned and analysed for file types, build tools etc.</small>
-                      </div>
-                    </div>
-                    
-
-                    <div class="widget navy-bg no-padding">
-                      <div class="p-m">
-                        <h1 class="m-xs">{{vcs_count | number}}</h1>
-                        <h3 class="font-bold no-margins">Commit History records</h3>
-                        <small>The commit history records from the master branch</small>
-                      </div>
-                    </div>
-
-                    <div class="widget navy-bg no-padding">
-                      <div class="p-m">
-                        <h1 class="m-xs">{{code_metric_count | number }}</h1>
-                        <h3 class="font-bold no-margins">Collected metric count</h3>
-                        <small>Count of collected metrics from analysing the repositories</small>
-                      </div>
-                    </div>
+          <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-3">
+              
+              <div class="widget navy-bg no-padding">
+                <div class="p-m">
+                  <h1 class="m-xs">{{repository_count | number}}</h1>
+                  <h3 class="font-bold no-margins">Github Git Repositories</h3>
+                  <small>Repositories are cloned and analysed for file types, build tools etc.</small>
+                </div>
+              </div>
+              
+              
+              <div class="widget navy-bg no-padding">
+                <div class="p-m">
+                  <h1 class="m-xs">{{vcs_count | number}}</h1>
+                  <h3 class="font-bold no-margins">Commit History records</h3>
+                  <small>The commit history records from the master branch</small>
+                </div>
+              </div>
+              
+              <div class="widget navy-bg no-padding">
+                <div class="p-m">
+                  <h1 class="m-xs">{{code_metric_count | number }}</h1>
+                  <h3 class="font-bold no-margins">Collected metric count</h3>
+                  <small>Count of collected metrics from analysing the repositories</small>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-3">
+              <div class="widget navy-bg no-padding">
+                <div class="p-m">
+                  <div class="text-center">
+                    <canvas id="buildToolCanvas"></canvas>
                   </div>
-
-                  <div class="col-md-3">
-                    <div class="widget navy-bg no-padding">
-                      <div class="p-m">
-                        <div class="text-center">
-                          <canvas id="buildToolCanvas"></canvas>
-                        </div>
-                        <small>Data obtained by scanning the files in the latest version of each repository an matching file names to build tools.</small>
-                      </div>
-                    </div>
-                  </div>
+                  <small>Data obtained by scanning the files in the latest version of each repository an matching file names to build tools.</small>
                 </div>
               </div>
             </div>
