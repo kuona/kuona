@@ -66,45 +66,38 @@
             <div class="col-lg-12">
               <div class="panel-body">
                 <div class="row">
-                  <div class="col-md-6">
-                    <div class="ibox float-e-margins">
-                      <div class="ibox-title">
-                        <h5>Repositories</h5>
+                  <div class="col-md-3"></div>
+                  <div class="col-md-3">
+
+                    <div class="widget navy-bg no-padding">
+                      <div class="p-m">
+                        <h1 class="m-xs">{{repository_count | number}}</h1>
+                        <h3 class="font-bold no-margins">Github Git Repositories</h3>
+                        <small>Repositories are cloned and analysed for file types, build tools etc.</small>
                       </div>
-                      <div class="ibox-content">
-                        <h1 class="no-margins">{{repository_count}}</h1>
-                        <small>Registered repositories</small>
+                    </div>
+                    
+
+                    <div class="widget navy-bg no-padding">
+                      <div class="p-m">
+                        <h1 class="m-xs">{{vcs_count | number}}</h1>
+                        <h3 class="font-bold no-margins">Commit History records</h3>
+                        <small>The commit history records from the master branch</small>
                       </div>
                     </div>
 
-                    <div class="ibox float-e-margins">
-                      <div class="ibox-title">
-                        <h5>Version Control Revision entries</h5>
-                      </div>
-                      <div class="ibox-content">
-                        <h1 class="no-margins">{{vcs_count | number}}</h1>
-                        <small>Revision history records</small>
+                    <div class="widget navy-bg no-padding">
+                      <div class="p-m">
+                        <h1 class="m-xs">{{code_metric_count | number }}</h1>
+                        <h3 class="font-bold no-margins">Collected metric count</h3>
+                        <small>Count of collected metrics from analysing the repositories</small>
                       </div>
                     </div>
-
-                    <div class="ibox float-e-margins">
-                      <div class="ibox-title">
-                        <h5>Code metrics</h5>
-                      </div>
-                      <div class="ibox-content">
-                        <h1 class="no-margins">{{code_metric_count | number }}</h1>
-                        <small>Number of collected code metrics</small>
-                      </div>
-                    </div>
-
                   </div>
 
-                  <div class="col-md-6">
-                    <div class="panel panel-default float-e-margins">
-                      <div class="panel-heading">
-                        <h5>Build Tools</h5>
-                      </div>
-                      <div class="panel-content">
+                  <div class="col-md-3">
+                    <div class="widget navy-bg no-padding">
+                      <div class="p-m">
                         <div class="text-center">
                           <canvas id="buildToolCanvas"></canvas>
                         </div>
