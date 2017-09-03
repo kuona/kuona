@@ -111,10 +111,10 @@ The [Dashboard](http://dashboard.kuona.io) is in two parts.
 
 * AngularJS web application kuona-project/dashboard
 * Web Service kuona-project/kuona-api
-* The API and other components depend on kuona-project/kuona-core
-  which delivers most of the functionality. The API and collector
-  command line tools are designed to be simple wrappers of the core
-  capacities.
+
+The API and other components depend on kuona-project/kuona-core which
+delivers most of the functionality. The API and collector command line
+tools are designed to be simple wrappers of the core capacities.
 
 The public dashboard http://dashboard.kuona.io demonstrates the latest
 capabilities by reading public source code repositories and other
