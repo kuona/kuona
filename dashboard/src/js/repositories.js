@@ -17,6 +17,10 @@ kuonaRepositories.directive('kuonaBarChart', function() {
   };
 });
 
+kuonaRepositories.filter('elapsed', elapsedFilter);
+
+kuonaRepositories.filter('age', ageFilter);
+
 function RepositoriesController($scope, $http) {
   this.helloText = 'Welcome to Kuona';
   this.descriptionText = 'Use the navigation to look around :)';
@@ -32,6 +36,8 @@ function RepositoriesController($scope, $http) {
 
   $scope.repoSearch("");
 }
+
+
 
 kuonaRepositories.controller('RepositoriesController',['$scope', '$http', RepositoriesController]);
 

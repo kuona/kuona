@@ -75,10 +75,11 @@
                         <td class="owner">
                           <img alt="image" class="img-circle" ng-src="{{i.project.owner.avatar_url}}">
                         </td>
-                        <td class="created-at">{{i.project.created_at  | date:'yyyy-MM-dd'}}</td>
+                        <td class="created-at">{{ i.project.created_at  | age }}</td>
                         <td>
                           <h3>{{i.project.name}}</h3><a href="/snapshot?id={{i.id}}"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;Snapshot</a>&nbsp;&vert;&nbsp;<a href="{{i.project.html_url}}"><i class="fa fa-github" aria-hidden="true"></i>&nbsp;Github</a>
                           <p class="text-muted">{{i.project.description}}</p>
+                          <p>Last update {{ i.project.updated_at | age }} | Last Analysed {{ i.last_analysed | age }}</p>
                         </td>
                         <td align="right" class="stats">{{i.project.watchers | number}}&nbsp;watchers<br/>
                           {{i.project.open_issues_count | number}} open issues<br/>
@@ -135,6 +136,7 @@
     <script src="/js/plugins/chartjs/Chart.min.js"></script>
 
     <script src="/js/charts.js"></script>
+    <script src="/js/filters.js"></script>
     <script src="/js/repositories.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

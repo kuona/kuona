@@ -22,13 +22,16 @@ function ageFilter() {
     if (!date) return;
 
     var time = Date.parse(date),
-      timeNow = new Date().getTime(),
-      difference = timeNow - time,
-      seconds = Math.floor(difference / 1000),
-      minutes = Math.floor(seconds / 60),
-      hours = Math.floor(minutes / 60),
-      days = Math.floor(hours / 24);
-    if (days > 1) {
+        timeNow = new Date().getTime(),
+        difference = timeNow - time,
+        seconds = Math.floor(difference / 1000),
+        minutes = Math.floor(seconds / 60),
+        hours = Math.floor(minutes / 60),
+        days = Math.floor(hours / 24);
+    var years = Math.floor(days / 365);
+    if (years > 0) {
+      return years + " years ago";
+    } else if (days > 1) {
       return days + " days ago";
     } else if (days == 1) {
       return "1 day ago"
