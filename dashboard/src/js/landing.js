@@ -7,6 +7,11 @@ var kuona = angular.module('kuona.dashboard', [
   'ngResource'
 ]);
 
+kuona.filter('elapsed', elapsedFilter);
+
+kuona.filter('age', ageFilter);
+
+
 function MainController($scope, $http) {
   this.helloText = 'Welcome to Kuona';
   this.descriptionText = 'Use the navigation to look around :)';
@@ -16,6 +21,7 @@ function MainController($scope, $http) {
   $scope.vcs_count = "[loading]";
   $scope.buildTools = []
   $scope.info = {}
+  $scope.collector_activity = [];
 
   $http.get('/api/build/tools').then(function(res) {
     $scope.buildTools = [];
@@ -45,7 +51,11 @@ function MainController($scope, $http) {
     $scope.info = res.data;
   });
 
-  };
+  $http.get('/api/collectors/activities').then(function(res) {
+    $scope.collector_activity = res.data.items;
+  });
+
+};
 
 kuona.controller('MainController',['$scope', '$http', MainController]);
 

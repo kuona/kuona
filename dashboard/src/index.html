@@ -65,9 +65,37 @@
               </div>
             </div>
           </div>
-
+          
           <div class="row">
-            <div class="col-md-3"></div>
+
+            <div class="col-md-3">
+              <div class="widget-text-box no-padding">
+                <div class="p-m">
+                  <h1 class="m-xs">Latest Collector Activity</h1>
+                  <div class="inspinia-timeline">
+                    <div class="timeline-item" ng-repeat="a in collector_activity | limitTo:2">
+                      <div class="row">
+                        <div class="col-xs-3 date">
+                          <i class="fa fa-clock-o"></i>
+                          {{ a.timestamp | date: 'yyyy-MM-dd hh:mm:ss' }}
+                          <br>
+                          <small class="text-navy">{{a.timestamp | age}}</small>
+                        </div>
+                        <div class="col-xs-7 content no-top-border">
+                          <p class="m-b-xs"><strong>{{a.collector.name}}</strong> {{a.collector.version}} <strong>{{a.activity}}</strong></p>
+                          <p class="m-b-xs">Parameters</p>
+                          <ul class="list-unstyled m-t-m">
+                            <li ng-repeat="p in a.parameters">
+                              <p class="m-b-xs" ng-repeat="(k, v) in p">{{k}}: <small class="text-navy">{{v}}</small></p>
+                            </li>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
             <div class="col-md-3">
               
               <div class="widget navy-bg no-padding">
@@ -145,8 +173,8 @@
     <script src="/js/plugins/chartjs/Chart.min.js"></script>
 
     <script src="/js/charts.js"></script>
-
-    <script src="js/landing.js"></script>
+    <script src="/js/filters.js"></script>
+    <script src="/js/landing.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
