@@ -170,6 +170,16 @@
         :items documents
         :links (page-links page-fn :size size :count result-count)}))))
 
+(defn find
+  [url]
+  (log/info "store/find" url)
+  (let [json-response (parse-json-body (http/get url {:headers json-headers}))
+        result-count (-> json-response :hits :total)
+        documents (map #(merge {:id (:_id %)} (:_source %)) (-> json-response :hits :hits))]
+    {:count (count documents)
+     :items documents
+     :links []}))
+
 (defn get-document
   [mapping id]
   (log/debug "getting" mapping id)
