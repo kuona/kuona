@@ -7,14 +7,14 @@
             [clj-http.client :as http]
             [kuona-core.metric.store :as store]
             [kuona-core.git :refer :all]
-            [kuona-core.util :refer :all]
+            [kuona-core.util :as util]
             [kuona-core.cloc :as cloc]
             [kuona-core.builder :as builder])
   (:gen-class))
 
 (defn get-repositories
   [url]
-  (parse-json-body (http/get url)))
+  (util/parse-json-body (http/get url)))
 
 (defn repository-id
   [r]
@@ -58,7 +58,7 @@
   [snapshot url]
   (log/info "put-snapshot " url)
   (let [request (build-json-request snapshot)]
-    (parse-json-body (http/put url request))))
+    (util/parse-json-body (http/put url request))))
 
 (defn snapshot-commits-url
   [api-url id]
@@ -68,7 +68,7 @@
   [commit url]
   (log/info "put-commit " url)
   (let [request (build-json-request commit)]
-    (parse-json-body (http/put url request))))
+    (util/parse-json-body (http/put url request))))
 
 (defn has-snapshot?
   [id api-url]
@@ -99,14 +99,14 @@
 
 (defn- clone-or-update
   [url local-dir]
-  (if (directory? local-dir) (git-pull url local-dir) (git-clone url local-dir)))
+  (if (util/directory? local-dir) (git-pull url local-dir) (git-clone url local-dir)))
 
 (defn create-repository-snapshot
   [api-url workspace repo]
   (try+
    (let [id        (repository-id repo)
          url       (repository-git-url repo)
-         local-dir (canonical-path (string/join "/" [workspace id]))
+         local-dir (util/canonical-path (string/join "/" [workspace id]))
          name      (-> repo :project :name)]
       (log/info "Creating repository snapshot " id name "from " url "to " local-dir)
       (clone-or-update url local-dir)
@@ -146,6 +146,22 @@
         force-update    (:force options)
         requires-update (fn [r] (if force-update true (requires-snapshot? r api-url)))]
     (log/info "Updating " api-url " using " workspace " for repository data")
+    (http/post (string/join "/" [api-url "api" "collectors" "activities"]) (build-json-request {:id         (util/uuid)
+                                                                                                :collector  {:name    "snapshot-collector"
+                                                                                                             :version (util/get-project-version 'kuona-snapshot-collector)}
+                                                                                                :activity   :started
+                                                                                                :parameters [{:api api-url}
+                                                                                                             {:workspace workspace}
+                                                                                                             {:force-update force-update}]
+                                                                                                :timestamp  (util/timestamp)}) )
     (let [repositories (all-repositories api-url)]
       (log/info "Found " (count repositories) " configured repositories for analysis")
-      (create-snapshots api-url workspace (filter requires-update repositories)))))
+      (create-snapshots api-url workspace (filter requires-update repositories)))
+    (http/post (string/join "/" [api-url "api" "collectors" "activities"]) (build-json-request {:id         (util/uuid)
+                                                                                                :collector  {:name    "snapshot-collector"
+                                                                                                             :version (util/get-project-version 'kuona-snapshot-collector)}
+                                                                                                :activity   :finished
+                                                                                                :parameters [{:api api-url}
+                                                                                                             {:workspace workspace}
+                                                                                                             {:force-update force-update}]
+                                                                                                :timestamp  (util/timestamp)}))))

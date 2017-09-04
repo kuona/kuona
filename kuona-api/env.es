@@ -4,14 +4,9 @@ DELETE /kuona
 
 
 PUT /kuona-collectors
-{
-  "mappings" : {
-    "activity" : {
-    }
-  }
-}
+{"mappings":{"activity":{"properties":{"activity":{"type":"text","fields":{"keyword":{"type":"keyword","ignore_above":256}}},"collector":{"properties":{"name":{"type":"text","fields":{"keyword":{"type":"keyword","ignore_above":256}}},"version":{"type":"text","fields":{"keyword":{"type":"keyword","ignore_above":256}}}}},"id":{"type":"text","fields":{"keyword":{"type":"keyword","ignore_above":256}}},"timestamp":{"type":"date"}}}}}
 
-DELETE /kuona-collectors
+Delete /kuona-collectors
 
 PUT /kuona-collectors/activity/234
 {"id":        234,
@@ -32,7 +27,6 @@ PUT /kuona-env/comment/1
   "useability": "available"
 }
 
-  
 
 PUT /kuona-env
 {
