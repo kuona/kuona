@@ -13,6 +13,7 @@
             [kuona-api.repository-handlers :as repository]
             [kuona-api.metric-handlers :as metric-handlers]
             [kuona-api.snapshot-handlers :as snap-handlers]
+            [kuona-api.collector-handlers :as collectors]
             [ring.middleware.json :as middleware]
             [ring.util.response :refer [resource-response response status]])
   (:gen-class))
@@ -35,7 +36,7 @@
                :elastic_search es})))
 
 (defroutes app-routes
-  (GET "/" [] (service-data))
+  (GET "/api" [] (service-data))
   (GET "/api/repositories/count" [] (repository/get-repository-count))
   (GET "/api/repositories" [search page] (repository/get-repositories search page))
   (GET "/api/repositories/:id" [id] (repository/get-repository-by-id id))
@@ -62,7 +63,10 @@
 
   (GET "/api/valuestreams" [] (valuestream/get-value-streams))
   (GET "/api/valuestreams/:id" [id] (valuestream/get-value-stream id))
-  
+
+  (POST "/api/collectors/activities" request (collectors/put-activity! (get-in request [:body])))
+  (GET "/api/collectors/activities" [] (collectors/get-activities))
+
   (GET "/api/info" [] (get-api-info))
 
   (route/not-found "Not Found"))

@@ -77,6 +77,7 @@
   exist."
   [index types]
   (try+
+   (log/info "Creating index" index)
    (parse-json-body (http/put index {:headers json-headers
                                      :body (generate-string {:mappings types})}))
    (catch Object _

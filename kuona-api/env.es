@@ -2,6 +2,28 @@ GET /
 
 DELETE /kuona
 
+
+PUT /kuona-collectors
+{
+  "mappings" : {
+    "activity" : {
+    }
+  }
+}
+
+DELETE /kuona-collectors
+
+PUT /kuona-collectors/activity/234
+{"id":        234,
+ "collector": {"name":"test", "version": "1.0"},
+ "activity":  "started",
+ "timestamp": "2016-08-16"}
+
+GET /kuona-collectors/activity/_search
+
+GET /kuona-collectors/_mapping
+
+
 PUT /kuona-env/comment/1
 {
   "timestamp": "2016-01-01",
