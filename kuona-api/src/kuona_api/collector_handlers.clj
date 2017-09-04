@@ -9,10 +9,10 @@
   {:type "text" :fields {:keyword {:type "keyword" :ignore_above 256}}})
 
 (def mapping
-  {:activity {:properties {:id         keyword-field
-                           :activity   keyword-field
-                           :collector  { :properties {:name    keyword-field
-                                                      :version keyword-field}}
+  {:activity {:properties {:activity {:type "text", :fields {:keyword {:type "keyword", :ignore_above 256}}},
+                           :collector {:properties {:name {:type "text", :fields {:keyword {:type "keyword", :ignore_above 256}}},
+                                                    :version {:type "text", :fields {:keyword {:type "keyword", :ignore_above 256}}}}},
+                           :id {:type "text", :fields {:keyword {:type "keyword", :ignore_above 256}}},
                            :timestamp {:type "date"}}}})
 
 (def collectors (store/mapping :activity (store/index :kuona-collectors "http://localhost:9200")))
