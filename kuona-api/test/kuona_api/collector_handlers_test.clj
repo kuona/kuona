@@ -40,8 +40,8 @@
 
        (fact "returns success for empty search"
              (:status (app (mock/request :get "/api/collectors/activities"))) => 200
-             (provided (http/get "http://localhost:9200/kuona-collectors/activity/_search?size=100" search-headers) => no-results-response))
+             (provided (http/get "http://localhost:9200/kuona-collectors/activity/_search?size=100&sort=timestamp:desc" search-headers) => no-results-response))
        
        (fact "returns collector activities with count"
              (keys (helper/parse-json-response (app (mock/request :get "/api/collectors/activities")))) => (contains #{:count :items :links})
-             (provided (http/get "http://localhost:9200/kuona-collectors/activity/_search?size=100" search-headers) => no-results-response)))
+             (provided (http/get "http://localhost:9200/kuona-collectors/activity/_search?size=100&sort=timestamp:desc" search-headers) => no-results-response)))

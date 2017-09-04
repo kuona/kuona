@@ -36,5 +36,5 @@
 
 (defn get-activities
   []
-  (println "**************** get activities")
-  (response (store/search collectors "" 100 1 #(page-link "/api/collectors" %))))
+  (let [url (str collectors "/_search?size=100&sort=timestamp:desc")]
+    (response (store/find url))))
