@@ -46,4 +46,5 @@ public class MavenDotReaderTest {
     assertThat(dependencies.size(), equalTo(3));
 
   }
+
 }
