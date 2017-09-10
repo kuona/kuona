@@ -10,8 +10,9 @@
             [slingshot.slingshot :refer :all]
             [kuona-core.metric.store :as store]
             [kuona-core.git :refer :all]
-            [kuona-core.util :refer :all])
-  (:import (java.net InetAddress))
+            [kuona-core.util :as util])
+  (:import (java.net InetAddress)
+           (java.util Date))
   (:gen-class))
 
 (def config-file "properties.edn")
@@ -20,8 +21,17 @@
 
 (defn epoc-date
   [d]
-  (java.util.Date. (* 1000 (Long/parseLong d))))
+  (Date. (* 1000 (Long/parseLong d))))
 
+(defn load-config [filename]
+  (if (util/file-exists? filename)
+    (do
+      (log/info (str "Reading configuration file \"" filename "\""))
+      (with-open [r (clojure.java.io/reader filename)]
+        (clojure.edn/read (java.io.PushbackReader. r))))
+    (do
+      (log/warn (str "Configuration file \"" filename "\" not found"))
+      {})))
 
 
 (defn write-config
@@ -33,12 +43,11 @@
   [headers]
   (let [link (get headers "Link")
         m (re-matches #"<([^>]*page=(\d+))[^>]*>; rel=\"next.*" link)]
-    (println "Link header:" link headers)
     (if (second m) (Long/parseLong (second (rest m))) nil)))
 
 (defn wait-for-reset
   [time]
-  (let [now (java.util.Date.)
+  (let [now (Date.)
         wait-time (- (+ (.getTime time) 60000) (.getTime now))]
     (if (> wait-time 0)
       (do
@@ -50,7 +59,7 @@
   [headers]
   (let [remaining (Integer/parseInt (get headers "X-RateLimit-Remaining"))
         rate-reset (epoc-date (get headers "X-RateLimit-Reset"))]
-    (log/info "Remaining " remaining " Resets " rate-reset " current " (java.util.Date.))
+    (log/info "Remaining " remaining " Resets " rate-reset " current " (Date.))
     (if (= remaining 0) (wait-for-reset rate-reset) (Thread/sleep 1000))))
 
 
@@ -103,7 +112,7 @@
         remaining (Integer/parseInt (get headers "X-RateLimit-Remaining"))
         rate-reset (epoc-date (get headers "X-RateLimit-Reset"))
         items (-> (parse-string (-> response :body) true) :items)]
-    (log/info "Remaining " remaining " Resets " rate-reset " current " (java.util.Date.))
+    (log/info "Remaining " remaining " Resets " rate-reset " current " (Date.))
     (log/info "Collected" query-uri)
     {:next  (github-next-page headers)
      :items items}))
@@ -137,19 +146,16 @@
   [item]
   (-> item :git_url))
 
-(defn rlimit
-  ([fn a] (let [response (fn a)] (rate-limit (-> response :headers)) response)))
-
 (defn put-repository
-  [metric mapping id]
+  [metric id]
   (let [url (clojure.string/join "/" ["http://dashboard.kuona.io/api/repositories" id])]
-    (log/info "put-repository " mapping id url)
-    (parse-json-body (http/put url {:headers {"content-type" "application/json; charset=UTF-8"}
-                                    :body    (generate-string metric)}))))
+    (log/info "put-repository " (-> metric :project :name) url)
+    (util/parse-json-body (http/put url {:headers {"content-type" "application/json; charset=UTF-8"}
+                                         :body    (generate-string metric)}))))
 
 (defn process-item
   [context item]
-  (log/info "processing " (:workspace context) (:mapping context) (or (:git_url item) (:url item)))
+  ;(log/info "processing " (:workspace context) (or (:git_url item) (:url item)))
   (cond
     (:git_url item)
     (let [url (:git_url item)
@@ -159,14 +165,12 @@
                   :url             url
                   :project         item
                   :last_analysed   nil}
-          id (uuid-from url)]
-      (put-repository metric (:mapping context) id)
-      (log/info "process-item: " url))
+          id (util/uuid-from url)]
+      (put-repository metric id))
     :else (println "Skipping - no gitub url")))
 
 (defn process-items
   [context items]
-  (log/info "processing " (count items) " items ")
   (doseq [item items] (process-item context item)))
 
 (defn collect-repositories
@@ -178,19 +182,24 @@
   ([context since]
    (log/info "collecting from " since)
    (let [m (github-repositories context since)]
-     (write-config "properties.edn" {:high-water-mark since})
      (process-items context (:items m))
+     (write-config "properties.edn" {:high-water-mark since})
      (collect-repositories context (:next m)))))
 
 (defn search-collect
-  ([ctx]
-   (search-collect ctx 1))
-  ([ctx page]
-   (log/info "collecting from page " page)
-   (let [m (github-search "Kotlin" page ctx)]
-     (write-config page-file {:page (:next m)})
+  ([ctx language]
+   (let [page-file (-> ctx :page-file)
+         pages (load-config page-file)
+         page (if (-> ctx :force) 1 (get pages language 1))]
+     (search-collect ctx language page)))
+  ([ctx language page]
+   (log/info "Collecting" language "page" page)
+   (let [page-file (-> ctx :page-file)
+         pages (load-config page-file)
+         m (github-search language page ctx)]
+     (write-config page-file (merge pages {language (:next m)}))
      (process-items ctx (:items m))
-     (search-collect ctx (:next m)))))
+     (search-collect ctx language (:next m)))))
 
 (defn crawl
   [config]
@@ -199,9 +208,6 @@
   (log/info "Updating             " (-> config :api-url))
   (log/info "For languages        " (-> config :languages))
   (log/info "Status tracking file " (-> config :page-file))
-  (let [page nil]
-    (if false (if (nil? page)
-                (search-collect config)
-                (search-collect config page))))
-  )
+
+  (doseq [language (-> config :languages)] (search-collect config language)))
 

@@ -2,7 +2,8 @@
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
             [clojure.tools.cli :refer [parse-opts]]
-            [kuona-core.util :as util])
+            [kuona-core.util :as util]
+            [github-crawler.crawler :as crawler])
   (:gen-class))
 
 
@@ -14,7 +15,7 @@
    ["-i" "--client-id ID" "GitHub client ID to be used to raise the rate limit for collection"]
    ["-s" "--client-secret SECRET" "GitHub client ID secret to be used"]
    ["-p" "--page-file PATH" "File used to track pages during collection to allow for restarts" :default "page.edn"]
-   ["-l" "--languages LANG" "A comma separated list of programming language names to be used to search" :default [] :parse-fn #(string/split % #",")]
+   ["-l" "--languages LANG" "A comma separated list of programming language names to be used to search" :parse-fn #(string/split % #",")]
    ["-h" "--help" "Display this message and exit"]])
 
 (defn usage
@@ -48,16 +49,6 @@
   (println msg)
   (System/exit status))
 
-(defn load-config [filename]
-  (if (util/file-exists? filename)
-    (do
-      (log/info (str "Reading configuration file \"" filename "\""))
-      (with-open [r (clojure.java.io/reader filename)]
-        (clojure.edn/read (java.io.PushbackReader. r))))
-    (do
-      (log/warn (str "Configuration file \"" filename "\" not found"))
-      {})))
-
 (defn options-to-configuration
   [options]
   {})
@@ -68,8 +59,8 @@
     (cond
       (contains? options :exit-message) (exit (if (:ok? options) 0 1) (:exit-message options))
       :else
-      (merge options (load-config (-> options :config)) options))))
+      (merge options (crawler/load-config (-> options :config)) options))))
 
 (defn -main
   [& args]
-  (configure args))
+  (crawler/crawl (configure args)))
