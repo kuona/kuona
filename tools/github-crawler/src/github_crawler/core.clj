@@ -1,225 +1,75 @@
 (ns github-crawler.core
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
-            [clj-http.client :as http]
-            [cheshire.core :refer :all]
-            [clj-jgit.porcelain :as git]
-            [clj-jgit.querying :as git-query]
-            [clojure.java.io :as io]
-            [slingshot.slingshot :refer :all]
-            [kuona-collector.metric.store :as store]
-            [kuona-collector.git :refer :all]
-            [kuona-collector.util :refer :all])
-  (:import (java.net InetAddress))
+            [clojure.tools.cli :refer [parse-opts]]
+            [kuona-core.util :as util])
   (:gen-class))
 
-(def config-file "properties.edn")
-(def progress-file "progress.edn")
-(def page-file "page.edn")
 
-(defn epoc-date
-  [d]
-  (java.util.Date. (* 1000 (Long/parseLong d))))
+(def cli-options
+  [["-c" "--config PATH" "Read runtime options from configuration. CLI options override" :default "properties.edn"]
+   ["-a" "--api-url URL" "The URL of the back end Kuona API" :default "http://dashboard.kuona.io"]
+   ["-f" "--force" "Force updates. Ignore current page position and restart crawling from the first page for all lanaguages" :default false]
+   ["-w" "--workspace PATH" "workspace folder for git clones and source operations" :default "/Volumes/data-drive/workspace"]
+   ["-i" "--client-id ID" "GitHub client ID to be used to raise the rate limit for collection"]
+   ["-s" "--client-secret SECRET" "GitHub client ID secret to be used"]
+   ["-p" "--page-file PATH" "File used to track pages during collection to allow for restarts" :default "page.edn"]
+   ["-l" "--languages LANG" "A comma separated list of programming language names to be used to search" :default [] :parse-fn #(string/split % #",")]
+   ["-h" "--help" "Display this message and exit"]])
 
+(defn usage
+  [options-summary]
+  (->> ["Kuona GitHub project crawler."
+        ""
+        "Usage: lein run -- [options]"
+        ""
+        "Options:"
+        options-summary
+        ""]
+       (string/join \newline)))
+
+
+(defn error-msg [errors]
+  (str "The following errors occurred while parsing your command:\n\n"
+       (string/join \newline errors)))
+
+(defn validate-args
+  "Validate command line arguments. Either return a map indicating the program
+  should exit (with a error message, and optional ok status), or a map
+  indicating the action the program should take and the options provided."
+  [args]
+  (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
+    (cond
+      (:help options) {:exit-message (usage summary) :ok? true}
+      errors {:exit-message (error-msg errors)}
+      :else options)))
+
+(defn exit [status msg]
+  (println msg)
+  (System/exit status))
 
 (defn load-config [filename]
-  (with-open [r (clojure.java.io/reader filename)]
-    (clojure.edn/read (java.io.PushbackReader. r))))
+  (if (util/file-exists? filename)
+    (do
+      (log/info (str "Reading configuration file \"" filename "\""))
+      (with-open [r (clojure.java.io/reader filename)]
+        (clojure.edn/read (java.io.PushbackReader. r))))
+    (do
+      (log/warn (str "Configuration file \"" filename "\" not found"))
+      {})))
 
-(defn write-config
-  [filename config]
-  (with-open [w (clojure.java.io/writer filename)]
-    (.write w (prn-str config))))
+(defn options-to-configuration
+  [options]
+  {})
 
-(defn github-next-page
-  [headers]
-  (let [link (get headers "Link")
-        m (re-matches #"<([^>]*page=(\d+))[^>]*>; rel=\"next.*" link)]
-    (println "Link header:" link headers)
-    (if (second m) (Long/parseLong (second (rest m))) nil)))
-
-(defn wait-for-reset
-  [time]
-  (let [now (java.util.Date.)
-        wait-time (- (+ (.getTime time) 60000) (.getTime now))]
-    (if (> wait-time 0)
-      (do
-        (log/info "Waiting until " time "(" now ") for " wait-time "ms" (quot wait-time 60000) " minutes")
-        (Thread/sleep 10000)
-        (recur time)))))
-
-(defn rate-limit
-  [headers]
-  (let [remaining (Integer/parseInt (get headers "X-RateLimit-Remaining"))
-        rate-reset (epoc-date (get headers "X-RateLimit-Reset"))]
-    (log/info "Remaining " remaining " Resets " rate-reset " current " (java.util.Date.))
-    (if (= remaining 0) (wait-for-reset rate-reset) (Thread/sleep 1000))))
-
-
-(defn limited-get
-  [url]
-  (try+
-    (log/info "limited get" url)
-    (http/get url)
-    (catch [:status 403] {:keys [request-time headers body]}
-      (log/info "403 rate limit block")
-      (wait-for-reset (epoc-date (get headers "X-RateLimit-Reset")))
-      (limited-get url))
-    (catch Object _
-      (log/error (:throwable &throw-context) "unexpected error")
-      (throw+))))
-
-(defn add-url-paramter
-  [url key values]
-  (if (key values)
-    (str url "&" (key values))
-    url))
-
-(defn parameter-value
-  [v]
-  (cond
-    (keyword? v) (name v)
-    :else v))
-
-(defn url-parameter
-  [pair]
-  (str (name (first pair)) "=" (parameter-value (second pair))))
-
-(defn query-string
-  [m]
-  (clojure.string/join "&" (map url-parameter m)))
-
-
-(defn github-search
-  [language page ctx]
-  (let [params (merge {:q     (str "language:" language)
-                       :sort  "stars"
-                       :order "asc"
-                       :page  page
-                       }
-                      (select-keys ctx [:client_id :client_secret]))
-        query-string (query-string params)
-        query-uri (str "https://api.github.com/search/repositories?" query-string)
-        response (limited-get query-uri)
-        headers (-> response :headers)
-        remaining (Integer/parseInt (get headers "X-RateLimit-Remaining"))
-        rate-reset (epoc-date (get headers "X-RateLimit-Reset"))
-        items (-> (parse-string (-> response :body) true) :items)]
-    (log/info "Remaining " remaining " Resets " rate-reset " current " (java.util.Date.))
-    (log/info "Collected" query-uri)
-    {:next  (github-next-page headers)
-     :items items}))
-
-(defn github-since
-  [headers]
-  (let [link (get headers "Link")
-        m (re-matches #"<([^>]*since=(\d+))[^>]*>; rel=\"next.*" link)]
-    (println "Link header:" link headers)
-    (if (second m) (Long/parseLong (second (rest m))) nil)))
-
-(defn process-repositories-response
-  [response]
-  (let [headers (-> response :headers)
-        items (parse-string (-> response :body) true)]
-    (rate-limit (-> response :headers))
-    {:next  (github-since headers)
-     :items items}))
-
-(defn github-repositories
-  ([ctx]
-   (let [url (str "https://api.github.com/repositories?" (query-string (select-keys ctx [:client_id :client_secret])))]
-     (log/info "reading repositories " url)
-     (process-repositories-response (limited-get url))))
-  ([ctx since]
-   (let [url (str "https://api.github.com/repositories?" (query-string (merge {:since since} (select-keys ctx [:client_id :client_secret]))))]
-     (log/info "reading repositories " url)
-     (process-repositories-response (limited-get url)))))
-
-(defn git-url
-  [item]
-  (-> item :git_url))
-
-(defn rlimit
-  ([fn a] (let [response (fn a)] (rate-limit (-> response :headers)) response)))
-
-(defn put-repository
-  [metric mapping id]
-  (let [url (clojure.string/join "/" ["http://dashboard.kuona.io/api/repositories" id])]
-    (log/info "put-repository " mapping id url)
-    (parse-json-body (http/put url {:headers {"content-type" "application/json; charset=UTF-8"}
-                                    :body    (generate-string metric)}))))
-
-(defn process-item
-  [context item]
-  (log/info "processing " (:workspace context) (:mapping context) (or (:git_url item) (:url item)))
-  (cond
-    (:git_url item)
-    (let [url           (:git_url item)
-          working-space (local-clone-path (:workspace context) url)
-          metric        {:source           :github
-                         :github_langugage nil
-                         :url              url
-                         :project          item
-                         :last_analysed    nil}
-          id            (uuid-from url)]
-      (put-repository metric (:mapping context) id)
-      (log/info "process-item: " url))
-    :else
-    (println "Skipping - no gitub url")))
-
-(defn process-items
-  [context items]
-  (log/info "processing " (count items) " items ")
-  (doseq [item items] (process-item context item)))
-
-(defn collect-repositories
-  ([context]
-   (log/info "collecting from the start")
-   (let [m (github-repositories context)]
-     (process-items context (:items m))
-     (collect-repositories context (:next m))))
-  ([context since]
-   (log/info "collecting from " since)
-   (let [m (github-repositories context since)]
-     (write-config "properties.edn" {:high-water-mark since})
-     (process-items context (:items m))
-     (collect-repositories context (:next m)))))
-
-(defn search-collect
-  ([ctx]
-   (search-collect ctx 1))
-  ([ctx page]
-   (log/info "collecting from page " page)
-   (let [m (github-search "Kotlin" page ctx)]
-     (write-config page-file {:page (:next m)})
-     (process-items ctx (:items m))
-     (search-collect ctx (:next m)))))
-
-(defn crawl [config]
-
-  )
+(defn configure
+  [args]
+  (let [options (validate-args args)]
+    (cond
+      (contains? options :exit-message) (exit (if (:ok? options) 0 1) (:exit-message options))
+      :else
+      (merge options (load-config (-> options :config)) options))))
 
 (defn -main
   [& args]
-  (let [config (load-config config-file)
-        workspace "/Volumes/kuona-data/workspace"
-        index (store/index :kuona-data "http://localhost:9200")
-        mapping (store/mapping :repositories index)
-        page-config (load-config page-file)
-        page (:page page-config)
-        context (merge config {:mapping mapping :workspace workspace})]
-    (log/info "Kuona github crawler")
-    (log/info "Gighub client id     " (-> config :client_id))
-    (log/info "Using local Workspace" (-> config :workspace))
-    (log/info "Updating             " (-> config :api-url))
-    (log/info "For languages        " (-> config :languages))
-    (log/info "Status tracking file " (-> config :page-file))
-
-    (if false (if (nil? page)
-                (search-collect context)
-                (search-collect context page)))
-
-    ;    (if (nil? (:high-water-mark config))
-    ;      (collect-repositories context)
-    ;      (collect-repositories context (:high-water-mark config)))
-    ))
+  (configure args))

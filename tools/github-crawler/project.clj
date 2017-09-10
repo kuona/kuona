@@ -16,6 +16,7 @@
                  [clj-http "3.1.0"]
                  [clj-jgit "0.8.9"]
                  [cheshire "5.6.3"]
-                 [kuona-collector "0.0.1"]]
+                 [kuona-core "0.0.2"]
+                 [org.clojure/tools.cli "0.3.5"]]
   :plugins [[lein-midje "3.0.0"]]
   :profiles {:dev {:dependencies [[midje "1.9.0-alpha5"]]}})

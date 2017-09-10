@@ -19,14 +19,18 @@
   [path]
   (.isDirectory (io/as-file path)))
 
+(defn file-exists?
+  [file-path]
+  (.exists (io/file file-path)))
+
 (defn timestamp
   "Generate a timestamp for the current instant"
   []
   (new java.util.Date))
 
-(defn canonical-path 
+(defn canonical-path
   "Returns canonical path of a given path"
-  [path] 
+  [path]
   (.getCanonicalPath (io/file path)))
 
 (defn absolute-path
@@ -50,8 +54,8 @@
   
   usage (get-project-version 'projectname)"
   [dep]
-  (let [path  (str "META-INF/maven/" (or (namespace dep) (name dep))
-                   "/" (name dep) "/pom.properties")
+  (let [path (str "META-INF/maven/" (or (namespace dep) (name dep))
+                  "/" (name dep) "/pom.properties")
         props (io/resource path)]
     (when props
       (with-open [stream (io/input-stream props)]

@@ -22,6 +22,7 @@
         ""]
        (string/join \newline)))
 
+
 (defn error-msg [errors]
   (str "The following errors occurred while parsing your command:\n\n"
        (string/join \newline errors)))

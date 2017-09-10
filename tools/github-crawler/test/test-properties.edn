@@ -1,0 +1,6 @@
+{:client-id       "000"
+ :client-secret   "111"
+ :page-file       "page.edn"
+ :workspace       "/Volumes/kuona-data/workspace"
+ :api-url         "http://dashboard.kuona.io"
+ :languages        ["java" "javascript" "kotlin"]}

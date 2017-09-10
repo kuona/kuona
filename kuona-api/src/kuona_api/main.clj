@@ -62,9 +62,6 @@
   [options]
   (not= (count options) 1))
 
-(defn file-exists?
-  [file-path]
-  (.exists (io/file file-path)))
 
 (defn create-repository-index-if-missing
   []
