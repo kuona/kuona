@@ -37,4 +37,4 @@
 (defn get-activities
   []
   (let [url (str collectors "/_search?size=100&sort=timestamp:desc")]
-    (response (store/find url))))
+    (response (store/find-documents url))))

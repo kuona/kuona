@@ -170,7 +170,7 @@
         :items documents
         :links (page-links page-fn :size size :count result-count)}))))
 
-(defn find
+(defn find-documents
   [url]
   (log/info "store/find" url)
   (let [json-response (parse-json-body (http/get url {:headers json-headers}))
