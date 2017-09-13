@@ -70,8 +70,8 @@
                             </thead>
                             <tbody>
                             <tr ng-repeat="i in repositoriesFound.items" class="search-result">
-                              <td class="owner">
-                                <img alt="image" class="img-circle" ng-src="{{i.project.owner.avatar_url}}">
+                              <td>
+                                <img alt="image" class="img-circle img-sm" ng-src="{{i.project.owner.avatar_url}}">
                               </td>
                               <td class="created-at small">{{ i.project.created_at  | age }}</td>
                               <td>
