@@ -7413,6 +7413,9 @@ body.md-skin {
 .top-navigation .wrapper.wrapper-content {
   padding: 0 0 40px; }
 
+.top-navigation .nav > li.active {
+  background: transparent; }
+
 @media print {
   nav.navbar-static-side {
     display: none; }
