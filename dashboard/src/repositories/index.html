@@ -75,7 +75,8 @@
                               </td>
                               <td class="created-at small">{{ i.project.created_at  | age }}</td>
                               <td>
-                                <h3>{{i.project.name}}</h3><a href="/snapshot?id={{i.id}}"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;Snapshot</a>&nbsp;&vert;&nbsp;<a href="{{i.project.html_url}}"><i class="fa fa-github" aria-hidden="true"></i>&nbsp;Github</a>
+                                <h4>{{i.project.name}}</h4>
+                                <a href="/snapshot?id={{i.id}}"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;Snapshot</a>&nbsp;&vert;&nbsp;<a href="{{i.project.html_url}}"><i class="fa fa-github" aria-hidden="true"></i>&nbsp;Github</a>
                                 <p class="text-muted">{{i.project.description}}</p>
                                 <p>Last update {{ i.project.updated_at | age }} | Last Analysed {{ i.last_analysed | age }}</p>
                               </td>

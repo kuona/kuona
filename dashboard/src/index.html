@@ -39,32 +39,28 @@
                 </div>
 
                 <div class="row">
-                  <div class="col-md-3">
-                  </div>
-                  <div class="col-md-6">
-                    <div class="row">
-                      <div class="widget lazur-bg text-center">
-                        <ul class="list-unstyled m-t-md">
+                  <div class="col-md-12">
+                    <div class="ibox float-e-margins">
+                      <div class="ibox-content text-center">
+                        <ul class="list-unstyled">
                           <li>
-                            <label>Kuona API version:</label>
-                            {{ info.kuona_api.version }}
+                            <label>Kuona API:</label>
+                            <small class="label label-primary">{{ info.kuona_api.version }}</small>
                           </li>
                           <li>
-                            <label>Clojure version:</label>
-                            {{ info.clojure.version }}
+                            <label>Clojure:</label>
+                            <small class="label label-primary">{{ info.clojure.version }}</small>
                           </li>
                           <li>
                             <label>Elasticsearch:</label>
-                            {{ info.elastic_search.name }}
-                            <label>version</label>
-                            {{ info.elastic_search.version.number }}
-                            (lucene {{ info.elastic_search.version.lucene_version }})
-                            <label>built</label>
-                            {{ info.elastic_search.version.build_timestamp | date:'yyyy-MM-dd' }}
+                            <small class="label label-primary">{{ info.elastic_search.name }}</small>
+                            <small class="label label-primary">{{ info.elastic_search.version.number }}</small>
+                            <small class="label label-info">lucene {{ info.elastic_search.version.lucene_version }}</small>
+                            <small class="label label-primary">{{ info.elastic_search.version.build_timestamp | date:'yyyy-MM-dd' }}</small>
                           </li>
                           <li>
                             <label>Cluster UUID:</label>
-                            {{ info.elastic_search.cluster_uuid }}
+                            <small class="label">{{ info.elastic_search.cluster_uuid }}</small>
                           </li>
                         </ul>
                       </div>
@@ -107,26 +103,29 @@
 
                     <div class="widget navy-bg no-padding">
                       <div class="p-m">
+                        <i class="fa fa-github fa-5x pull-right"></i>
                         <h1 class="m-xs">{{repository_count | number}}</h1>
                         <h3 class="font-bold no-margins">Github Git Repositories</h3>
-                        <small>Repositories are cloned and analysed for file types, build tools etc.</small>
+                        <p class="small">Repositories are cloned and analysed for file types, build tools etc.</p>
                       </div>
                     </div>
 
 
                     <div class="widget navy-bg no-padding">
                       <div class="p-m">
+                        <i class="fa fa-clock-o fa-5x pull-right"></i>
                         <h1 class="m-xs">{{vcs_count | number}}</h1>
                         <h3 class="font-bold no-margins">Commit History records</h3>
-                        <small>The commit history records from the master branch</small>
+                        <p class="small">The commit history records from the master branch</p>
                       </div>
                     </div>
 
                     <div class="widget navy-bg no-padding">
                       <div class="p-m">
+                        <i class="fa fa-bar-chart-o fa-4x pull-right"></i>
                         <h1 class="m-xs">{{code_metric_count | number }}</h1>
                         <h3 class="font-bold no-margins">Collected metric count</h3>
-                        <small>Count of collected metrics from analysing the repositories</small>
+                        <p class="small">Count of collected metrics from analysing the repositories</p>
                       </div>
                     </div>
                   </div>
