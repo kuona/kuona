@@ -33,6 +33,5 @@
 (facts "about build endpoint"
        (fact "returns collector activity if created"
              (:status (helper/mock-json-post app "/api/builds" test-build)) => 200
-             (provided (http/put "http://localhost:9200/kuona-builds/builds/abc123" test-build-es) => {:status 200 :body (generate-string {:id "abc123"})}))
-       )
+             (provided (http/put "http://localhost:9200/kuona-builds/builds/abc123" test-build-es) => {:status 200 :body (generate-string {:id "abc123"})})))
 

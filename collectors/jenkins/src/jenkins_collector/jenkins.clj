@@ -1,8 +1,9 @@
 (ns jenkins-collector.jenkins
-  (:require [clj-http.client :as client]
-            [cheshire.core :refer :all]
+  (:require [cheshire.core :refer :all]
             [clojure.tools.logging :as log]
-            [kuona-core.util :as util]))
+            [kuona-core.util :as util]
+            [clj-http.client :as http])
+  (:import (java.util Date)))
 
 (defn job-to-job
   [job]
@@ -23,10 +24,10 @@
 (defn http-source
   [credentials]
   (fn [url]
-    (let [uri              (str url "/api/json")
+    (let [uri (str url "/api/json")
           http-credentials {:basic-auth [(:username credentials) (:password credentials)]}
-          response         (client/get uri http-credentials)
-          content          (parse-json (:body response))]
+          response (http/get uri http-credentials)
+          content (parse-json (:body response))]
       content)))
 
 (defn read-build
@@ -44,9 +45,9 @@
 
 (defn timestamp
   []
-  (new java.util.Date))
+  (new Date))
 
-(defn read-build-metric
+(defn make-build-metric
   [connection server build]
   (log/info "read-build-metric" (-> build :url))
   (let [content (connection (:url build))]
@@ -65,10 +66,24 @@
                   :version (util/get-project-version 'kuona-jenkins-collector)}
       :jenkins   content}}))
 
+(defn build-json-request
+  [content]
+  {:headers {"content-type" "application/json; charset=UTF-8"}
+   :body    (generate-string content)})
+
+(defn put-build!
+  [build url]
+  (log/info "put-build!" url)
+  (util/parse-json-body (http/put url (build-json-request build))))
+
+(defn upload-metrics
+  [build-metrics api]
+  (doall #(put-build! % (str api "/api/builds")) build-metrics))
 
 (defn collect-metrics
   [connection url]
   (log/info "Collecting metrics from" url)
   (let [build-jobs (jobs connection url)
-        build-log  (builds connection build-jobs)]
-    (map #(read-build-metric connection url %) build-log)))
+        build-log (builds connection build-jobs)
+        build-metrics (map #(make-build-metric connection url %) build-log)]
+    build-metrics))

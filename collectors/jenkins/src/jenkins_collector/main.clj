@@ -77,10 +77,11 @@
   [& args]
   (let [config       (configure args)
         source       (jenkins/http-source {:username (-> config :username) :password (-> config :password)})
-        build-server (:jenkins config)]
+        build-server (:jenkins config)
+        api (-> config :api-url)]
     (log/info "Collecting metrics from:" build-server)
     (let [metrics (jenkins/collect-metrics source build-server)]
-      (doall (map #(println (-> % :build :name)) metrics)))))
+      (jenkins/upload-metrics metrics api))))
 ;  (let [options     (parse-opts args cli-options)
 ;        config-file (:config (:options options))
 ;        config      (config/load-config (config-file-stream config-file))
