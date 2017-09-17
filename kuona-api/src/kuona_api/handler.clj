@@ -14,6 +14,7 @@
             [kuona-api.metric-handlers :as metric-handlers]
             [kuona-api.snapshot-handlers :as snap-handlers]
             [kuona-api.collector-handlers :as collectors]
+            [kuona-api.build-handlers :as build]
             [ring.middleware.json :as middleware]
             [ring.util.response :refer [resource-response response status]])
   (:gen-class))
@@ -66,6 +67,8 @@
 
   (POST "/api/collectors/activities" request (collectors/put-activity! (get-in request [:body])))
   (GET "/api/collectors/activities" [] (collectors/get-activities))
+
+  (POST "/api/builds" request (build/put-build! (get-in request [:body])))
 
   (GET "/api/info" [] (get-api-info))
 
