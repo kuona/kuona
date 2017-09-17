@@ -1,7 +1,6 @@
 (ns github-crawler.crawler
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
-            [clojure.tools.cli :refer [parse-opts]]
             [clj-http.client :as http]
             [cheshire.core :refer :all]
             [clj-jgit.porcelain :as git]
@@ -178,13 +177,13 @@
 (defn search-collect
   ([ctx language]
    (let [page-file (-> ctx :page-file)
-         pages (load-config page-file)
+         pages (util/load-config page-file)
          page (if (-> ctx :force) 1 (get pages language 1))]
      (search-collect ctx language page)))
   ([ctx language page]
    (log/info "Collecting" language "page" page)
    (let [page-file (-> ctx :page-file)
-         pages (load-config page-file)
+         pages (util/load-config page-file)
          m (github-search language page ctx)]
      (write-config page-file (merge pages {language (:next m)}))
      (process-items ctx (:items m))

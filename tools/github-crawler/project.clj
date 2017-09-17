@@ -5,7 +5,6 @@
   :license {:name "Apache V2.0"
             :url  "http://www.apache.org/licenses/"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/tools.cli "0.3.5"]
                  [org.clojure/tools.logging "0.3.1"]
                  [log4j/log4j "1.2.17" :exclusions [javax.mail/mail
                                                     javax.jms/jms
