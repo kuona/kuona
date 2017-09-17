@@ -12,7 +12,6 @@
                                                     com.sun.jmx/jmxri]]
                  [clj-http "3.6.0"]
                  [cheshire "5.6.3"]
-                 [org.clojure/tools.cli "0.3.5"]
                  [slingshot "0.12.2"]
                  [com.jcabi/jcabi-log "0.17.1"]
                  [kuona-core "0.0.2"]]
