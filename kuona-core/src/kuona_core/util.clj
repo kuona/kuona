@@ -61,3 +61,13 @@
       (with-open [stream (io/input-stream props)]
         (let [props (doto (Properties.) (.load stream))]
           (.getProperty props "version"))))))
+
+(defn load-config [filename]
+  (if (file-exists? filename)
+    (do
+      (log/info (str "Reading configuration file \"" filename "\""))
+      (with-open [r (clojure.java.io/reader filename)]
+        (clojure.edn/read (java.io.PushbackReader. r))))
+    (do
+      (log/warn (str "Configuration file \"" filename "\" not found"))
+      {})))

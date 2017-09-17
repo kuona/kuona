@@ -9,7 +9,7 @@
             [cheshire.core :refer :all]
             [kuona-core.metric.store :as store]
             [kuona-core.git :refer :all]
-            [kuona-core.util :refer :all]
+            [kuona-core.util :as util]
             [kuona-core.cloc :as cloc])
   (:import (java.net InetAddress))
   (:gen-class))
@@ -42,7 +42,7 @@
   
   (let [options          (parse-opts args cli-options)
         config-file      (:config (:options options))
-        config           (load-config (file-reader config-file))
+        config           (load-config (util/file-reader config-file))
         index            (store/index :kuona-data "http://localhost:9200")
         vcs-mapping      (store/mapping :vcs index)
         code-mapping     (store/mapping :code index)

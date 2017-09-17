@@ -23,17 +23,6 @@
   [d]
   (Date. (* 1000 (Long/parseLong d))))
 
-(defn load-config [filename]
-  (if (util/file-exists? filename)
-    (do
-      (log/info (str "Reading configuration file \"" filename "\""))
-      (with-open [r (clojure.java.io/reader filename)]
-        (clojure.edn/read (java.io.PushbackReader. r))))
-    (do
-      (log/warn (str "Configuration file \"" filename "\" not found"))
-      {})))
-
-
 (defn write-config
   [filename config]
   (with-open [w (clojure.java.io/writer filename)]

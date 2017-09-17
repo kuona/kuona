@@ -1,7 +1,8 @@
 (ns jenkins-collector.jenkins
   (:require [clj-http.client :as client]
             [cheshire.core :refer :all]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log]
+            [kuona-core.util :as util]))
 
 (defn job-to-job
   [job]
@@ -22,21 +23,20 @@
 (defn http-source
   [credentials]
   (fn [url]
-    (let [uri (str url "api/json")
+    (let [uri              (str url "/api/json")
           http-credentials {:basic-auth [(:username credentials) (:password credentials)]}
-          response (client/get uri http-credentials)
-          content (parse-json (:body response))]
-      (log/info "Reading" uri "using" credentials  "Received:" content)
+          response         (client/get uri http-credentials)
+          content          (parse-json (:body response))]
       content)))
 
 (defn read-build
   [connection job]
   (log/info "Reading builds for job" job)
   (let [build (connection (:url job))]
-    (log/info "Reading build returned" (:builds build))
     (map (fn [b] {:name   (:name build)
                   :number (:number b)
-                  :url    (:url b)}) (:builds build))))
+                  :url    (:url b)
+                  :source b}) (:builds build))))
 
 (defn builds
   [connection jobs]
@@ -47,27 +47,28 @@
   (new java.util.Date))
 
 (defn read-build-metric
-  [connection build]
-  (log/info "Read build metric called with " build)
+  [connection server build]
+  (log/info "read-build-metric" (-> build :url))
   (let [content (connection (:url build))]
-    {:timestamp (:timestamp content)
-     :metric    {:type      :build
-                 :name      (:name build)
-                 :source    {:system :jenkins
-                             :url    (:url build)}
-                 :activity  {:type     :build
-                             :number   (:number content)
-                             :id       (:id content)
-                             :duration (:duration content)
-                             :result   (:result content)}
-                 :collected (timestamp)
-                 }
-
-     :collector {:name    :kuona-jenkins-collector
-                 :version "0.1"}}))
+    {:build
+     {:id        (util/uuid-from (:url build))
+      :source    server
+      :timestamp (:timestamp content)
+      :name      (:name build)
+      :system    :jenkins
+      :url       (:url build)
+      :number    (:number content)
+      :duration  (:duration content)
+      :result    (:result content)
+      :collected (timestamp)
+      :collector {:name    :kuona-jenkins-collector
+                  :version (util/get-project-version 'kuona-jenkins-collector)}
+      :jenkins   content}}))
 
 
 (defn collect-metrics
   [connection url]
   (log/info "Collecting metrics from" url)
-  (map #(read-build-metric connection %) (builds connection (jobs connection url))))
+  (let [build-jobs (jobs connection url)
+        build-log  (builds connection build-jobs)]
+    (map #(read-build-metric connection url %) build-log)))

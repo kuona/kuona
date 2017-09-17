@@ -59,7 +59,7 @@
     (cond
       (contains? options :exit-message) (exit (if (:ok? options) 0 1) (:exit-message options))
       :else
-      (merge options (crawler/load-config (-> options :config)) options))))
+      (merge options (util/load-config (-> options :config)) options))))
 
 (defn -main
   [& args]
