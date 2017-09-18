@@ -16,6 +16,7 @@
                  [slingshot "0.12.2"]
                  [clj-time "0.13.0"]
                  [org.clojure/data.xml "0.0.8"]
+                 [org.clojure/tools.cli "0.3.5"]
                  [kuona/maven-dot-parser "0.1"]]
   :plugins [[lein-midje "3.0.0"]]
   :profiles
