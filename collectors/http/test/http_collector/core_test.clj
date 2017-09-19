@@ -14,17 +14,17 @@
 
 (facts "Collecting from end points"
        (fact "Service is down if no connection"
-             (collect-endpoint "http://localhost:12000") => {:error "Connection Refused",
+             (collect-endpoint "http://localhost:12000") => {:error  "Connection Refused",
                                                              :status "DOWN",
-                                                             :type "error",
-                                                             :url "http://localhost:12000"}
+                                                             :type   "error",
+                                                             :url    "http://localhost:12000"}
              (provided (http/get anything) =throws=> (java.net.ConnectException.)))
        
        (fact "Service running and healthy"
              (collect-endpoint "http://kuona.io:9002/status") => {:status "UP",
-                                                                  :url "http://kuona.io:9002/status"}
+                                                                  :url    "http://kuona.io:9002/status"}
              (provided (http/get anything) => {:headers {:Content-Type "json"}
-                                               :body (generate-string {:status "UP"})})))
+                                               :body    (generate-string {:status "UP"})})))
 
 (facts "Content testing"
        (fact "test run against content"
