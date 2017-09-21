@@ -180,8 +180,8 @@ function barChart(canvas, title, subtitle, data) {
 };
 
 var dependencyTreeChart = function(treeData, treeContainer) {
-  var width = 600;
-  var height = 600;
+  var width = 500;
+  var height = 300;
   var svg = treeContainer.append("svg").attr("width", width).attr("height", height);
   var g = svg.append("g").attr("transform", "translate(150,0)");
 
@@ -219,12 +219,12 @@ var dependencyTreeChart = function(treeData, treeContainer) {
   node.append("text")
     .attr("dy", function(d) {
       if (!d.parent) {
-        return -8;
+        return 2;
       }
       return 2; })
     .attr("x", function(d) {
       if (!d.parent) {
-        return 8;
+        return -8;
       }
       return d.children ? -8 : 8; })
     .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
