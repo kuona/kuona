@@ -2,24 +2,18 @@
   (:require [cheshire.core :refer :all]
             [clojure.tools.logging :as log]
             [kuona-core.util :as util]
-            [clj-http.client :as http])
-  (:import (java.util Date)))
+            [clj-http.client :as http]))
 
 (defn job-to-job
   [job]
   {:name (:name job)
    :url  (:url job)})
 
-(defn jobs
+(defn read-jenkins-jobs
   [connection url]
   (let [response (connection url)
         result (map job-to-job (:jobs response))]
     result))
-
-
-(defn parse-json
-  [content]
-  (parse-string content true))
 
 (defn http-source
   [credentials]
@@ -27,7 +21,7 @@
     (let [uri (str url "/api/json")
           http-credentials {:basic-auth [(:username credentials) (:password credentials)]}
           response (http/get uri http-credentials)
-          content (parse-json (:body response))]
+          content (util/parse-json-body response)]
       content)))
 
 (defn read-build
@@ -39,13 +33,9 @@
                   :url    (:url b)
                   :source b}) (:builds build))))
 
-(defn builds
+(defn read-jenkins-builds
   [connection jobs]
   (flatten (map #(read-build connection %) jobs)))
-
-(defn timestamp
-  []
-  (new Date))
 
 (defn make-build-metric
   [connection server build]
@@ -61,7 +51,7 @@
       :number    (:number content)
       :duration  (:duration content)
       :result    (:result content)
-      :collected (timestamp)
+      :collected (util/timestamp)
       :collector {:name    :kuona-jenkins-collector
                   :version (util/get-project-version 'kuona-jenkins-collector)}
       :jenkins   content}}))
@@ -83,7 +73,7 @@
 (defn collect-metrics
   [connection url]
   (log/info "Collecting metrics from" url)
-  (let [build-jobs (jobs connection url)
-        build-log (builds connection build-jobs)
+  (let [build-jobs (read-jenkins-jobs connection url)
+        build-log (read-jenkins-builds connection build-jobs)
         build-metrics (map #(make-build-metric connection url %) build-log)]
     build-metrics))
