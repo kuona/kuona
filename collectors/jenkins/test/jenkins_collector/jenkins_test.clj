@@ -1,5 +1,5 @@
 (ns jenkins-collector.jenkins-test
-  (:require [clj-http.client :as client]
+  (:require [clj-http.client :as http]
             [midje.sweet :refer :all]
             [jenkins-collector.jenkins :refer :all]
             [cheshire.core :refer :all]
@@ -58,3 +58,16 @@
          (fact "extractst the build duration" (-> metric :build :duration) => 33835)
          (fact "extracts the build result"    (-> metric :build :result) => "SUCCESS")))
 
+(facts "about put-build!"
+       (fact "posts build to api"
+             (put-build! {} "http://server.com") => "worked"
+             (provided
+              (http/post "http://server.com/api/builds" {:headers {"content-type" "application/json; charset=UTF-8"}, :body "{}"}) => "worked")))
+
+(facts "about upload-metrics"
+       (fact "calls put-build for each metric"
+             (upload-metrics '(1 2 3) "http://foo") => '(:result-1 :result-2 :result-3)
+             (provided
+              (put-build! 1 "http://foo") => :result-1
+              (put-build! 2 "http://foo") => :result-2
+              (put-build! 3 "http://foo") => :result-3)))

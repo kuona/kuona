@@ -2,7 +2,8 @@
   (:require [cheshire.core :refer :all]
             [clojure.tools.logging :as log]
             [kuona-core.util :as util]
-            [clj-http.client :as http]))
+            [clj-http.client :as http]
+            [clojure.string :as string]))
 
 (defn job-to-job
   [job]
@@ -15,10 +16,14 @@
         result (map job-to-job (:jobs response))]
     result))
 
+(defn json-url
+  [path]
+  (if (string/ends-with? path "/") (str path "api/json") (str path "/api/json")))
+
 (defn http-source
   [credentials]
   (fn [url]
-    (let [uri (str url "/api/json")
+    (let [uri (json-url url)
           http-credentials {:basic-auth [(:username credentials) (:password credentials)]}
           response (http/get uri http-credentials)
           content (util/parse-json-body response)]
@@ -37,10 +42,10 @@
   [connection jobs]
   (flatten (map #(read-build connection %) jobs)))
 
-(defn make-build-metric
+(defn read-build-metric
   [connection server build]
   (log/info "read-build-metric" (-> build :url))
-  (let [content (connection (:url build))]
+  (let [content (connection (-> build :url))]
     {:build
      {:id        (util/uuid-from (:url build))
       :source    server
@@ -62,18 +67,20 @@
    :body    (generate-string content)})
 
 (defn put-build!
-  [build url]
-  (log/info "put-build!" url)
-  (util/parse-json-body (http/put url (build-json-request build))))
+  [build api]
+  (let [url (str api "/api/builds")]
+    (log/info "put-build!" url)
+    (http/post url (build-json-request build))))
 
 (defn upload-metrics
-  [build-metrics api]
-  (doall #(put-build! % (str api "/api/builds")) build-metrics))
+  [metrics api]
+  (log/info "upload-metrics" (count metrics) "metrics to" api)
+  (doall (map (fn [b] (put-build! b api)) metrics)))
 
 (defn collect-metrics
   [connection url]
   (log/info "Collecting metrics from" url)
   (let [build-jobs (read-jenkins-jobs connection url)
         build-log (read-jenkins-builds connection build-jobs)
-        build-metrics (map #(make-build-metric connection url %) build-log)]
+        build-metrics (map #(read-build-metric connection url %) build-log)]
     build-metrics))
