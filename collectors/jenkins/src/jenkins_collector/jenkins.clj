@@ -20,11 +20,17 @@
   [path]
   (if (string/ends-with? path "/") (str path "api/json") (str path "/api/json")))
 
+(defn http-credentials
+  [username password]
+  (cond
+    (not (or (nil? username) (nil? password))) {:basic-auth [username password]}
+    :else {}))
+
 (defn http-source
   [credentials]
   (fn [url]
     (let [uri (json-url url)
-          http-credentials {:basic-auth [(:username credentials) (:password credentials)]}
+          http-credentials (http-credentials (:username credentials) (:password credentials))
           response (http/get uri http-credentials)
           content (util/parse-json-body response)]
       content)))
