@@ -3,7 +3,8 @@
             [clojure.tools.logging :as log]
             [kuona-core.util :as util]
             [clj-http.client :as http]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [slingshot.slingshot :refer :all]))
 
 (defn job-to-job
   [job]
@@ -69,8 +70,16 @@
 (defn put-build!
   [build api]
   (let [url (str api "/api/builds")]
-    (log/info "put-build!" url)
-    (http/post url (build-json-request build))))
+    (try+
+      (log/info "put-build!" url (-> build :build :url))
+      (http/post url (build-json-request build))
+      (catch [:status 404] {:keys [request-time headers body]}
+        (log/warn "Failed to put build" url build "response" body))
+      (catch [:status 500] {:keys [request-time headers body]}
+        (log/warn "Failed to put build" url build "response" body))
+      (catch Object _
+        (log/warn "Failed to put build" url build)
+        (throw+)))))
 
 (defn upload-metrics
   [metrics api]
