@@ -71,3 +71,11 @@
               (put-build! 1 "http://foo") => :result-1
               (put-build! 2 "http://foo") => :result-2
               (put-build! 3 "http://foo") => :result-3)))
+
+(facts "about jenkins auth"
+       (fact "no auth if password missing"
+             (http-credentials :username nil) => {})
+       (fact "no auth if username missing"
+             (http-credentials nil :password) => {})
+       (fact "basic auth for username and password"
+             (http-credentials "foo" "bar") => {:basic-auth ["foo" "bar"]}))
