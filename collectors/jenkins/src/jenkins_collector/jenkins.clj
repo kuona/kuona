@@ -92,10 +92,39 @@
   (log/info "upload-metrics" (count metrics) "metrics to" api)
   (doall (map (fn [b] (put-build! b api)) metrics)))
 
-(defn collect-metrics
+(defn collect-metrics-alt
   [connection url]
   (log/info "Collecting metrics from" url)
   (let [build-jobs (read-jenkins-jobs connection url)
         build-log (read-jenkins-builds connection build-jobs)
         build-metrics (map #(read-build-metric connection url %) build-log)]
     build-metrics))
+
+
+(defn read-build-metrics
+  [connection server builds]
+  (map (fn [build]
+         (log/info "read-build-metric" (-> build :url))
+         (let [content (connection (-> build :url))]
+           {:build
+            {:id        (util/uuid-from (:url build))
+             :source    server
+             :timestamp (:timestamp content)
+             :name      (:name build)
+             :system    :jenkins
+             :url       (:url build)
+             :number    (:number content)
+             :duration  (:duration content)
+             :result    (:result content)
+             :collected (util/timestamp)
+             :collector {:name    :kuona-jenkins-collector
+                         :version (util/get-project-version 'kuona-jenkins-collector)}
+             :jenkins   content}}))
+       builds))
+
+(defn put-builds! [api builds]
+  (doall (map (fn [build] (put-build! build api)) builds)))
+
+(defn collect-metrics [connection url api]
+  (put-builds! api (read-build-metrics connection url (read-jenkins-builds connection (read-jenkins-jobs connection url)))))
+
