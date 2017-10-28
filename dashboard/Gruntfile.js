@@ -16,7 +16,7 @@ module.exports = function (grunt) {
     },
     clean: {
       build: {
-        src: [ 'out' ]
+        src: ['out']
       }
     },
     browserSync: {
@@ -26,7 +26,7 @@ module.exports = function (grunt) {
       },
       dev: {
         bsFiles: {
-          src : [
+          src: [
             'out/**'
           ]
         },
@@ -43,7 +43,7 @@ module.exports = function (grunt) {
       },
       dev: {
         bsFiles: {
-          src : [
+          src: [
             'out/**'
           ]
         },

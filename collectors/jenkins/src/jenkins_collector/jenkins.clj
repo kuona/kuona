@@ -90,3 +90,20 @@
         build-log (read-jenkins-builds connection build-jobs)
         build-metrics (map #(read-build-metric connection url %) build-log)]
     build-metrics))
+
+
+(defn build-jobs [connector url xf]
+  ([state (atom [])]
+    (fn
+      ([] (xf))
+      ([result] (xf result))
+      ([result input])
+      )
+    )
+  )
+
+
+(transduce (comp (partial builds "connection url")
+                 (partial build-logs connection)
+                 (partial metrics connection)
+                 upload-metric))
