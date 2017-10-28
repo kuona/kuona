@@ -12,7 +12,7 @@
 (def cli-options
   [["-j" "--jenkins url" "Url for the jenkins server to query"]
    ["-u" "--username name" "Jenkins username to user for basic authentication"]
-   ["-p" "--password password" "Jenkins password for the supplied uername" ]
+   ["-p" "--password password" "Jenkins password for the supplied uername"]
    ["-a" "--api-url URL" "The URL of the back end Kuona API" :default "http://dashboard.kuona.io"]
    ["-c" "--config FILE" "Configuration file for CLI options" :default "local-properties.edn"]
    ["-h" "--help"]])
@@ -24,10 +24,10 @@
 
 (defn -main
   [& args]
-  (let [config       (cli/configure "Kuona Jenkins build collector." cli-options args)
-        source       (jenkins/http-source {:username (-> config :username) :password (-> config :password)})
+  (let [config (cli/configure "Kuona Jenkins build collector." cli-options args)
+        source (jenkins/http-source {:username (-> config :username) :password (-> config :password)})
         build-server (:jenkins config)
         api (-> config :api-url)]
     (log/info "Collecting metrics from:" build-server)
-    (let [metrics (jenkins/collect-metrics source build-server)]
-      (jenkins/upload-metrics metrics api))))
+    (jenkins/collect-metrics source build-server api)))
+

@@ -9,7 +9,8 @@
             [kuona-api.handler :as service]
             [kuona-api.config :as config]
             [kuona-api.collector-handlers :refer [create-collectors-index-if-missing]]
-            [kuona-api.environments :as env])
+            [kuona-api.environments :as env]
+            [kuona-api.build-handlers :as build])
   (:gen-class))
 
 (def cli-options
@@ -73,6 +74,11 @@
   (let [index (store/index "kuona-snapshots" "http://localhost:9200")]
     (if (store/has-index? index) nil (store/create-index index {:repositories{}}))))
 
+(defn create-build-index-if-missing
+  []
+  (let [index build/build-index]
+    (if (store/has-index? index) false (store/create-index index store/build-metric-mapping-type))))
+
 (defn start-application
   [port]
   (log/info "Starting API on port " port)
@@ -80,6 +86,7 @@
    (create-repository-index-if-missing)
    (create-snapshot-index-if-missing)
    (create-collectors-index-if-missing)
+   (create-build-index-if-missing)
    (exit 0 (jetty/run-jetty #'service/app {:port port}))
    (catch [:type :config/missing-parameter] {:keys [parameter p]}
      (log/error "Missing configuration parameter " p))))

@@ -14,8 +14,8 @@
                  [clj-http "3.6.0"]
                  [cheshire "5.6.3"]
                  [clj-jgit "0.8.9"]
+                 [com.jcabi/jcabi-log "0.17.1"]
                  [kuona-core "0.0.2"]]
   :plugins [[lein-midje "3.0.0"]]
-  :profiles {:dev     {:dependencies [[midje "1.9.0-alpha5"]
-                                      [com.jcabi/jcabi-log "0.17.1"]]}
+  :profiles {:dev     {:dependencies [[midje "1.9.0-alpha5"]]}
              :uberjar {:aot :all}})

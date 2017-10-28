@@ -6,11 +6,13 @@
   (:gen-class))
 
 
-(def build-mapping (store/mapping :builds (store/index :kuona-builds "http://localhost:9200")))
+(def build-index (store/index :kuona-builds "http://localhost:9200"))
+(def build-mapping (store/mapping :builds build-index))
 
 
 (defn put-build!
   [data]
-  (let [id (-> data :build :id)]
-    (log/info "put-build!" id (-> data :build :name) (-> data :build :number))
-    (response (store/put-document data build-mapping id))))
+  (let [build (-> data :build)
+        id    (-> build :id)]
+    (log/info "put-build!" id (-> build :name) (-> build :number))
+    (response (store/put-document build build-mapping id))))

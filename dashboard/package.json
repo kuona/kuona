@@ -4,6 +4,7 @@
   "description": "Builds UI for Kuona",
   "author": "Kuona",
   "repository": "https://github.com/kuona/dashboard",
+  "private": true,
   "dependencies": {
     "grunt": "^1.0.1",
     "grunt-cli": "^1.2.0",

@@ -28,7 +28,7 @@
 
 (def test-build-es
   {:headers {"content-type" "application/json; charset=UTF-8"}
-   :body    (generate-string test-build)})
+   :body    (generate-string (-> test-build :build))})
 
 (facts "about build endpoint"
        (fact "returns collector activity if created"

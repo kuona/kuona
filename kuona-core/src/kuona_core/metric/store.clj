@@ -3,10 +3,12 @@
             [clj-http.client :as http]
             [clojure.tools.logging :as log]
             [kuona-core.util :refer :all]
+            [kuona-core.elasticsearch :as es]
             [slingshot.slingshot :refer :all])
   (:gen-class))
 
 (def es-string-type
+  
   {:type "text"})
 
 (def es-string-not-analyzed-type
@@ -15,15 +17,33 @@
 (def es-timestamp-type
   {:type "date" :format "strict_date_optional_time||epoch_millis"})
 
+(def es-long
+  {:type "long"})
+
 (def collector-mapping-type
   {:properties {:name    es-string-not-analyzed-type
                 :version es-string-not-analyzed-type}})
+
+(def build-metric-mapping-type
+  {:builds {:properties {:id        es/string-not-analyzed
+                        :source    es-string-not-analyzed-type
+                        :timestamp es-timestamp-type
+                        :name      es-string-not-analyzed-type
+                        :system    es-string-not-analyzed-type
+                        :url       es-string-not-analyzed-type
+                        :number    es-long
+                        :duration  es-long
+                        :result    es-string-not-analyzed-type
+                        :collected es-timestamp-type
+                        :collector collector-mapping-type
+                        :jenkins es/disabled-object }}})
+
 
 (def metric-mapping-type
   {:build {:properties {:timestamp es-timestamp-type,
                         :collector collector-mapping-type
                         :metric    {:properties {:activity  {:properties {:duration {:type "long"},
-                                                                          :name       es-string-not-analyzed-type
+                                                                          :name     es-string-not-analyzed-type
                                                                           :id       es-string-not-analyzed-type
                                                                           :number   {:type "long"},
                                                                           :result   es-string-not-analyzed-type
@@ -32,22 +52,24 @@
                                                  :source    {:properties {:system es-string-not-analyzed-type,
                                                                           :url    es-string-not-analyzed-type}},
                                                  :type      es-string-not-analyzed-type}}}}
-   :vcs {:properties {:collector collector-mapping-type
-                      :metric {:properties {:activity {:properties {:author        es-string-type
-                                                                    :branches      es-string-not-analyzed-type
-                                                                    :change_count  {:type "long"},
-                                                                    :changed_files {:properties {:change es-string-not-analyzed-type
-                                                                                                 :path es-string-not-analyzed-type}}
-                                                                    :email         es-string-not-analyzed-type
-                                                                    :id            es-string-not-analyzed-type
-                                                                    :merge         {:type "boolean"}
-                                                                    :message       es-string-type}}
-                                            :collected es-timestamp-type
-                                            :name es-string-not-analyzed-type
-                                            :source {:properties {:system es-string-not-analyzed-type
-                                                                  :url es-string-not-analyzed-type}}
-                                            :type {:type "keyword"}}}
-                      :timestamp es-timestamp-type}}})
+   :vcs   {:properties {:collector collector-mapping-type
+                        :metric    {:properties {:activity  {:properties {:author        es-string-type
+                                                                          :branches      es-string-not-analyzed-type
+                                                                          :change_count  {:type "long"},
+                                                                          :changed_files {:properties {:change es-string-not-analyzed-type
+                                                                                                       :path   es-string-not-analyzed-type}}
+                                                                          :email         es-string-not-analyzed-type
+                                                                          :id            es-string-not-analyzed-type
+                                                                          :merge         {:type "boolean"}
+                                                                          :message       es-string-type}}
+                                                 :collected es-timestamp-type
+                                                 :name      es-string-not-analyzed-type
+                                                 :source    {:properties {:system es-string-not-analyzed-type
+                                                                          :url    es-string-not-analyzed-type}}
+                                                 :type      {:type "keyword"}}}
+                        :timestamp es-timestamp-type}}})
+
+
 
 (defn http-path
   [& elements]
