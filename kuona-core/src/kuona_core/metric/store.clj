@@ -8,7 +8,7 @@
   (:gen-class))
 
 (def es-string-type
-  
+
   {:type "text"})
 
 (def es-string-not-analyzed-type
@@ -26,17 +26,17 @@
 
 (def build-metric-mapping-type
   {:builds {:properties {:id        es/string-not-analyzed
-                        :source    es-string-not-analyzed-type
-                        :timestamp es-timestamp-type
-                        :name      es-string-not-analyzed-type
-                        :system    es-string-not-analyzed-type
-                        :url       es-string-not-analyzed-type
-                        :number    es-long
-                        :duration  es-long
-                        :result    es-string-not-analyzed-type
-                        :collected es-timestamp-type
-                        :collector collector-mapping-type
-                        :jenkins es/disabled-object }}})
+                         :source    es-string-not-analyzed-type
+                         :timestamp es-timestamp-type
+                         :name      es-string-not-analyzed-type
+                         :system    es-string-not-analyzed-type
+                         :url       es-string-not-analyzed-type
+                         :number    es-long
+                         :duration  es-long
+                         :result    es-string-not-analyzed-type
+                         :collected es-timestamp-type
+                         :collector collector-mapping-type
+                         :jenkins   es/disabled-object}}})
 
 
 (def metric-mapping-type
@@ -85,11 +85,11 @@
   [index]
   (log/debug "Testing index" index)
   (try+
-   (parse-json-body (http/get index))
-   (catch [:status 404] {:keys [request-time headers body]} false)
-   (catch Object _
-     (log/error (:throwable &throw-context) "unexpected error")
-     (throw+))))
+    (parse-json-body (http/get index))
+    (catch [:status 404] {:keys [request-time headers body]} false)
+    (catch Object _
+      (log/error (:throwable &throw-context) "unexpected error")
+      (throw+))))
 
 
 (def json-headers {"content-type" "application/json; charset=UTF-8"})
@@ -99,20 +99,20 @@
   exist."
   [index types]
   (try+
-   (log/info "Creating index" index)
-   (parse-json-body (http/put index {:headers json-headers
-                                     :body (generate-string {:mappings types})}))
-   (catch Object _
-       (log/error (:throwable &throw-context) "unexpected error")
-       (throw+)
-       )))
+    (log/info "Creating index" index)
+    (parse-json-body (http/put index {:headers json-headers
+                                      :body    (generate-string {:mappings types})}))
+    (catch Object _
+      (log/error (:throwable &throw-context) "unexpected error")
+      (throw+)
+      )))
 
 (defn delete-index
   [index]
   (try+
-   (parse-json-body (http/delete index))
-   (catch Object _
-     false)))
+    (parse-json-body (http/delete index))
+    (catch Object _
+      false)))
 
 (defn mapping
   [mapping-name index]
@@ -124,7 +124,7 @@
    (let [url (clojure.string/join "/" [mapping id])]
      (log/info "put-document " mapping id url)
      (parse-json-body (http/put url {:headers json-headers
-                                     :body (generate-string metric)})))))
+                                     :body    (generate-string metric)})))))
 
 
 (defn put-partial-document
@@ -133,11 +133,11 @@
         request {:doc update}]
     (log/info "put-partial-update " mapping id)
     (parse-json-body (http/post url {:headers json-headers
-                                     :body (generate-string request)}))))
+                                     :body    (generate-string request)}))))
 
 (defn get-count
   [mapping]
-  (let [url (clojure.string/join "/" [mapping "_count"]) ]
+  (let [url (clojure.string/join "/" [mapping "_count"])]
     (log/info "Reading document count for " url)
     (parse-json-body (http/get url {:headers json-headers}))))
 
@@ -155,17 +155,17 @@
   [n]
   (cond
     (= (type n) java.lang.Long) n
-    :else (try+ (. Integer parseInt  n)
+    :else (try+ (. Integer parseInt n)
                 (catch Object _ nil))))
-                                        
+
 
 (defn pagination-param
-  [&{:keys [:size :page]}]
+  [& {:keys [:size :page]}]
   (let [page-number (parse-integer page)]
     (cond
       (nil? page-number) (str "size=" size)
-      (= page-number 1)  (str "size=" size)
-      :else              (str "size=" size "&" "from=" (* (- page-number 1) size)))))
+      (= page-number 1) (str "size=" size)
+      :else (str "size=" size "&" "from=" (* (- page-number 1) size)))))
 
 (defn internal-search
   [mapping query]
@@ -192,6 +192,16 @@
         :items documents
         :links (page-links page-fn :size size :count result-count)}))))
 
+(defn query
+  [mapping q]
+  (let [url (clojure.string/join "/" [mapping "_search"])
+        response (http/get url {:headers json-headers :body (generate-string q)})
+        body (parse-json-body response)]
+    (log/info response)
+    {:count (-> body :hits :total)
+     :results (-> body :hits :hits)}
+    ))
+
 (defn find-documents
   [url]
   (log/info "store/find" url)
@@ -214,7 +224,7 @@
 (defn all-documents
   "Retrieves all the activity based on the supplied key from the index."
   [mapping]
-  (log/debug  "all documents in " mapping)
+  (log/debug "all documents in " mapping)
   (let [url (str (http-path mapping "_search") "?size=10000")
         query-string (generate-string {:query {:from 0 :size 10000}})
         query {:form-params query-string}
