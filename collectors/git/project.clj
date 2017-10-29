@@ -11,12 +11,12 @@
                                                     com.sun.jdmk/jmxtools
                                                     com.sun.jmx/jmxri]]
                  [org.slf4j/slf4j-log4j12 "1.7.25"] ;; Required for clj-jgit
+                 [com.jcabi/jcabi-log "0.17.1"]
                  [clj-http "3.6.0"]
                  [cheshire "5.6.3"]
                  [clj-jgit "0.8.9"]
                  [kuona-core "0.0.2"]
                  [org.clojure/tools.cli "0.3.5"]]
   :plugins [[lein-midje "3.0.0"]]
-  :profiles {:dev     {:dependencies [[midje "1.9.0-alpha5"]
-                                      [com.jcabi/jcabi-log "0.17.1"]]}
+  :profiles {:dev     {:dependencies [[midje "1.9.0-alpha5"]]}
              :uberjar {:aot :all}})

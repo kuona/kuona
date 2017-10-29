@@ -12,6 +12,7 @@
                                                     javax.jms/jms
                                                     com.sun.jdmk/jmxtools
                                                     com.sun.jmx/jmxri]]
+                 [com.jcabi/jcabi-log "0.17.1"]
                  [clj-http "3.1.0"]
                  [cheshire "5.6.3"]
                  [clojurewerkz/quartzite "2.0.0"]]
