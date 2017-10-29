@@ -47,8 +47,8 @@
     "http://jenkins.com/job/intercept/6/" stubbed-build-result
     (println "************************************************ No stubbed data" url)))
 
-(facts "about reading from Jenkins"
-       (let [metrics (collect-metrics stubbed-connection "http://jenkins.com/")
+(future-facts "about reading from Jenkins"
+       (let [metrics (collect-metrics stubbed-connection "http://jenkins.com/" "localhost")
              metric  (first metrics)]
          (fact "details the collector"        (-> metric :build :collector) => {:name :kuona-jenkins-collector, :version "0.0.1"})
          (fact "includes name"                (-> metric :build :name) => "intercept")
