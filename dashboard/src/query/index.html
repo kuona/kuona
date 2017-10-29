@@ -29,7 +29,16 @@
                 <h2>Query</h2>
                 <form class="form">
                   <div id="query-editor" style="height: 200px; width: 100%"></div>
+                  <button ng-click="runQuery()" class="btn btn-primary pull-right">Query</button>
                 </form>
+              </div>
+            </div>
+
+            <div class="ibox float-e-margins">
+              <div class="ibox-content">
+                <p>
+                  {{result}}
+                </p>
               </div>
             </div>
           </div>

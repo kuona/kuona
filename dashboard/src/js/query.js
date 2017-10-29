@@ -5,6 +5,7 @@ var kuonaQueries = angular.module('kuona.query', [
 
 function QueryController($scope, $http) {
 
+  $scope.result = "Results appear here";
   var editor = ace.edit("query-editor");
   editor.getSession().setMode("ace/mode/json");
   editor.setTheme("ace/theme/chrome");
@@ -12,8 +13,9 @@ function QueryController($scope, $http) {
   editor.session.setTabSize(2);
   editor.session.setFoldStyle("markbegin");
   editor.setBehavioursEnabled(true);
-   editor.session.setUseSoftTabs(true);
+  editor.session.setUseSoftTabs(true);
 
+  $scope.editor = editor;
 
   // language=JSON
   editor.setValue("{\n  " +
@@ -21,6 +23,16 @@ function QueryController($scope, $http) {
     "  \"match_all\": {}\n  " +
     "}\n" +
     "}");
+
+  $scope.runQuery = function () {
+    console.log("Run Query");
+    console.log($scope.editor.getValue());
+
+    $http.post("/api/query/commits", $scope.editor.getValue()).then(function(res) {
+      console.log("Received results");
+      $scope.result = res;
+    });
+  }
 }
 
 
