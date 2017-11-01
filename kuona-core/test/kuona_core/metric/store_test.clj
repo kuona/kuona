@@ -53,3 +53,27 @@
        (fact (store/search "mapping" "term" 10 2 #(%)) => expected-no-results
              (provided
               (http/get "mapping/_search?q=term&size=10&from=10" anything) => no-search-results :times 1 ))))
+
+
+(def parsing-exception
+  {:error {:root_cause [{:type   :parsing_exception
+                         :reason "[match_all] malformed query, expected [END_OBJECT] but found [FIELD_NAME]"
+                         :line   1
+                         :col    73}]
+           :type       :parsing_exception
+           :reason     "[match_all] malformed query, expected [END_OBJECT] but found [FIELD_NAME]"
+           :line       1
+           :col        73}
+   :status  400})
+
+(facts "about elasticsearch error handling"
+       (fact "maps parsing exception"
+       (-> (store/es-error parsing-exception) :error :type) => :parsing_exception)
+       (fact "composes description"
+             (-> (store/es-error parsing-exception) :error :description) => "[match_all] malformed query, expected [END_OBJECT] but found [FIELD_NAME] line 1 column 73")
+       (fact "maps parsing location"
+             (-> (store/es-error parsing-exception) :error :query_location) => {:line 1 :col 73})
+       (fact "handles query parsing errors"
+             (store/es-error parsing-exception) => {:error {:type           :parsing_exception
+                                                            :description    "[match_all] malformed query, expected [END_OBJECT] but found [FIELD_NAME] line 1 column 73"
+                                                            :query_location {:line 1 :col 73}}}))

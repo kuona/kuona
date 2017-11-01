@@ -1,3 +1,5 @@
+var api = process.env.dashlocal ? 'http://localhost:9001' : 'http://dashboard.kuona.io:9001';
+
 module.exports = function (grunt) {
   grunt.initConfig({
     watch: {
@@ -22,24 +24,7 @@ module.exports = function (grunt) {
     browserSync: {
       options: {
         port: 8080,
-        middleware: [require('http-proxy-middleware')('/api', {target: 'http://dashboard.kuona.io:9001'})]
-      },
-      dev: {
-        bsFiles: {
-          src: [
-            'out/**'
-          ]
-        },
-        options: {
-          watchTask: true,
-          server: './out'
-        }
-      }
-    },
-    localBrowserSync: {
-      options: {
-        port: 8080,
-        middleware: [require('http-proxy-middleware')('/api', {target: 'http://localhost:9001'})]
+        middleware: [require('http-proxy-middleware')('/api', {target: api})]
       },
       dev: {
         bsFiles: {

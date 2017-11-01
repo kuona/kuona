@@ -45,9 +45,13 @@
   [path]
   (file-seq (clojure.java.io/file path)))
 
+(defn parse-json
+  [text]
+  (parse-string text true))
+
 (defn parse-json-body
   [response]
-  (parse-string (:body response) true))
+  (parse-json (:body response)))
 
 (defn get-project-version
   "Reads the project version for the supplied dependency

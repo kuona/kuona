@@ -27,18 +27,49 @@
             <div class="ibox float-e-margins">
               <div class="ibox-content">
                 <h2>Query</h2>
-                <form class="form">
-                  <div id="query-editor" style="height: 200px; width: 100%"></div>
-                  <button ng-click="runQuery()" class="btn btn-primary pull-right">Query</button>
+                <form class="form-horizontal">
+                  <div class="form-group">
+                    <div class="col-sm-1 control-label">
+                      Source
+                    </div>
+                    <div class="col-sm-11">
+                      
+                      <label class="checkbox-inline" ng-repeat="s in sources">
+                        <input type="radio" ng-value="s" ng-model="$parent.source"> {{ s.id }} </label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div id="query-editor" style="height: 200px; width: 100%"></div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-12">
+                      <button ng-click="runQuery()" class="btn btn-primary pull-right">Query</button>
+                    </div>
+                  </div>
                 </form>
               </div>
             </div>
-
+            
             <div class="ibox float-e-margins">
-              <div class="ibox-content">
-                <p>
-                  {{result}}
-                </p>
+              <div class="ibox-header">
+                <h2>Results</h2>
+                <div class="alert alert-danger" ng-if="hasError">
+                  {{ result }}
+                </div>
+              </div>
+              <div class="ibox-content" ng-if="!hasError">
+                <table class="ui-jqgrid-htable">
+                  <thead>
+                    <tr>
+                      <th ng-repeat="c in tableData.headers">{{c}}</th>
+                    </tr>
+                  </thead>
+                  <tr ng-repeat="row in tableData.values track by $index">
+                    <td ng-repeat="value in row">{{value}}</td>
+                  </tr>
+                </table>
+                <pre>
+                </pre>
               </div>
             </div>
           </div>

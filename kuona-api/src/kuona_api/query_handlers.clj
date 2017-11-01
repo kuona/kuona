@@ -22,7 +22,7 @@
 (defn get-sources
   []
   (log/info "Query sources")
-  (response {:sources (map (fn [k] {:source k :description (-> sources k :description)}) (keys sources))}))
+  (response {:sources (map (fn [k] {:id k :name k :description (-> sources k :description)}) (keys sources))}))
 
 (defn make-query [index query]
   (log/info "make-query" index)
@@ -34,5 +34,5 @@
     (log/info "Query source" src)
     (cond
       (get sources src) (response (make-query (-> sources src :index) query))
-      :else (not-found {:error {:description "Invalid source name"}}))
+      :else             (not-found {:error {:description "Invalid source name"}}))
     ))

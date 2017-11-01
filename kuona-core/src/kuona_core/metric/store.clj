@@ -192,15 +192,28 @@
         :items documents
         :links (page-links page-fn :size size :count result-count)}))))
 
+(defn es-error
+  [e]
+  {:error {:type (-> e :error :type)
+           :description    (str (-> e :error :reason) " line " (-> e :error :line) " column " (-> e :error :col))
+           :query_location {:line (-> e :error :line)
+                            :col   (-> e :error :col)}}})
+
 (defn query
   [mapping q]
-  (let [url (clojure.string/join "/" [mapping "_search"])
-        response (http/get url {:headers json-headers :body (generate-string q)})
-        body (parse-json-body response)]
-    (log/info response)
-    {:count (-> body :hits :total)
-     :results (-> body :hits :hits)}
-    ))
+  (try+
+   (let [url     (clojure.string/join "/" [mapping "_search"])
+         response (http/get url {:headers json-headers :body (generate-string q)})
+         body     (parse-json-body response)
+         results  (map :_source (-> body :hits :hits))]
+     {:count   (-> body :hits :total)
+      :results results})
+   (catch [:status 400] {:keys [request-time headers body]}
+     (let [error (parse-json body)]
+       (log/info "Bad request" error)
+       (es-error error)))
+   (catch Object _ {:error {:type :unexpected :description "Unknown error"}})))
+     
 
 (defn find-documents
   [url]
