@@ -10,11 +10,11 @@ readonly pgray="\033[0;40m"
 readonly preset="\033[0m"
 
 function banner() {
-    local text=$1
+  local text=$1
 
-    echo "${pblue}"
-    figlet -f cybermedium "${text}"
-    echo "${preset}"
+  echo "${pblue}"
+  figlet -f cybermedium "${text}"
+  echo "${preset}"
 }
 
 PWD=`pwd`
@@ -25,8 +25,8 @@ echo
 echo "${pblue}Kuona developer setup${preset} for ${pgreen}${PWD}${preset}"
 
 if command -v brew >/dev/null 2>&1; then
-    echo "${pblue}Installing required tools using hombrew and bundle${preset}"
-    brew bundle
+  echo "${pblue}Installing required tools using hombrew and bundle${preset}"
+  brew bundle
 fi
 
 
@@ -41,34 +41,34 @@ cd dashboard; npm install; cd ..
 LOG_PATH=/var/log/kuona
 
 if [ -d "${LOG_PATH}" ]; then
-   echo "${pblue}Logpath ${LOG_PATH} already exists - skipping${preset}"
+  echo "${pblue}Logpath ${LOG_PATH} already exists - skipping${preset}"
 else
-    echo "${pblue}Creating logging directory${LOG_PATH} (requires sudo)${preset}"
-    sudo mkdir -p ${LOG_PATH}
-    sudo chown $(whoami) ${LOG_PATH}
+  echo "${pblue}Creating logging directory${LOG_PATH} (requires sudo)${preset}"
+  sudo mkdir -p ${LOG_PATH}
+  sudo chown $(whoami) ${LOG_PATH}
 fi
 
 
 #find . -iname 'project.clj' -exec echo "Resolving dependencies for: " {} \; -execdir lein deps \;
 
 if ! [ -d "test/test-repo" ]; then
-   git clone https://github.com/grahambrooks/functional-event-store.git test/test-repo
+  git clone https://github.com/grahambrooks/functional-event-store.git test/test-repo
 fi
 
 if ! [ -d "test/dependency-test-repo" ]; then
-    git clone https://github.com/grahambrooks/java-nio-socket-server.git test/dependency-test-repo
+  git clone https://github.com/grahambrooks/java-nio-socket-server.git test/dependency-test-repo
 fi
 
 function symlink_core {
-    local p=$1
-    
-    if ! [ -d "${p}/checkouts" ]; then
-        mkdir "${p}/checkouts"
-    fi
-
-    if ! [ -h "${p}/checkouts/kuona-core" ]; then
-        ln -s "${PWD}/kuona-core" "${p}/checkouts/kuona-core"
-    fi
+  local p=$1
+  
+  if ! [ -d "${p}/checkouts" ]; then
+    mkdir "${p}/checkouts"
+  fi
+  
+  if ! [ -h "${p}/checkouts/kuona-core" ]; then
+    ln -s "${PWD}/kuona-core" "${p}/checkouts/kuona-core"
+  fi
 }
 
 symlink_core "collectors/snapshot/"
