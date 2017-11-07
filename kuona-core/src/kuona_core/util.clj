@@ -53,6 +53,12 @@
   [response]
   (parse-json (:body response)))
 
+(defn build-json-request
+  [content]
+  {:headers {"content-type" "application/json; charset=UTF-8"}
+   :body    (generate-string content)})
+
+
 (defn get-project-version
   "Reads the project version for the supplied dependency
   

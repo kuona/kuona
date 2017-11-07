@@ -49,15 +49,11 @@
   [api-url id]
   (string/join "/" [api-url "api/snapshots" id]))
 
-(defn build-json-request
-  [content]
-  {:headers {"content-type" "application/json; charset=UTF-8"}
-   :body    (generate-string content)})
 
 (defn put-snapshot!
   [snapshot url]
   (log/info "put-snapshot " url)
-  (let [request (build-json-request snapshot)]
+  (let [request (util/build-json-request snapshot)]
     (util/parse-json-body (http/put url request))))
 
 (defn snapshot-commits-url
@@ -67,7 +63,7 @@
 (defn put-commit!
   [commit url]
   (log/info "put-commit " url)
-  (let [request (build-json-request commit)]
+  (let [request (util/build-json-request commit)]
     (util/parse-json-body (http/put url request))))
 
 (defn has-snapshot?
@@ -146,7 +142,7 @@
         force-update    (:force options)
         requires-update (fn [r] (if force-update true (requires-snapshot? r api-url)))]
     (log/info "Updating " api-url " using " workspace " for repository data")
-    (http/post (string/join "/" [api-url "api" "collectors" "activities"]) (build-json-request {:id         (util/uuid)
+    (http/post (string/join "/" [api-url "api" "collectors" "activities"]) (util/build-json-request {:id         (util/uuid)
                                                                                                 :collector  {:name    "snapshot-collector"
                                                                                                              :version (util/get-project-version 'kuona-snapshot-collector)}
                                                                                                 :activity   :started
@@ -157,7 +153,7 @@
     (let [repositories (all-repositories api-url)]
       (log/info "Found " (count repositories) " configured repositories for analysis")
       (create-snapshots api-url workspace (filter requires-update repositories)))
-    (http/post (string/join "/" [api-url "api" "collectors" "activities"]) (build-json-request {:id         (util/uuid)
+    (http/post (string/join "/" [api-url "api" "collectors" "activities"]) (util/build-json-request {:id         (util/uuid)
                                                                                                 :collector  {:name    "snapshot-collector"
                                                                                                              :version (util/get-project-version 'kuona-snapshot-collector)}
                                                                                                 :activity   :finished
