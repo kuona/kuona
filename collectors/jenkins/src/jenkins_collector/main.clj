@@ -1,13 +1,13 @@
 (ns jenkins-collector.main
-  (:require [clj-http.client :as http]
+  (:require [cheshire.core :refer :all]
+            [clj-http.client :as http]
             [clojure.string :as string]
-            [cheshire.core :refer :all]
             [clojure.tools.logging :as log]
-            [slingshot.slingshot :refer :all]
+            [jenkins-collector.jenkins :as jenkins]
+            [kuona-core.cli :as cli]
             [kuona-core.metric.store :as store]
             [kuona-core.util :as util]
-            [kuona-core.cli :as cli]
-            [jenkins-collector.jenkins :as jenkins])
+            [slingshot.slingshot :refer :all])
   (:gen-class))
 
 (def cli-options
@@ -23,10 +23,6 @@
   (let [metrics (jenkins/collect-metrics (jenkins/http-source (:credentials config)) (:url config))]
     (doall (map #(store/put-document % mapping) metrics))))
 
-(def collector-details
-  {:name    "jenkins-collector"
-   :version (util/get-project-version 'kuona-jenkins-collector)})
-
 (defn collector-log
   "Posts details of the collector to the API server to record the collector run"
   [api-url collector-details parameters status]
@@ -39,12 +35,13 @@
     (http/post url body)))
 
 
-(defn log-collection [api-url collector-details params f]
+(defn log-collection
+  "Wraps the collection with logging to the API server to act as a history of changes"
+  [api-url collector-details params f]
+  
   (try+
    (collector-log api-url collector-details params :started)
-   
    (f)
-   
    (collector-log api-url collector-details params :stopped)
    (catch Object _
      (collector-log api-url collector-details params :failed))))
@@ -52,11 +49,20 @@
 
 (defn -main
   [& args]
-  (let [config       (cli/configure "Kuona Jenkins build collector." cli-options args)
-        source       (jenkins/http-source {:username (-> config :username) :password (-> config :password)})
-        build-server (:jenkins config)
-        api-url      (-> config :api-url)]
+  (let [config            (cli/configure "Kuona Jenkins build collector." cli-options args)
+        username          (-> config :username)
+        password          (-> config :password)
+        build-server      (-> config :jenkins)
+        api-url           (-> config :api-url)
+        source            (jenkins/http-source {:username username :password password})
+        collector-details {:name "jenkins-collector" :version (util/get-project-version 'kuona-jenkins-collector)}]
+
     (log/info "Collecting metrics from:" build-server)
 
-    (log-collection api-url collector-details [{:api api-url} {:build-server build-server}] #(jenkins/collect-metrics source build-server api-url))))
+    (log-collection api-url
+                    collector-details
+                    [{:api api-url} {:build-server build-server}]
+                    #(jenkins/collect-metrics source
+                                              build-server
+                                              api-url))))
 
