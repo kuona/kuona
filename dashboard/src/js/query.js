@@ -53,6 +53,39 @@ function QueryController($scope, $http) {
     if (data.count > 0) {
       $scope.tableData.headers = Object.keys(data.results[0]);
       
+      $("#result_grid").jqGrid({
+        data: data.results,
+        datatype: "local",
+        height: 450,
+        autowidth: true,
+        shrinkToFit: true,
+        rowNum: 20,
+        rowList: [10, 20, 30],
+        colNames: Object.keys(data.results[0]),
+        colModel: [
+        
+          {name: "system", index: "system", sorttype: "text"},
+	        {name: "number", index: "number", sorttype: "text"},
+	        {name: "name", index: "name", sorttype: "text"},
+	        {name: "duration", index: "duration", sorttype: "text"},
+	        {name: "source", index: "source", sorttype: "text"},
+	        {name: "result", index: "result", sorttype: "text"},
+	        {name: "collector", index: "collector", sorttype: "text"},
+	        {name: "id", index: "id", sorttype: "text"},
+	        {name: "url", index: "url", sorttype: "text"},
+	        {name: "jenkins", index: "jenkins", sorttype: "text"},
+	        {name: "timestamp", index: "timestamp", sorttype: "text"},
+	        {name: "collected", index: "collected", sorttype: "text"}
+        ],
+        viewrecords: true,
+        caption: "Query Results",
+        add: true,
+        edit: true,
+        addtext: 'Add',
+        edittext: 'Edit',
+        hidegrid: false
+      });
+      
       data.results.forEach(function(v) {
         $scope.tableData.values.push(Object.values(v));
       });

@@ -14,6 +14,8 @@
     <!-- Bootstrap and Fonts -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 
+    <link href="/css/ui.jqgrid.css" rel="stylesheet">
+
     <!-- Main Inspinia CSS files -->
     <link href="/css/animate.css" rel="stylesheet">
     <link id="loadBefore" href="/css/style.css" rel="stylesheet">
@@ -56,21 +58,9 @@
                 <div class="alert alert-danger" ng-if="hasError">
                   {{ result }}
                 </div>
-              </div>
-              <div class="ibox-content" ng-if="!hasError">
-                <table class="ui-jqgrid-htable">
-                  <thead>
-                    <tr>
-                      <th ng-repeat="c in tableData.headers">{{c}}</th>
-                    </tr>
-                  </thead>
-                  <tr ng-repeat="row in tableData.values track by $index">
-                    <td ng-repeat="value in row">{{value}}</td>
-                  </tr>
-                </table>
-                <pre>
-                </pre>
-              </div>
+                <div class="ibox-content" ng-if="!hasError">
+                  <table id="result_grid"></table>
+                </div>
             </div>
           </div>
       </div>
@@ -99,6 +89,10 @@
     <script src="/js/angular/angular-resource.min.js"></script>
     <script src="/js/plugins/bootstrap-markdown/bootstrap-markdown.js"></script>
     <script src="/js/plugins/bootstrap-markdown/markdown.js"></script>
+
+
+    <script src="/js/plugins/jqGrid/i18n/grid.locale-en.js"></script>
+    <script src="/js/plugins/jqGrid/jquery.jqGrid.min.js"></script>
 
     <!-- Anglar App Script -->
     <script src="/js/query.js"></script>
