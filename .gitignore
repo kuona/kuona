@@ -26,3 +26,4 @@ target/
 .lein-repl-history
 checkouts/
 local-*
+kuona-core/dependency.dot
