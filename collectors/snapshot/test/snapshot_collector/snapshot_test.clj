@@ -1,5 +1,6 @@
 (ns snapshot-collector.snapshot-test
   (:require [midje.sweet :refer :all]
+            [kuona-core.util :as util]
             [snapshot-collector.snapshot :refer :all]))
 
 (facts "about data extraction"
@@ -121,8 +122,8 @@
 
 (facts "about json requests"
        (fact "content type is application/json"
-         (:headers (build-json-request {})) => {"content-type" "application/json; charset=UTF-8"})
+         (:headers (util/build-json-request {})) => {"content-type" "application/json; charset=UTF-8"})
        (fact "handles empty json object"
-         (:body (build-json-request {})) => "{}")
+         (:body (util/build-json-request {})) => "{}")
        (fact "converts hashmap to json text"
-         (:body (build-json-request {:key :value})) => "{\"key\":\"value\"}"))
+         (:body (util/build-json-request {:key :value})) => "{\"key\":\"value\"}"))
