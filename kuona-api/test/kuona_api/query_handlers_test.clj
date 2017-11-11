@@ -1,10 +1,10 @@
 (ns kuona-api.query-handlers-test
-  (:require [clojure.test :refer :all]
-            [kuona-api.test-helpers :as helper]
-            [cheshire.core :refer :all]
+  (:require [cheshire.core :refer :all]
             [clj-http.client :as http]
-            [kuona-core.util :as util]
+            [clojure.test :refer :all]
             [kuona-api.handler :refer :all]
+            [kuona-api.test-helpers :as helper]
+            [kuona-core.util :as util]
             [midje.sweet :refer :all]
             [ring.mock.request :as mock]))
 
@@ -12,7 +12,9 @@
   {:query {:match_all {}}})
 
 (facts "about queries"
-       (let [std-headers {"content-type" "application/json; charset=UTF-8"}]
+       (let [std-headers            {"content-type" "application/json; charset=UTF-8"}
+             empty-mapping-response {:status 200
+                                     :body   (generate-string {:index-name {:mappings {:mapping-name {:properties {}}}}})}]
          (fact "query endpoint lists available data sources"
                (:status (app (mock/request :get "/api/query"))) => 200)
          (fact "returns available sources"
@@ -21,14 +23,13 @@
                (:status (helper/mock-json-post app "/api/query/invalid" {})) => 404)
          (fact "returns 200 for valid index"
                (:status (helper/mock-json-post app "/api/query/builds" {})) => 200
-               (provided (http/get "http://localhost:9200/kuona-builds/builds/_search" {:headers std-headers :body "{}"}) => {:status 200 :body "{}"}))
+               (provided (http/get "http://localhost:9200/kuona-builds/builds/_search" {:headers std-headers :body "{}"}) => {:status 200 :body "{}"}
+                         (http/get "http://localhost:9200/kuona-builds/builds/_mapping" {:headers std-headers}) => empty-mapping-response))
          (fact "returns content"
-               (helper/mock-json-post app "/api/query/snapshots" match-all) => {:body "{\"count\":0,\"results\":[]}", :headers {"Content-Type" "application/json; charset=utf-8"}, :status 200}
+               (helper/mock-json-post app "/api/query/snapshots" match-all) => {:body "{\"count\":0,\"results\":[],\"schema\":{}}", :headers {"Content-Type" "application/json; charset=utf-8"}, :status 200}
                
                (provided (http/get "http://localhost:9200/kuona-snapshots/snapshots/_search" {:headers std-headers :body (generate-string match-all)}) => {:status 200,
-                                                                                                                                                           :body   (generate-string {:hits {:total 0 :hits []}})})
+                                                                                                                                                           :body   (generate-string {:hits {:total 0 :hits []}})},
                
-               (provided (http/get "http://localhost:9200/kuona-snapshots/snapshots/_mapping" {:headers std-headers}) => {:status 200
-                                                                                                                           :body (generate-string {:index-name {:mappings {:mapping-name {:properties {}}}}})}
-                                                                                                                           ))))
+                         (http/get "http://localhost:9200/kuona-snapshots/snapshots/_mapping" {:headers std-headers}) => empty-mapping-response   ))))
        
