@@ -12,18 +12,23 @@
   {:query {:match_all {}}})
 
 (facts "about queries"
-       (fact "query endpoint lists available data sources"
-             (:status (app (mock/request :get "/api/query"))) => 200)
-       (fact "returns available sources"
-             (count (-> (helper/parse-json-response (app (mock/request :get "/api/query"))) :sources)) => 4)
-       (fact "returns 404 for invalid index"
-             (:status (helper/mock-json-post app "/api/query/invalid" {})) => 404)
-       (fact "returns 200 for valid index"
-             (:status (helper/mock-json-post app "/api/query/builds" {})) => 200
-             (provided (http/get "http://localhost:9200/kuona-builds/builds/_search" {:headers {"content-type" "application/json; charset=UTF-8"}, :body "{}"}) => {:status 200 :body "{}"}))
-       (fact "returns content"
-             (helper/mock-json-post app "/api/query/snapshots" match-all) => {:body "{\"count\":0,\"results\":[]}", :headers {"Content-Type" "application/json; charset=utf-8"}, :status 200}
-
-             (provided (http/get "http://localhost:9200/kuona-snapshots/snapshots/_search" {:headers {"content-type" "application/json; charset=UTF-8"}, :body (generate-string match-all)}) => {:status 200,
-                                                                                                                                                                                                 :body   (generate-string {:hits {:total 0 :hits []}})})))
-
+       (let [std-headers {"content-type" "application/json; charset=UTF-8"}]
+         (fact "query endpoint lists available data sources"
+               (:status (app (mock/request :get "/api/query"))) => 200)
+         (fact "returns available sources"
+               (count (-> (helper/parse-json-response (app (mock/request :get "/api/query"))) :sources)) => 4)
+         (fact "returns 404 for invalid index"
+               (:status (helper/mock-json-post app "/api/query/invalid" {})) => 404)
+         (fact "returns 200 for valid index"
+               (:status (helper/mock-json-post app "/api/query/builds" {})) => 200
+               (provided (http/get "http://localhost:9200/kuona-builds/builds/_search" {:headers std-headers :body "{}"}) => {:status 200 :body "{}"}))
+         (fact "returns content"
+               (helper/mock-json-post app "/api/query/snapshots" match-all) => {:body "{\"count\":0,\"results\":[]}", :headers {"Content-Type" "application/json; charset=utf-8"}, :status 200}
+               
+               (provided (http/get "http://localhost:9200/kuona-snapshots/snapshots/_search" {:headers std-headers :body (generate-string match-all)}) => {:status 200,
+                                                                                                                                                           :body   (generate-string {:hits {:total 0 :hits []}})})
+               
+               (provided (http/get "http://localhost:9200/kuona-snapshots/snapshots/_mapping" {:headers std-headers}) => {:status 200
+                                                                                                                           :body (generate-string {:index-name {:mappings {:mapping-name {:properties {}}}}})}
+                                                                                                                           ))))
+       
