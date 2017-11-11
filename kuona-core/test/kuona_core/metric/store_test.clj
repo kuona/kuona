@@ -1,8 +1,28 @@
 (ns kuona-core.metric.store-test
-  (:require [midje.sweet :refer :all]
+  (:require [cheshire.core :refer :all]
             [clj-http.client :as http]
-            [cheshire.core :refer :all]
-            [kuona-core.metric.store :as store]))
+            [kuona-core.metric.store :as store]
+            [midje.sweet :refer :all]))
+
+(facts "about elasticsearch mapping to ktypes"
+       (fact "empty mapping is empty"
+             (store/es-mapping-to-ktypes {}) => {})
+       (fact "maps single entry"
+             (store/es-mapping-to-ktypes {:collected {:type "date"}}) => {:collected :timestamp})
+       (fact "maps single entry"
+             (store/es-mapping-to-ktypes {:collected {:type "date"} :size {:type "long"}}) => {:collected :timestamp :size :long}))
+
+(facts "about elastic search type mapping"
+       (fact "maps date property type to timestamp"
+             (store/es-type-to-ktype :collected {:type "date"}) => {:collected :timestamp})
+       (fact "maps multi valued objects as object type"
+             (store/es-type-to-ktype :collector {:properties {}}) => {:collector :object})
+       (fact "maps long valued objects to integer"
+             (store/es-type-to-ktype :collector {:type "long"}) => {:collector :long})
+       (fact "maps keyword valued objects to string"
+             (store/es-type-to-ktype :collector {:type "keyword"}) => {:collector :string})
+       (fact "maps object to object"
+             (store/es-type-to-ktype :collector {:type "object"}) => {:collector :object}))
 
 (facts
  (let [host "http://localhost:9200"]

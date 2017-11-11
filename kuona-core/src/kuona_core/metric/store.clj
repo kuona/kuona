@@ -199,15 +199,55 @@
            :query_location {:line (-> e :error :line)
                             :col   (-> e :error :col)}}})
 
+(defn hash-child
+  "Given a hash with a single key returns the value of that key"
+  [h]
+  (get  h (first (keys h))))
+  
+(defn es-type-to-ktype
+  [k value]
+  (cond
+    (= (-> value :type) "date")    {k :timestamp}
+    (= (-> value :type) "long")    {k :long}
+    (= (-> value :type) "keyword") {k :string}
+    (= (-> value :type) "object")  {k :object}
+    (-> value :properties)         {k :object}
+    :else                          nil))
+
+(defn es-mapping-to-ktypes
+  "Takes an elastic search hashmap of field keys and types. Applies
+  type conversion and returns a hashmap with the field names and kuona
+  types"
+  [h]
+  (into {} (map (fn [k] (es-type-to-ktype (first k) (second k))) h)))
+
+ 
+(defn read-schema
+  [mapping]
+  (try+
+   (let [url      (clojure.string/join "/" [mapping "_mapping"])
+         response (http/get url {:headers json-headers})
+         body     (parse-json-body response)
+         mappings (hash-child (hash-child (hash-child body)))]
+     (es-mapping-to-ktypes mapping))
+   (catch [:status 400] {:keys [request-time headers body]}
+     (let [error (parse-json body)]
+       (log/info "Bad request" error)
+       (es-error error)))
+   (catch Object _ {:error {:type :unexpected :description "Unknown error"}})))
+
+  
 (defn query
   [mapping q]
   (try+
-   (let [url     (clojure.string/join "/" [mapping "_search"])
+   (let [url      (clojure.string/join "/" [mapping "_search"])
          response (http/get url {:headers json-headers :body (generate-string q)})
          body     (parse-json-body response)
-         results  (map :_source (-> body :hits :hits))]
+         results  (map :_source (-> body :hits :hits))
+         schema   (read-schema mapping)]
      {:count   (-> body :hits :total)
-      :results results})
+      :results results
+      :schema  schema})
    (catch [:status 400] {:keys [request-time headers body]}
      (let [error (parse-json body)]
        (log/info "Bad request" error)
