@@ -20,11 +20,11 @@ module.exports = function (grunt) {
     },
     watch: {
       data: {
-        files: ['src/**', 'lib/**'],
+        files: ['src/**', 'lib/**', '!src/sass'],
         tasks: ['copy']
       },
       sass: {
-        files: ['sass/**'],
+        files: ['src/sass/**'],
         tasks: ['compass']
       }
     },
@@ -67,7 +67,7 @@ module.exports = function (grunt) {
     compass: {                  // Task
       dist: {                   // Target
         options: {              // Target options
-          sassDir: 'sass',
+          sassDir: 'src/sass',
           cssDir: 'out/css',
           environment: 'production'
         }

@@ -18,6 +18,7 @@
 
     <!-- Main Inspinia CSS files -->
     <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/highlight/default.css" rel="stylesheet">
     <link id="loadBefore" href="/css/style.css" rel="stylesheet">
   </head>
 
@@ -35,7 +36,7 @@
                       Source
                     </div>
                     <div class="col-sm-11">
-                      
+
                       <label class="checkbox-inline" ng-repeat="s in sources">
                         <input type="radio" ng-value="s" ng-model="$parent.source"> {{ s.id }} </label>
                     </div>
@@ -51,7 +52,7 @@
                 </form>
               </div>
             </div>
-            
+
             <div class="ibox float-e-margins">
               <div class="ibox-header">
                 <h2>Results</h2>
@@ -61,7 +62,19 @@
                 <div class="ibox-content" ng-if="!hasError">
                   <table id="result_grid"></table>
                 </div>
+              </div>
             </div>
+
+            <div class="ibox float-e-margins">
+              <div class="ibox-header">
+                <h2>Results</h2>
+              </div>
+              <div class="ibox-content">
+                <pre ng-repeat="r in response_data.results"><code class="json">{{ r | json }}</code></pre>
+                <pre><code>{{ response_data | json }}</code></pre>
+              </div>
+            </div>
+            
           </div>
       </div>
     </div>
@@ -107,5 +120,6 @@
 
     </script>
     <script src="/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/highlight.pack.js" type="text/javascript"></script>
   </body>
 </html>

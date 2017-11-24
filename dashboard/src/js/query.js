@@ -111,12 +111,13 @@ function QueryController($scope, $http) {
   });
 
   var resetResults = function () {
+    $scope.response_data = {};
     $scope.hasError = false;
     $scope.result = "Results appear here";
   };
 
   var processQueryResults = function (data) {
-    console.log("Received results " + typeof(data.error) + (typeof(data.error) !== undefined));
+    $scope.response_data = data;
 
     if (data.error !== undefined) {
       $scope.result = data.error.description;
@@ -147,6 +148,14 @@ function QueryController($scope, $http) {
   }
 
   resetResults();
+
+  $scope.$watch('response_data', (f, t) => {
+    $scope.$evalAsync(() => {
+      $('pre code').each(function (i, block) {
+        hljs.highlightBlock(block);
+      });
+    });
+  })
 
   $scope.runQuery = () => {
     resetResults();
