@@ -3,6 +3,9 @@
 Kuona's UI Dashboard project. The dashboard relies on the kuona-api for data.
 
 ## Environment setup
+
+The dev-setup script in the root directory sets everything up but if you prefer manual configuration:
+
 ```bash
 brew install node
 npm install -g grunt-cli
@@ -21,4 +24,11 @@ If your browser popped open with a page, the command works. As long as the `grun
 ```bash
 npm install
 grunt build
+```
+
+By default the dashboard uses http://dashboard.kuona.io:9001 as middleware. To run against a local instance of the API service set the dashlocal environment variable before running grunt dev
+
+```bash
+export dashlocal=true
+grunt dev
 ```
