@@ -202,7 +202,7 @@
 (defn hash-child
   "Given a hash with a single key returns the value of that key"
   [h]
-  (get  h (first (keys h))))
+  (second (first h)))
   
 (defn es-type-to-ktype
   [k value]
@@ -228,13 +228,15 @@
    (let [url      (clojure.string/join "/" [mapping "_mapping"])
          response (http/get url {:headers json-headers})
          body     (parse-json-body response)
-         mappings (hash-child (hash-child (hash-child body)))]
-     (es-mapping-to-ktypes mapping))
+         mappings (-> body hash-child hash-child hash-child hash-child)]
+     (log/info "Schema for " url "schema" body mappings)
+     (es-mapping-to-ktypes mappings))
    (catch [:status 400] {:keys [request-time headers body]}
      (let [error (parse-json body)]
        (log/info "Bad request" error)
-       (es-error error)))
-   (catch Object _ {:error {:type :unexpected :description "Unknown error"}})))
+       {}))
+   (catch Object _
+     (log/error "Unexpected error reading schema" mapping))))
 
   
 (defn query
