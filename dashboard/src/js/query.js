@@ -1,9 +1,24 @@
-var kuonaQueries = angular.module('kuona.query', [
+class KuonaQuery {
+  initialiseEditor(elementName) {
+    var editor = ace.edit(elementName);
+    editor.getSession().setMode("ace/mode/json");
+    editor.setTheme("ace/theme/chrome");
+    editor.getDisplayIndentGuides(true);
+    editor.session.setTabSize(2);
+    editor.session.setFoldStyle("markbegin");
+    editor.setBehavioursEnabled(true);
+    editor.session.setUseSoftTabs(true);
+    return editor;
+  }
+}
+
+
+const kuonaQueries = angular.module('kuona.query', [
   'ui.bootstrap'
 ]);
 
 function initialiseEditor(elementName) {
-  var editor = ace.edit(elementName);
+  let editor = ace.edit(elementName);
   editor.getSession().setMode("ace/mode/json");
   editor.setTheme("ace/theme/chrome");
   editor.getDisplayIndentGuides(true);
@@ -14,6 +29,69 @@ function initialiseEditor(elementName) {
   return editor;
 }
 
+
+function schemaToModel(schema) {
+  let result = {
+    model: [],
+    names: []
+  };
+
+  let keys = Object.keys(schema);
+
+  keys.forEach((k) => {
+    var columnType = schema[k];
+
+    switch (columnType) {
+      case "timestamp":
+        result.model.push({name: k, index: k, sorttype: "date", formatter: "date"});
+        result.names.push(k);
+        break;
+      case "long":
+        result.model.push({name: k, index: k, sorttype: "integer"});
+        result.names.push(k);
+        break;
+      case "string":
+        result.model.push({name: k, index: k, sorttype: "text"});
+        result.names.push(k);
+        break;
+      case "object":
+    }
+  });
+  return result;
+}
+
+function enhance(schema, m) {
+  var keys = Object.keys(schema);
+  var result = {};
+
+  keys.forEach(function (k) {
+    var columnType = schema[k];
+
+    switch (columnType) {
+      case "timestamp":
+        result[k] = new Date(m[k]);
+        break;
+      case "long":
+        result[k] = m[k];
+        break;
+      case "string":
+        result[k] = m[k];
+        break;
+      case "object":
+    }
+  });
+  return result;
+}
+
+function enhanceResults(schema, values) {
+  let enhanced = [];
+
+  values.forEach(function (v) {
+    enhanced.push(enhance(schema, v));
+  });
+
+  return enhanced;
+}
 
 function QueryController($scope, $http) {
   $scope.sources = [];
@@ -27,56 +105,36 @@ function QueryController($scope, $http) {
     "}\n" +
     "}");
 
-  $http.get('/api/query').then(function(res) {
+  $http.get('/api/query').then(function (res) {
     $scope.sources = res.data.sources;
     $scope.source = $scope.sources[0];
   });
 
-  var resetResults = function() {
+  var resetResults = function () {
     $scope.hasError = false;
     $scope.result = "Results appear here";
-
-    $scope.tableData = {
-      headers: [],
-      values: []
-    };
   };
 
   var processQueryResults = function (data) {
     console.log("Received results " + typeof(data.error) + (typeof(data.error) !== undefined));
-    
+
     if (data.error !== undefined) {
       $scope.result = data.error.description;
       $scope.hasError = true;
-    }
-      
-    if (data.count > 0) {
-      $scope.tableData.headers = Object.keys(data.results[0]);
-      
+    } else if (data.count > 0) {
+      const model = schemaToModel(data.schema);
+
+
       $("#result_grid").jqGrid({
-        data: data.results,
+        data: enhanceResults(data.schema, data.results),
         datatype: "local",
         height: 450,
         autowidth: true,
         shrinkToFit: true,
         rowNum: 20,
         rowList: [10, 20, 30],
-        colNames: Object.keys(data.results[0]),
-        colModel: [
-        
-          {name: "system", index: "system", sorttype: "text"},
-	        {name: "number", index: "number", sorttype: "text"},
-	        {name: "name", index: "name", sorttype: "text"},
-	        {name: "duration", index: "duration", sorttype: "text"},
-	        {name: "source", index: "source", sorttype: "text"},
-	        {name: "result", index: "result", sorttype: "text"},
-	        {name: "collector", index: "collector", sorttype: "text"},
-	        {name: "id", index: "id", sorttype: "text"},
-	        {name: "url", index: "url", sorttype: "text"},
-	        {name: "jenkins", index: "jenkins", sorttype: "text"},
-	        {name: "timestamp", index: "timestamp", sorttype: "text"},
-	        {name: "collected", index: "collected", sorttype: "text"}
-        ],
+        colNames: model.names,
+        colModel: model.model,
         viewrecords: true,
         caption: "Query Results",
         add: true,
@@ -85,19 +143,15 @@ function QueryController($scope, $http) {
         edittext: 'Edit',
         hidegrid: false
       });
-      
-      data.results.forEach(function(v) {
-        $scope.tableData.values.push(Object.values(v));
-      });
     }
   }
 
   resetResults();
-  
-  $scope.runQuery = function () {
+
+  $scope.runQuery = () => {
     resetResults();
 
-    $http.post("/api/query/" + $scope.source.name, $scope.editor.getValue()).then(function(res) {
+    $http.post("/api/query/" + $scope.source.name, $scope.editor.getValue()).then(res => {
       processQueryResults(res.data);
     });
   }

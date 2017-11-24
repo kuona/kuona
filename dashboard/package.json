@@ -13,8 +13,16 @@
     "load-grunt-tasks": "^3.5.2"
   },
   "devDependencies": {
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
+    "grunt-babel": "^7.0.0",
     "grunt-browser-sync": "^2.2.0",
+    "grunt-contrib-compass": "^1.1.1",
     "grunt-contrib-watch": "^1.0.0",
-    "http-proxy-middleware": "^0.17.1"
+    "http-proxy-middleware": "^0.17.1",
+    "jasmine": "^2.8.0"
+  },
+  "scripts": {
+    "test": "jasmine"
   }
 }

@@ -1,17 +1,43 @@
 var api = process.env.dashlocal ? 'http://localhost:9001' : 'http://dashboard.kuona.io:9001';
 
+
 module.exports = function (grunt) {
   grunt.initConfig({
+    "babel": {
+      options: {
+        sourceMap: true
+      },
+      dist: {
+        files: [
+          {
+            expand: true,
+            cwd: 'src/js',
+            src: ['**/*.js'],
+            dest: 'out/js'
+          }
+        ]
+      }
+    },
     watch: {
       data: {
-        files: ['src/**'],
+        files: ['src/**', 'lib/**'],
         tasks: ['copy']
+      },
+      sass: {
+        files: ['sass/**'],
+        tasks: ['compass']
       }
     },
     copy: {
       main: {
         expand: true,
         cwd: 'src/',
+        src: '**',
+        dest: 'out/',
+      },
+      lib: {
+        expand: true,
+        cwd: 'lib/',
         src: '**',
         dest: 'out/',
       }
@@ -37,14 +63,23 @@ module.exports = function (grunt) {
           server: './out'
         }
       }
+    },
+    compass: {                  // Task
+      dist: {                   // Target
+        options: {              // Target options
+          sassDir: 'sass',
+          cssDir: 'out/css',
+          environment: 'production'
+        }
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-clean');
   require('load-grunt-tasks')(grunt);
 
-  grunt.registerTask('build', ['clean', 'copy']);
+//  grunt.registerTask("default", ["babel"]);
+  grunt.registerTask('build', ['clean', 'copy', 'compass', 'babel']);
   grunt.registerTask('dev', ['build', 'browserSync', 'watch']);
-  grunt.registerTask('dev-local', ['build', 'localBrowserSync', 'watch']);
   grunt.registerTask('default', ['build']);
 };
