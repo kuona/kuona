@@ -9,11 +9,11 @@ class QueryController {
     this.$scope.result_format = 'json';
     $scope.$watch('response_data', (f, t) => {
       $scope.$evalAsync(() => {
-        $('pre code').each((i, block) => {
+       $('pre code').each((i, block) => {
           hljs.highlightBlock(block);
         });
       });
-    })
+    }, true);
   }
 
   static initialiseEditor(elementName) {
@@ -55,7 +55,7 @@ class QueryController {
   }
 
   resetResults() {
-    this.$scope.response_data = {};
+    this.$scope.response_data = {count: 0, results: [], schema: {}};
     this.$scope.hasError = false;
     this.$scope.result = "Results appear here";
   }

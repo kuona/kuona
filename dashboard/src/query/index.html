@@ -69,13 +69,22 @@
 
           <div class="ibox float-e-margins" ng-if="result_format == 'json'">
             <div class="ibox-header">
+              <h2>Result Schema</h2>
+            </div>
+            <div class="ibox-content">
+              <pre><code class="json">{{ response_data.schema | json }}</code></pre>
+            </div>
+          </div>
+
+          <div class="ibox float-e-margins" ng-if="result_format == 'json'">
+            <div class="ibox-header">
               <h2>Results</h2>
             </div>
             <div class="ibox-content">
               <pre ng-repeat="r in response_data.results"><code class="json">{{ r | json }}</code></pre>
-              <pre><code>{{ response_data | json }}</code></pre>
             </div>
           </div>
+
 
         </div>
       </div>

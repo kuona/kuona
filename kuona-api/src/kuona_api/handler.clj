@@ -39,6 +39,8 @@
 
 (defroutes app-routes
            (GET "/api" [] (service-data))
+           (GET "/api/info" [] (get-api-info))
+
            (GET "/api/repositories/count" [] (repository/get-repository-count))
            (GET "/api/repositories" [search page] (repository/get-repositories search page))
            (GET "/api/repositories/:id" [id] (repository/get-repository-by-id id))
@@ -71,7 +73,6 @@
 
            (POST "/api/builds" request (build/put-build! (get-in request [:body])))
 
-           (GET "/api/info" [] (get-api-info))
            (GET "/api/query" [] (query/get-sources))
            (POST "/api/query/:source" request (query/query-source (get-in request [:params :source]) (get-in request [:body])))
 
