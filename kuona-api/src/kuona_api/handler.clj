@@ -20,25 +20,35 @@
             [ring.util.response :refer [resource-response response status]])
   (:gen-class))
 
-(defn service-data
+
+
+(defn service-data []
+  {:links [{:href "/api/environments" :rel "environments"}
+           {:href "/api/repositories" :rel "repositories"}
+           {:href "/api/build" :rel "build"}
+           {:href "/api/snapshots" :rel "snapshots"}
+           {:href "/api/metrics" :rel "metrics"}
+           {:href "/api/valuestreams" :rel "valuestreams"}
+           {:href "/api/info" :rel "info"}]})
+
+(defn get-service-data
   []
-  (response {:links [{:href "/api/environments" :rel "environments"}
-                     {:href "/api/repositories" :rel "repositories"}
-                     {:href "/api/build" :rel "build"}
-                     {:href "/api/snapshots" :rel "snapshots"}
-                     {:href "/api/metrics" :rel "metrics"}
-                     {:href "/api/valuestreams" :rel "valuestreams"}
-                     {:href "/api/info" :rel "info"}]}))
+  (response (service-data)))
+
+(defn api-info
+  []
+  (let [es (util/parse-json-body (http/get "http://localhost:9200"))]
+    {:kuona_api      {:version (util/get-project-version 'kuona-api)}
+     :clojure        {:version (util/get-project-version 'org.clojure/clojure)}
+     :elastic_search es}))
 
 (defn get-api-info
   []
   (let [es (util/parse-json-body (http/get "http://localhost:9200"))]
-    (response {:kuona_api      {:version (util/get-project-version 'kuona-api)}
-               :clojure        {:version (util/get-project-version 'org.clojure/clojure)}
-               :elastic_search es})))
+    (response (merge (api-info) (service-data)))))
 
 (defroutes app-routes
-           (GET "/api" [] (service-data))
+           (GET "/api" [] (get-service-data))
            (GET "/api/info" [] (get-api-info))
 
            (GET "/api/repositories/count" [] (repository/get-repository-count))

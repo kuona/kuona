@@ -8,11 +8,10 @@
   (:gen-class))
 
 (def es-string-type
-
   {:type "text"})
 
-(def es-string-not-analyzed-type
-  {:type "keyword" :index "not_analyzed"})
+(def es-keyword
+  {:type "keyword"})
 
 (def es-timestamp-type
   {:type "date" :format "strict_date_optional_time||epoch_millis"})
@@ -21,19 +20,19 @@
   {:type "long"})
 
 (def collector-mapping-type
-  {:properties {:name    es-string-not-analyzed-type
-                :version es-string-not-analyzed-type}})
+  {:properties {:name    es-keyword
+                :version es-keyword}})
 
 (def build-metric-mapping-type
   {:builds {:properties {:id        es/string-not-analyzed
-                         :source    es-string-not-analyzed-type
+                         :source    es-keyword
                          :timestamp es-timestamp-type
-                         :name      es-string-not-analyzed-type
-                         :system    es-string-not-analyzed-type
-                         :url       es-string-not-analyzed-type
+                         :name      es-keyword
+                         :system    es-keyword
+                         :url       es-keyword
                          :number    es-long
                          :duration  es-long
-                         :result    es-string-not-analyzed-type
+                         :result    es-keyword
                          :collected es-timestamp-type
                          :collector collector-mapping-type
                          :jenkins   es/disabled-object}}})
@@ -43,29 +42,29 @@
   {:build {:properties {:timestamp es-timestamp-type,
                         :collector collector-mapping-type
                         :metric    {:properties {:activity  {:properties {:duration {:type "long"},
-                                                                          :name     es-string-not-analyzed-type
-                                                                          :id       es-string-not-analyzed-type
+                                                                          :name     es-keyword
+                                                                          :id       es-keyword
                                                                           :number   {:type "long"},
-                                                                          :result   es-string-not-analyzed-type
-                                                                          :type     es-string-not-analyzed-type}},
+                                                                          :result   es-keyword
+                                                                          :type     es-keyword}},
                                                  :collected es-timestamp-type,
-                                                 :source    {:properties {:system es-string-not-analyzed-type,
-                                                                          :url    es-string-not-analyzed-type}},
-                                                 :type      es-string-not-analyzed-type}}}}
+                                                 :source    {:properties {:system es-keyword,
+                                                                          :url    es-keyword}},
+                                                 :type      es-keyword}}}}
    :vcs   {:properties {:collector collector-mapping-type
                         :metric    {:properties {:activity  {:properties {:author        es-string-type
-                                                                          :branches      es-string-not-analyzed-type
+                                                                          :branches      es-keyword
                                                                           :change_count  {:type "long"},
-                                                                          :changed_files {:properties {:change es-string-not-analyzed-type
-                                                                                                       :path   es-string-not-analyzed-type}}
-                                                                          :email         es-string-not-analyzed-type
-                                                                          :id            es-string-not-analyzed-type
+                                                                          :changed_files {:properties {:change es-keyword
+                                                                                                       :path   es-keyword}}
+                                                                          :email         es-keyword
+                                                                          :id            es-keyword
                                                                           :merge         {:type "boolean"}
                                                                           :message       es-string-type}}
                                                  :collected es-timestamp-type
-                                                 :name      es-string-not-analyzed-type
-                                                 :source    {:properties {:system es-string-not-analyzed-type
-                                                                          :url    es-string-not-analyzed-type}}
+                                                 :name      es-keyword
+                                                 :source    {:properties {:system es-keyword
+                                                                          :url    es-keyword}}
                                                  :type      {:type "keyword"}}}
                         :timestamp es-timestamp-type}}})
 
@@ -102,8 +101,13 @@
     (log/info "Creating index" index)
     (parse-json-body (http/put index {:headers json-headers
                                       :body    (generate-string {:mappings types})}))
+    (catch [:status 400] {:keys [request-time headers body]}
+      (log/error (str "Unexpected error creating index " index) body)
+      (log/error (parse-json body))
+      (log/error types)
+      (throw+))
     (catch Object _
-      (log/error (:throwable &throw-context) "unexpected error")
+      (log/error (:throwable &throw-context) (str "Unexpected error creating index " index))
       (throw+)
       )))
 
