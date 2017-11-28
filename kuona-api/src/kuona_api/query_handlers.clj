@@ -34,5 +34,15 @@
     (log/info "Query source" src)
     (cond
       (get sources src) (response (make-query (-> sources src :index) query))
-      :else             (not-found {:error {:description "Invalid source name"}}))
+      :else             (not-found {:error {:description "Invalid source name in query"}}))
+    ))
+
+(defn source-schema
+  "Handles requests for source schemas. Returns the requested schema or an error if the schema is not known"
+  [source]
+  (log/info "Query source schema for " source)
+  (let [src (keyword source)]
+    (cond
+      (get sources src) (response (store/read-schema (-> sources src :index)))
+      :else             (not-found {:error {:description "Invalid source name in request for schema"}}))
     ))

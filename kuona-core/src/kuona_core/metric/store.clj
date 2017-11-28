@@ -7,66 +7,55 @@
             [slingshot.slingshot :refer :all])
   (:gen-class))
 
-(def es-string-type
-  {:type "text"})
-
-(def es-keyword
-  {:type "keyword"})
-
-(def es-timestamp-type
-  {:type "date" :format "strict_date_optional_time||epoch_millis"})
-
-(def es-long
-  {:type "long"})
 
 (def collector-mapping-type
-  {:properties {:name    es-keyword
-                :version es-keyword}})
+  {:properties {:name    es/string-not-analyzed
+                :version es/string-not-analyzed}})
 
 (def build-metric-mapping-type
   {:builds {:properties {:id        es/string-not-analyzed
-                         :source    es-keyword
-                         :timestamp es-timestamp-type
-                         :name      es-keyword
-                         :system    es-keyword
-                         :url       es-keyword
-                         :number    es-long
-                         :duration  es-long
-                         :result    es-keyword
-                         :collected es-timestamp-type
+                         :source    es/string-not-analyzed
+                         :timestamp es/timestamp
+                         :name      es/string-not-analyzed
+                         :system    es/string-not-analyzed
+                         :url       es/string-not-analyzed
+                         :number    es/long-integer
+                         :duration  es/long-integer
+                         :result    es/string-not-analyzed
+                         :collected es/timestamp
                          :collector collector-mapping-type
                          :jenkins   es/disabled-object}}})
 
 
 (def metric-mapping-type
-  {:build {:properties {:timestamp es-timestamp-type,
+  {:build {:properties {:timestamp es/timestamp,
                         :collector collector-mapping-type
                         :metric    {:properties {:activity  {:properties {:duration {:type "long"},
-                                                                          :name     es-keyword
-                                                                          :id       es-keyword
+                                                                          :name     es/string-not-analyzed
+                                                                          :id       es/string-not-analyzed
                                                                           :number   {:type "long"},
-                                                                          :result   es-keyword
-                                                                          :type     es-keyword}},
-                                                 :collected es-timestamp-type,
-                                                 :source    {:properties {:system es-keyword,
-                                                                          :url    es-keyword}},
-                                                 :type      es-keyword}}}}
+                                                                          :result   es/string-not-analyzed
+                                                                          :type     es/string-not-analyzed}},
+                                                 :collected es/timestamp,
+                                                 :source    {:properties {:system es/string-not-analyzed,
+                                                                          :url    es/string-not-analyzed}},
+                                                 :type      es/string-not-analyzed}}}}
    :vcs   {:properties {:collector collector-mapping-type
-                        :metric    {:properties {:activity  {:properties {:author        es-string-type
-                                                                          :branches      es-keyword
+                        :metric    {:properties {:activity  {:properties {:author        es/string
+                                                                          :branches      es/string-not-analyzed
                                                                           :change_count  {:type "long"},
-                                                                          :changed_files {:properties {:change es-keyword
-                                                                                                       :path   es-keyword}}
-                                                                          :email         es-keyword
-                                                                          :id            es-keyword
+                                                                          :changed_files {:properties {:change es/string-not-analyzed
+                                                                                                       :path   es/string-not-analyzed}}
+                                                                          :email         es/string-not-analyzed
+                                                                          :id            es/string-not-analyzed
                                                                           :merge         {:type "boolean"}
-                                                                          :message       es-string-type}}
-                                                 :collected es-timestamp-type
-                                                 :name      es-keyword
-                                                 :source    {:properties {:system es-keyword
-                                                                          :url    es-keyword}}
+                                                                          :message       es/string}}
+                                                 :collected es/timestamp
+                                                 :name      es/string-not-analyzed
+                                                 :source    {:properties {:system es/string-not-analyzed
+                                                                          :url    es/string-not-analyzed}}
                                                  :type      {:type "keyword"}}}
-                        :timestamp es-timestamp-type}}})
+                        :timestamp es/timestamp}}})
 
 
 
@@ -80,11 +69,14 @@
   (clojure.string/join "/" [host (name index-name)]))
 
 (defn has-index?
-  "Returns the index or false if the index does not exist"
+  "Test to see if the given elasticsearch index exists. Returns true if
+  the index exists, false if the index does not exist and throws an
+  exception if there is an error or unexpected response"
   [index]
   (log/debug "Testing index" index)
   (try+
-    (parse-json-body (http/get index))
+   (let [response (http/head index)]
+     (= (-> response :status) 200))
     (catch [:status 404] {:keys [request-time headers body]} false)
     (catch Object _
       (log/error (:throwable &throw-context) "unexpected error")
