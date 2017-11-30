@@ -77,10 +77,10 @@
   (try+
    (let [response (http/head index)]
      (= (-> response :status) 200))
-    (catch [:status 404] {:keys [request-time headers body]} false)
-    (catch Object _
-      (log/error (:throwable &throw-context) "unexpected error")
-      (throw+))))
+   (catch [:status 404] {:keys [request-time headers body]} false)
+   (catch Object _
+     (log/error (:throwable &throw-context) "unexpected error")
+     (throw+))))
 
 
 (def json-headers {"content-type" "application/json; charset=UTF-8"})
@@ -219,30 +219,31 @@
 
  
 (defn read-schema
-  [mapping]
+  [source mapping]
+  (log/info "read-schema" source mapping)
   (try+
    (let [url      (clojure.string/join "/" [mapping "_mapping"])
          response (http/get url {:headers json-headers})
          body     (parse-json-body response)
          mappings (-> body hash-child hash-child hash-child hash-child)]
-     (log/info "Schema for " url "schema" body mappings)
-     (es-mapping-to-ktypes mappings))
+     {source (es-mapping-to-ktypes mappings)})
    (catch [:status 400] {:keys [request-time headers body]}
      (let [error (parse-json body)]
        (log/info "Bad request" error)
-       {}))
+       { :error {:type (-> error :error :type)
+                 :description  (str (-> error :error :reason) " : " (-> error :error :resource.id))}}))
    (catch Object _
      (log/error "Unexpected error reading schema" mapping))))
 
   
 (defn query
-  [mapping q]
+  [source mapping q]
   (try+
    (let [url      (clojure.string/join "/" [mapping "_search"])
          response (http/get url {:headers json-headers :body (generate-string q)})
          body     (parse-json-body response)
          results  (map :_source (-> body :hits :hits))
-         schema   (read-schema mapping)]
+         schema   (read-schema source mapping)]
      {:count   (-> body :hits :total)
       :results results
       :schema  schema})
