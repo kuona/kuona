@@ -26,7 +26,7 @@
                (provided (http/get "http://localhost:9200/kuona-builds/builds/_search" {:headers std-headers :body "{}"}) => {:status 200 :body "{}"}
                          (http/get "http://localhost:9200/kuona-builds/builds/_mapping" {:headers std-headers}) => empty-mapping-response))
          (fact "returns content"
-               (helper/mock-json-post app "/api/query/snapshots" match-all) => {:body "{\"count\":0,\"results\":[],\"schema\":{}}", :headers {"Content-Type" "application/json; charset=utf-8"}, :status 200}
+               (helper/mock-json-post app "/api/query/snapshots" match-all) => {:body "{\"count\":0,\"results\":[],\"schema\":{\"snapshots\":{}}}", :headers {"Content-Type" "application/json; charset=utf-8"}, :status 200}
                
                (provided (http/get "http://localhost:9200/kuona-snapshots/snapshots/_search" {:headers std-headers :body (generate-string match-all)}) => {:status 200,
                                                                                                                                                            :body   (generate-string {:hits {:total 0 :hits []}})},

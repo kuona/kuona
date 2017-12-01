@@ -219,31 +219,42 @@
 
  
 (defn read-schema
-  [source mapping]
-  (log/info "read-schema" source mapping)
+  [source]
+  (log/info "read-schema" source)
   (try+
-   (let [url      (clojure.string/join "/" [mapping "_mapping"])
+   (let [id       (-> source :id)
+         index    (-> source :index)
+         url      (clojure.string/join "/" [index "_mapping"])
          response (http/get url {:headers json-headers})
          body     (parse-json-body response)
          mappings (-> body hash-child hash-child hash-child hash-child)]
-     {source (es-mapping-to-ktypes mappings)})
+     {id (es-mapping-to-ktypes mappings)})
    (catch [:status 400] {:keys [request-time headers body]}
      (let [error (parse-json body)]
        (log/info "Bad request" error)
-       { :error {:type (-> error :error :type)
-                 :description  (str (-> error :error :reason) " : " (-> error :error :resource.id))}}))
+       { :error {:type        (-> error :error :type)
+                 :description (str (-> error :error :reason) " : " (-> error :error :resource.id))}}))
+   (catch [:status 404] {:keys [request-time headers body]}
+     (let [error (parse-json body)]
+       (log/info "Bad request" error)
+       { :error {:type        (-> error :error :type)
+                 :description (-> error :error :reason)}}))
    (catch Object _
-     (log/error "Unexpected error reading schema" mapping))))
+     (log/error (:throwable &throw-context) "Unexpected error reading schema" source)
+     { :error {:type        :unexpected
+               :description (str (:throwable &throw-context))}})))
 
   
 (defn query
-  [source mapping q]
+  [source q]
   (try+
-   (let [url      (clojure.string/join "/" [mapping "_search"])
+   (let [id       (-> source :id)
+         index    (-> source :index)
+         url      (clojure.string/join "/" [index "_search"])
          response (http/get url {:headers json-headers :body (generate-string q)})
          body     (parse-json-body response)
          results  (map :_source (-> body :hits :hits))
-         schema   (read-schema source mapping)]
+         schema   (read-schema source)]
      {:count   (-> body :hits :total)
       :results results
       :schema  schema})
