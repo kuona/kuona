@@ -12,7 +12,8 @@
 (def sources
   {:builds       {:id          :builds
                   :index       build/build-mapping
-                  :description "Build data - software construction data read from Jenkins"}
+                  :description "Build data - software construction data read from Jenkins"
+                  :path "/api/query/builds"}
    :snapshots    {:id          :snapshots
                   :index       snapshots/snapshots
                   :description "Snapshot data from source code analysis"}
@@ -27,7 +28,7 @@
   "Returns a list of available sources that can be queried."
   []
   (log/info "Query sources")
-  (response {:sources (map (fn [k] {:id k :name k :description (-> sources k :description)}) (keys sources))}))
+  (response {:sources (map (fn [[k v]] v) sources)}))
 
 (defn make-query
   "Calls the backing store to make query the index"
@@ -40,17 +41,20 @@
 (defn query-source
   "Query an available source"
   [source-name query]
-  (let [id (keyword source-name)]
+  (let [id     (keyword source-name)
+        source (-> sources id)]
     (log/info "Query source" source-name)
     (cond
-      (get sources id) (response (make-query (-> sources id) query))
-      :else            (not-found {:error {:description "Invalid source name in query"}}))))
+      source (response (make-query source query))
+      :else  (not-found {:error {:description "Invalid source name in query"}}))))
 
 (defn source-schema
-  "Handles requests for source schemas. Returns the requested schema or an error if the schema is not known"
+  "Handles requests for source schemas. Returns the requested schema or
+  an error if the schema is not known"
   [source-name]
   (log/info "Query source schema for" source-name)
-  (let [id (keyword source-name)]
+  (let [id     (keyword source-name)
+        source (-> sources id)]
     (cond
-      (get sources id) (response {:schema (store/read-schema (-> sources id))})
-      :else            (not-found {:error {:description "Invalid source name in request for schema"}}))))
+      source (response {:schema (store/read-schema source)})
+      :else  (not-found {:error {:description "Invalid source name in request for schema"}}))))

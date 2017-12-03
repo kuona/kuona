@@ -58,6 +58,11 @@
                         :timestamp es/timestamp}}})
 
 
+(defn health
+  []
+  (let [response (http/get "http://localhost:9200/_cluster/health")]
+    (parse-json-body response)))
+
 
 (defn http-path
   [& elements]

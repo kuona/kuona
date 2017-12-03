@@ -17,7 +17,7 @@
             [kuona-api.build-handlers :as build]
             [kuona-api.query-handlers :as query]
             [ring.middleware.json :as middleware]
-            [ring.util.response :refer [resource-response response status]])
+            [ring.util.response :refer [resource-response response status redirect]])
   (:gen-class))
 
 
@@ -29,7 +29,8 @@
            {:href "/api/snapshots" :rel "snapshots"}
            {:href "/api/metrics" :rel "metrics"}
            {:href "/api/valuestreams" :rel "valuestreams"}
-           {:href "/api/info" :rel "info"}]})
+           {:href "/api/info" :rel "info"}
+           {:href "/api/query" :rel "query"}]})
 
 (defn get-service-data
   []
@@ -47,9 +48,15 @@
   (let [es (util/parse-json-body (http/get "http://localhost:9200"))]
     (response (merge (api-info) (service-data)))))
 
+(defn get-api-status
+  []
+  (response {:status :ok
+             :store {:health (store/health)}}))
+
 (defroutes app-routes
   (GET "/api" [] (get-service-data))
   (GET "/api/info" [] (get-api-info))
+  (GET "/api/status" [] (get-api-status))
   
   (GET "/api/repositories/count" [] (repository/get-repository-count))
   (GET "/api/repositories" [search page] (repository/get-repositories search page))
@@ -83,7 +90,8 @@
   
   (POST "/api/builds" request (build/put-build! (get-in request [:body])))
   
-  (GET "/api/query" [] (query/get-sources))
+  (GET "/api/query" [] (redirect "/api/query/sources"))
+  (GET "/api/query/sources" [] (query/get-sources))
   (POST "/api/query/:source" request (query/query-source (get-in request [:params :source]) (get-in request [:body])))
   (GET "/api/query/:source/schema" [source] (query/source-schema source))
   
