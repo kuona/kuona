@@ -4,7 +4,7 @@ class QueryController {
     this.$http = $http;
 
     this.$scope.sources = [];
-    this.$scope.source = "";
+    this.$scope.source = {};
     this.$scope.formats = ['json', 'table'];
     this.$scope.result_format = 'json';
     $scope.$watch('response_data', (f, t) => {
@@ -49,7 +49,7 @@ class QueryController {
   runQuery() {
     this.resetResults();
 
-    this.$http.post("/api/query/" + this.$scope.source.name, this.$scope.editor.getValue()).then(res => {
+    this.$http.post("/api/query/" + this.$scope.source.id, this.$scope.editor.getValue()).then(res => {
       this.processQueryResults(res.data);
     });
   }
