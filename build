@@ -50,6 +50,11 @@ ${LEIN_BUILD}
 ${LEIN_PACKAGE}
 cd ..
 
+banner "Building the dashboard"
+cd dashboard/
+grunt build
+cd ..
+
 banner "Building Collectors"
 
 find collectors -iname 'project.clj' -exec echo "»»» Building: " {} \; -execdir ${LEIN_BUILD} \; -exec echo "»»» Installing (local): " {} \; -execdir ${LEIN_PACKAGE} \;
