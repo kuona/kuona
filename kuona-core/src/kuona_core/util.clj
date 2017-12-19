@@ -58,6 +58,27 @@
   {:headers {"content-type" "application/json; charset=UTF-8"}
    :body    (generate-string content)})
 
+(defn map-kv
+  "takes a map and applies the function to each key/value pair returning
+  a map of the result."
+  [m f]
+  (into {} (map (fn [[k v]] (f k v)) m)))
+
+(defn json-encode-body
+  "encodes the :body value as a json string"
+  [m]
+  (map-kv m (fn [k v]
+              [k (cond
+                   (= k :body) (generate-string v)
+                   :else v)])))
+
+(defn json-decode-body
+  "Decode a json encodes body response into a map"
+  [m]
+  (map-kv m (fn [k v]
+              [k (cond
+                   (= k :body) (parse-string v true)
+                   :else v)])))
 
 (defn get-project-version
   "Reads the project version for the supplied dependency
