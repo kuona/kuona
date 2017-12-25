@@ -34,8 +34,11 @@
        (fact "evaluates string tests"
              (content-test {:status "UP"} (load-string "#(= (:status %1) \"UP\")")) => true))
 
-(facts "integration"
+
+(facts "integration tests"
        (fact "updates status"
-             (update-status {:metrics "http://kuona.io:9001/api/environments/DEVX200"} "UP"))
+             (update-status {:metrics "http://kuona.io:9001/api/environments/DEVX200"} "UP") => true
+             (provided (http/post "http://kuona.io:9001/api/environments/DEVX200/status" {:form-params {:status "UP"} :content-type :json}) => true))
        (fact "updates version number"
-             (update-version {:metrics "http://kuona.io:9001/api/environments/DEVX200"} "1.2")))
+             (update-version {:metrics "http://kuona.io:9001/api/environments/DEVX200"} "1.2") => true
+             (provided (http/post "http://kuona.io:9001/api/environments/DEVX200/version" {:form-params {:version "1.2"} :content-type :json}) => true)))
