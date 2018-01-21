@@ -50,29 +50,6 @@
     "http://jenkins.com/job/intercept/6/" stubbed-build-result
     (println "************************************************ No stubbed data" url)))
 
-(facts "about job configuration reading functions"
-(let [empty-project            "<project></project>"
-      project-with-description "<project><description>Project Description</description></project>"
-      project-with-scm         "<project><scm class=\"hudson.plugins.git.GitSCM\" plugin=\"git@3.0.0\">
-<configVersion>2</configVersion>
-<userRemoteConfigs>
-<hudson.plugins.git.UserRemoteConfig>
-<url>git@github.com:kuona/dashboard.git</url>
-</hudson.plugins.git.UserRemoteConfig>
-</userRemoteConfigs>
-<branches>
-<hudson.plugins.git.BranchSpec>
-<name>*/master</name>
-</hudson.plugins.git.BranchSpec>
-</branches>
-<doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-<submoduleCfg class=\"list\"/>
-<extensions/>
-</scm></project>"]
-
-  (read)
-  )
-)
 
 (facts "about job configuration reading"
        (let [empty-project            "<project></project>"
@@ -100,8 +77,7 @@
          (fact "Reads the source control details"
                (read-scm (zip-str project-with-scm)) => {:scm :git
                                                          :ref  "*/master"
-                                                         :url  "git@github.com:kuona/dashboard.git"})
-         (fact (generate-string (zip-str project-with-scm)) => nil)))
+                                                         :url  "git@github.com:kuona/dashboard.git"})))
 
 
 

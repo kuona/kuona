@@ -32,5 +32,4 @@
        (fact "top level object with no children means no work"
              (load-config (string-reader root-only-configuration)) => no-work-configuration)
        (facts "supports single collection"
-              (println single-collection-configuration)
               (load-config (string-reader single-collection-configuration)) => single-work-configuration))
