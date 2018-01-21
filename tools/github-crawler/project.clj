@@ -17,5 +17,6 @@
                  [cheshire "5.6.3"]
                  [kuona-core "0.0.2"]
                  [org.clojure/tools.cli "0.3.5"]]
-  :plugins [[lein-midje "3.0.0"]]
+:plugins [[lein-midje "3.0.0"]
+          [lein-ancient "0.6.14"]]
   :profiles {:dev {:dependencies [[midje "1.9.0-alpha5"]]}})
