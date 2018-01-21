@@ -5,6 +5,7 @@ class QueryController {
 
     this.$scope.sources = [];
     this.$scope.source = {};
+    this.$scope.schema = {};
     this.$scope.formats = ['json', 'table'];
     this.$scope.result_format = 'json';
     $scope.$watch('response_data', (f, t) => {
@@ -40,12 +41,24 @@ class QueryController {
     this.$http.get('/api/query').then((res) => {
       this.$scope.sources = res.data.sources;
       this.$scope.source = res.data.sources[0];
+      this.onSourceChange();
     });
 
     this.resetResults();
     this.$scope.runQuery = () => this.runQuery();
+    this.$scope.onSourceChange = () => this.onSourceChange();
   }
 
+  onSourceChange() {
+    this.$http.get('/api/query/' + this.$scope.source.id + '/schema').then((res) => {
+      this.setSchema(res.data);
+    });
+  }
+
+  setSchema(schema) {
+    this.$scope.schema = schema;
+  }
+  
   runQuery() {
     this.resetResults();
 
