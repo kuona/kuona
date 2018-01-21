@@ -3,7 +3,10 @@
             [midje.sweet :refer :all]
             [jenkins-collector.jenkins :refer :all]
             [cheshire.core :refer :all]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log]
+            [clojure.xml :as cxml]
+            [clojure.zip :as zip]
+            [clojure.data.zip.xml :refer :all]))
 
 (def stubbed-home-response
   {:jobs
@@ -47,6 +50,61 @@
     "http://jenkins.com/job/intercept/6/" stubbed-build-result
     (println "************************************************ No stubbed data" url)))
 
+(facts "about job configuration reading functions"
+(let [empty-project            "<project></project>"
+      project-with-description "<project><description>Project Description</description></project>"
+      project-with-scm         "<project><scm class=\"hudson.plugins.git.GitSCM\" plugin=\"git@3.0.0\">
+<configVersion>2</configVersion>
+<userRemoteConfigs>
+<hudson.plugins.git.UserRemoteConfig>
+<url>git@github.com:kuona/dashboard.git</url>
+</hudson.plugins.git.UserRemoteConfig>
+</userRemoteConfigs>
+<branches>
+<hudson.plugins.git.BranchSpec>
+<name>*/master</name>
+</hudson.plugins.git.BranchSpec>
+</branches>
+<doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+<submoduleCfg class=\"list\"/>
+<extensions/>
+</scm></project>"]
+
+  (read)
+  )
+)
+
+(facts "about job configuration reading"
+       (let [empty-project            "<project></project>"
+             project-with-description "<project><description>Project Description</description></project>"
+             project-with-scm         "<project><scm class=\"hudson.plugins.git.GitSCM\" plugin=\"git@3.0.0\">
+<configVersion>2</configVersion>
+<userRemoteConfigs>
+<hudson.plugins.git.UserRemoteConfig>
+<url>git@github.com:kuona/dashboard.git</url>
+</hudson.plugins.git.UserRemoteConfig>
+</userRemoteConfigs>
+<branches>
+<hudson.plugins.git.BranchSpec>
+<name>*/master</name>
+</hudson.plugins.git.BranchSpec>
+</branches>
+<doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+<submoduleCfg class=\"list\"/>
+<extensions/>
+</scm></project>"]
+         (fact "Empty XML document yields empty configuration"
+               (zip-str empty-project) =>  [{:attrs nil, :content nil, :tag :project} nil])
+         (fact "Extracts the project description"
+               (read-description (zip-str project-with-description)) => "Project Description")
+         (fact "Reads the source control details"
+               (read-scm (zip-str project-with-scm)) => {:scm :git
+                                                         :ref  "*/master"
+                                                         :url  "git@github.com:kuona/dashboard.git"})
+         (fact (generate-string (zip-str project-with-scm)) => nil)))
+
+
+
 (future-facts "about reading from Jenkins"
        (let [metrics (collect-metrics stubbed-connection "http://jenkins.com/" "localhost")
              metric  (first metrics)]
@@ -79,3 +137,4 @@
              (http-credentials nil :password) => {})
        (fact "basic auth for username and password"
              (http-credentials "foo" "bar") => {:basic-auth ["foo" "bar"]}))
+
