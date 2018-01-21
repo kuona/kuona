@@ -81,17 +81,6 @@
 
 
 
-(future-facts "about reading from Jenkins"
-       (let [metrics (collect-metrics stubbed-connection "http://jenkins.com/" "localhost")
-             metric  (first metrics)]
-         (fact "details the collector"        (-> metric :build :collector) => {:name :kuona-jenkins-collector, :version "0.0.1"})
-         (fact "includes name"                (-> metric :build :name) => "intercept")
-         (fact "includes build system type"   (-> metric :build :system) => :jenkins)
-         (fact "metric include URL"           (-> metric :build :url) => "http://jenkins.com/job/intercept/6/")
-         (fact "extracts the build number"    (-> metric :build :number) => 4)
-         (fact "extractst the build duration" (-> metric :build :duration) => 33835)
-         (fact "extracts the build result"    (-> metric :build :result) => "SUCCESS")))
-
 (facts "about put-build!"
        (fact "posts build to api"
              (put-build! {} "http://server.com") => "worked"
