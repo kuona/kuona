@@ -20,9 +20,8 @@
         result (map job-to-job (:jobs response))]
     result))
 
-
-
 (defn read-description
+  "Reads the project description text from the XML zip representation of the Jenkins Job configuration provided"
   [x]
   (xml1-> x
           (tag= :project)
@@ -30,7 +29,7 @@
           text))
 
 (defn read-scm
-  "Read source control elements from supplied XML ZIP document"
+  "Read source control elements from supplied XML ZIP of the Jenkins Job configuration document"
   [x]
   {:scm :git
    :url (xml1-> x
@@ -48,11 +47,13 @@
                 (tag= :name)
                 text)})
 
-(defn zip-str [s]
-  (zip/xml-zip 
-   (cxml/parse (java.io.ByteArrayInputStream. (.getBytes s)))))
+(defn zip-str
+  "Returns a XML zip represented by the supplied string."
+  [s]
+  (zip/xml-zip (cxml/parse (java.io.ByteArrayInputStream. (.getBytes s)))))
 
 (defn parse-xml-response
+  "Takes an HTTP response map and extracts the XML body content as an XML Zip object"
   [response]
   (let [body (-> response :body)]
     (zip-str body)))
@@ -66,10 +67,14 @@
            (read-scm response))))
 
 (defn json-url
+  "Adds the JSON api suffix to the supplied path string"
   [path]
-  (if (string/ends-with? path "/") (str path "api/json") (str path "/api/json")))
+  (if (string/ends-with? path "/")
+    (str path "api/json")
+    (str path "/api/json")))
 
 (defn http-credentials
+  "Creates a basic-auth usename and passowrd pair based on the input."
   [username password]
   (cond
     (not (or (nil? username) (nil? password))) {:basic-auth [username password]}
@@ -85,7 +90,11 @@
           content (content-parser response)]
       content)
     [url]
-    (http-source url util/parse-json-body)))
+    (let [uri (json-url url)
+          http-credentials (http-credentials (:username credentials) (:password credentials))
+          response (http/get uri http-credentials)
+          content (util/parse-json-body response)]
+      content)))
 
 (defn read-build
   [connection job]
@@ -120,6 +129,7 @@
       :jenkins   content}}))
 
 (defn build-json-request
+  "Builds a request with JSON content type and hte supplied content as a JSON formatted string"
   [content]
   {:headers {"content-type" "application/json; charset=UTF-8"}
    :body    (generate-string content)})
