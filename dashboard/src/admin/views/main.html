@@ -1,0 +1,53 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="text-center m-t-lg">
+        <h1>
+          {{main.helloText}}
+        </h1>
+        <small>
+          {{main.descriptionText}}
+        </small>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content text-center">
+          <ul class="list-unstyled">
+            <li>
+              <label>Kuona API:</label>
+              <small class="label label-primary">{{ info.kuona_api.version }}</small>
+            </li>
+            <li>
+              <label>Clojure:</label>
+              <small class="label label-primary">{{ info.clojure.version }}</small>
+            </li>
+            <li>
+              <label>Elasticsearch:</label>
+              <small class="label label-primary">{{ info.elastic_search.name }}</small>
+              <small class="label label-primary">{{ info.elastic_search.version.number }}</small>
+              <small class="label label-info">lucene {{ info.elastic_search.version.lucene_version }}</small>
+              <small class="label label-primary">{{ info.elastic_search.version.build_timestamp | date:'yyyy-MM-dd' }}
+              </small>
+            </li>
+            <li>
+              <label>Cluster UUID:</label>
+              <small class="label">{{ info.elastic_search.cluster_uuid }}</small>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-5">
+      <div class="jumbotron">
+        <h1><i class="fa fa-github"></i> Repository</h1>
+          <p>Add a github repository for analysis.</p>
+          <p><a ui-sref="index.new-github-repository" class="btn btn-primary btn-lg" role="button">Add Github Repo</a></p>
+      </div>
+    </div>
+  </div>
+</div>

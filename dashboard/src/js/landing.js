@@ -19,8 +19,8 @@ function MainController($scope, $http) {
   $scope.currentDate = new Date();
   $scope.repository_count = "[loading]";
   $scope.vcs_count = "[loading]";
-  $scope.buildTools = []
-  $scope.info = {}
+  $scope.buildTools = [];
+  $scope.info = {};
   $scope.collector_activity = [];
 
   $http.get('/api/build/tools').then(function(res) {
