@@ -58,23 +58,30 @@
       (nil? commit-id) (bad-request "malformed request - missing commit identity")
       :else (response (store/put-document entity commits commit-id)))))
 
-(defn test-github-project
-  [project]
-  (log/info "test-github-project" project)
-  (let [github-url (-> project :url)
-        url (URL. github-url)
-        path (.getPath url)
-        e (string/split path #"/")]
-    (println "test github " url)
-    (println path)
-    (println e)
-    path))
+
+(defn github-to-repository-record
+  [github-repo]
+
+  {:source            :github
+   :name              (-> github-repo :project :name)
+   :description       (-> github-repo :project :description)
+   :avatar_url        (-> github-repo :project :owner :avatar_url)
+   :project_url       (-> github-repo :project :html_url)
+   :created_at        (-> github-repo :project :created_at)
+   :updated_at        (-> github-repo :project :updated_at)
+   :open_issues_count (-> github-repo :project :open_issues_count)
+   :watchers          (-> github-repo :project :watchers)
+   :forks             (-> github-repo :project :forks)
+   :size              (-> github-repo :project :size)
+   :last_analysed     nil
+   :github            github-repo}
+  )
 
 (defn query-github-repo
   [username repository]
 
   (try+
-    (let [url (string/join "/" ["https://api.github.com/repos" username  repository])]
+    (let [url (string/join "/" ["https://api.github.com/repos" username repository])]
       {:status :success
        :github (util/parse-json-body (http/get url))
        })

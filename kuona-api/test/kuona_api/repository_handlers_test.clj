@@ -24,15 +24,46 @@
 
 (facts "about testing repository links"
        (fact "projects with github source are tested with github"
-             (let [project-request {:source :github}]
-               (h/test-project-url project-request) => :true
-               (provided (h/test-github-project project-request) => :true)))
+             (let [project-request {:source     :github
+                                    :username   "kuona"
+                                    :repository "kuona-project"}]
+               (h/test-project-url project-request) => (contains {:status 200 :body :result})
+               (provided (h/query-github-repo "kuona" "kuona-project") => :result))))
 
-       (fact "Request project if user and project provided"
-             (let [project-request {:source :github
-                                    :url    "https://github.com/kuona/kuona-project"}]
-               (h/test-github-project project-request) => "YES"
-               (provided (http/get "https://api.github.com/repos/kuona/kuona-project") => {:status 200 :body ""})
-               )
-             )
-       )
+(facts "about converting github data to repository record"
+       (let [test-data {:project {:name              :test-name
+                                  :description       :test-desc
+                                  :owner             {
+                                                      :avatar_url :test-avatar}
+
+                                  :html_url          :test-html-url
+                                  :created_at        :test-created-at
+                                  :updated_at        :test-updated-at
+                                  :open_issues_count :test-open-issues-count
+                                  :watchers          :test-watchers
+                                  :forks             :test-forks
+                                  :size              :test-size
+                                  }
+
+                        }]
+         (fact "copies the project name"
+               (h/github-to-repository-record test-data) => (contains {:name :test-name}))
+         (fact "copies the project description"
+               (h/github-to-repository-record test-data) => (contains {:description :test-desc}))
+         (fact "copies the project url"
+               (h/github-to-repository-record test-data) => (contains {:project_url :test-html-url}))
+         (fact "copies the created date"
+               (h/github-to-repository-record test-data) => (contains {:created_at :test-created-at}))
+         (fact "copies the updated date"
+               (h/github-to-repository-record test-data) => (contains {:updated_at :test-updated-at}))
+         (fact "copies the issues count"
+               (h/github-to-repository-record test-data) => (contains {:open_issues_count :test-open-issues-count}))
+         (fact "copies the watchers count"
+               (h/github-to-repository-record test-data) => (contains {:watchers :test-watchers}))
+         (fact "copies the fork count"
+               (h/github-to-repository-record test-data) => (contains {:forks :test-forks}))
+         (fact "copies the repo size"
+               (h/github-to-repository-record test-data) => (contains {:size :test-size}))
+         (fact "copies the original data into a github key"
+               (h/github-to-repository-record test-data) => (contains {:github test-data}))))
+
