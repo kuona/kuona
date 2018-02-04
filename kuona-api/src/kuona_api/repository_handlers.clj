@@ -6,7 +6,8 @@
             [kuona-core.metric.store :as store]
             [ring.util.response :refer [resource-response response status]]
             [clojure.string :as string]
-            [kuona-core.util :as util])
+            [kuona-core.util :as util]
+            [kuona-core.github :as github])
   (:gen-class)
   (:import (java.net URL)))
 
@@ -77,26 +78,6 @@
    :github            github-repo}
   )
 
-(defn query-github-repo
-  [username repository]
-
-  (try+
-    (let [url (string/join "/" ["https://api.github.com/repos" username repository])]
-      {:status :success
-       :github (util/parse-json-body (http/get url))
-       })
-    (catch [:status 400] {:keys [request-time headers body]}
-      (let [error (util/parse-json body)]
-        (log/info "Bad request" error)
-        {:status :error}))
-    (catch [:status 404] {:keys [request-time headers body]}
-      (let [error (util/parse-json body)]
-        (log/info "Bad request" error)
-        {:status :error}))
-    (catch Object _
-      (log/error (:throwable &throw-context) "Unexpected error reading schema" username repository)
-      {:status :error})))
-
 (defn test-project-url
   [project]
   (log/info "test-project-url" project)
@@ -105,7 +86,7 @@
         repository (-> project :repository)]
 
     (cond
-      (and username repository) (response (query-github-repo username repository))
+      (and username repository) (response (github/get-project-repository username repository))
       username (response {:status :test-repos})
       :else (response {:status :invalid-parameters}))))
 
