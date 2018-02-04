@@ -1,9 +1,14 @@
 (ns kuona-api.repository-handlers
   (:require [cheshire.core :as json]
+            [clj-http.client :as http]
+            [slingshot.slingshot :refer :all]
             [clojure.tools.logging :as log]
             [kuona-core.metric.store :as store]
-            [ring.util.response :refer [resource-response response status]])
-  (:gen-class))
+            [ring.util.response :refer [resource-response response status]]
+            [clojure.string :as string]
+            [kuona-core.util :as util])
+  (:gen-class)
+  (:import (java.net URL)))
 
 (defn bad-request
   [error]
@@ -48,8 +53,54 @@
   [id commit]
   (log/info "new commit for repository " id)
   (let [commit-id (-> commit :id)
-        entity    (merge commit {:repository_id id})]
+        entity (merge commit {:repository_id id})]
     (cond
       (nil? commit-id) (bad-request "malformed request - missing commit identity")
-      :else            (response (store/put-document entity commits commit-id)))))
+      :else (response (store/put-document entity commits commit-id)))))
 
+(defn test-github-project
+  [project]
+  (log/info "test-github-project" project)
+  (let [github-url (-> project :url)
+        url (URL. github-url)
+        path (.getPath url)
+        e (string/split path #"/")]
+    (println "test github " url)
+    (println path)
+    (println e)
+    path))
+
+(defn query-github-repo
+  [username repository]
+
+  (try+
+    (let [url (string/join "/" ["https://api.github.com/repos" username  repository])]
+      {:status :success
+       :github (util/parse-json-body (http/get url))
+       })
+    (catch [:status 400] {:keys [request-time headers body]}
+      (let [error (util/parse-json body)]
+        (log/info "Bad request" error)
+        {:status :error}))
+    (catch [:status 404] {:keys [request-time headers body]}
+      (let [error (util/parse-json body)]
+        (log/info "Bad request" error)
+        {:status :error}))
+    (catch Object _
+      (log/error (:throwable &throw-context) "Unexpected error reading schema" username repository)
+      {:status :error})))
+
+(defn test-project-url
+  [project]
+  (log/info "test-project-url" project)
+
+  (let [username (-> project :username)
+        repository (-> project :repository)]
+
+    (cond
+      (and username repository) (response (query-github-repo username repository))
+      username (response {:status :test-repos})
+      :else (response {:status :invalid-parameters}))))
+
+;(cond
+;  (== (-> project :source) :github) (test-github-project))

@@ -18,16 +18,37 @@ function MainCtrl($scope, $http) {
 }
 
 function NewGithubRepoController($scope, $http) {
-  $scope.repository_url = null;
-  $scope.repository_default = "https://github.com/kuona/kuona-project";
+  $scope.username = null;
+  $scope.username_default = "kuona";
+  $scope.repository = null;
+  $scope.respsitory_default = "kuona-project";
+  $scope.testResponse = {"status": "unknown"};
+  $scope.gh = null;
 
-  $scope.addRepo = function () {
-    console.log("Add repo" + $scope.repository_url);
+  $scope.hasResponse = function () {
+    return $scope.testResponse && $scope.testResponse.status;
   };
 
   $scope.testRepo = function () {
-    console.log("Test repo" + $scope.repository_url);
+    $scope.gh = null;
+    var request = {
+      "source": "github",
+      "username": $scope.username,
+      "repository": $scope.repository
+    };
+    $http.post("/api/repositories/test", request).then(function (res) {
+      $scope.testResponse = res.data;
+
+      if ($scope.testResponse.github) {
+        $scope.gh = $scope.testResponse.github;
+      }
+    });
   };
+
+  $scope.addRepo = function () {
+
+  };
+
 }
 
 angular
