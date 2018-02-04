@@ -6,23 +6,40 @@
             [kuona-core.util :as util]))
 
 
-(defn get-project-repository
-  [username repository]
-
+(defn wrap-http-call
+  [f]
   (try+
-    (let [url (string/join "/" ["https://api.github.com/repos" username repository])]
-      {:status :success
-       :github (util/parse-json-body (http/get url))
-       })
+    (f)
     (catch [:status 400] {:keys [request-time headers body]}
       (let [error (util/parse-json body)]
         (log/info "Bad request" error)
         {:status :error}))
     (catch [:status 404] {:keys [request-time headers body]}
       (let [error (util/parse-json body)]
-        (log/info "Bad request" error)
+        (log/info "Not authorized" error)
         {:status :error
-         :cause 404}))
+         :cause  404}))
     (catch Object _
-      (log/error (:throwable &throw-context) "Unexpected error reading schema" username repository)
-      {:status :error})))
+      (log/error "Unexpected exception " (:message &throw-context))
+      {:status  :error
+       :message (:message &throw-context)
+       :cause   (:cause &throw-context)})))
+
+
+(defn get-project-repository
+  [username repository]
+  (wrap-http-call
+    #(let [url (string/join "/" ["https://api.github.com/repos" username repository])]
+       {:status :success
+        :github (util/parse-json-body (http/get url))
+        })))
+
+(defn get-project-repositories
+  [project-name]
+  (wrap-http-call
+    #(let [url (string/join "/" ["https://api.github.com/users" project-name "repos"])]
+       (log/info "github-query" url)
+       {:status :success
+        :github (util/parse-json-body (http/get url))
+        }))
+  )
