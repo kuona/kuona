@@ -238,6 +238,13 @@
   (into {} (map (fn [k] (es-type-to-ktype (first k) (second k))) h)))
 
 
+
+(defn indices
+  []
+  {:indices (into []
+                  (map (fn [[k v]] (merge v {:name k}))
+                       (:indices (parse-json-body (http/get "http://localhost:9200/_stats")))))})
+
 (defn read-schema
   [source]
   (log/info "read-schema" source)

@@ -99,6 +99,8 @@
            (POST "/api/query/:source" request (query/query-source (get-in request [:params :source]) (get-in request [:body])))
            (GET "/api/query/:source/schema" [source] (query/source-schema source))
 
+           (GET "/api/indices" [] (response (store/indices)))
+
            (route/not-found "Not Found"))
 
 (def app

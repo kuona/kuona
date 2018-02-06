@@ -1,7 +1,6 @@
 (ns kuona-api.query-handlers
   (:require [clojure.tools.logging :as log]
             [kuona-core.metric.store :as store]
-            [kuona-core.util :as util]
             [kuona-api.build-handlers :as build]
             [kuona-api.snapshot-handlers :as snapshots]
             [kuona-api.repository-handlers :as repo]
