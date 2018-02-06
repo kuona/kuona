@@ -26,6 +26,22 @@
                          :collector collector-mapping-type
                          :jenkins   es/disabled-object}}})
 
+(def repository-metric-type
+  {:repositories {:properties {:source            es/string-not-analyzed
+                               :name              es/string
+                               :git_url           es/string-not-analyzed
+                               :description       es/string
+                               :avatar_url        es/string-not-analyzed
+                               :project_url       es/string-not-analyzed
+                               :created_at        es/timestamp
+                               :updated_at        es/timestamp
+                               :open_issues_count es/long-integer
+                               :watchers          es/long-integer
+                               :forks             es/long-integer
+                               :size              es/long-integer
+                               :last_analysed     es/timestamp
+                               :github            es/enabled-object}}})
+
 
 (def metric-mapping-type
   {:build {:properties {:timestamp es/timestamp,
@@ -80,12 +96,12 @@
   [index]
   (log/debug "Testing index" index)
   (try+
-   (let [response (http/head index)]
-     (= (-> response :status) 200))
-   (catch [:status 404] {:keys [request-time headers body]} false)
-   (catch Object _
-     (log/error (:throwable &throw-context) "unexpected error")
-     (throw+))))
+    (let [response (http/head index)]
+      (= (-> response :status) 200))
+    (catch [:status 404] {:keys [request-time headers body]} false)
+    (catch Object _
+      (log/error (:throwable &throw-context) "unexpected error")
+      (throw+))))
 
 
 (def json-headers {"content-type" "application/json; charset=UTF-8"})
@@ -177,43 +193,42 @@
     (parse-json-body response)))
 
 (defn search
-  ([mapping search-term] (search mapping search-term 100))
-  ([mapping search-term size page page-fn]
-   (log/info "document-search" search-term size page)
-   (let [base-url (clojure.string/join "/" [mapping "_search"])
-         search-url (str base-url "?" "q=" search-term "&" (pagination-param :size size :page page))
-         all-url (str base-url "?" (pagination-param :size size :page page))
-         url (if (clojure.string/blank? search-term) all-url search-url)]
-     (log/info "Reading document count for " url)
-     (let [json-response (parse-json-body (http/get url {:headers json-headers}))
-           result-count (-> json-response :hits :total)
-           documents (map #(merge {:id (:_id %)} (:_source %)) (-> json-response :hits :hits))
-           ]
-       {:count (count documents)
-        :items documents
-        :links (page-links page-fn :size size :count result-count)}))))
+  [mapping search-term size page page-fn]
+  (log/info "document-search" search-term size page)
+  (let [base-url (clojure.string/join "/" [mapping "_search"])
+        search-url (str base-url "?" "q=" search-term "&" (pagination-param :size size :page page))
+        all-url (str base-url "?" (pagination-param :size size :page page))
+        url (if (clojure.string/blank? search-term) all-url search-url)]
+    (log/info "Reading document count for " url)
+    (let [json-response (parse-json-body (http/get url {:headers json-headers}))
+          result-count (-> json-response :hits :total)
+          documents (map #(merge {:id (:_id %)} (:_source %)) (-> json-response :hits :hits))
+          ]
+      {:count (count documents)
+       :items documents
+       :links (page-links page-fn :size size :count result-count)})))
 
 (defn es-error
   [e]
-  {:error {:type (-> e :error :type)
+  {:error {:type           (-> e :error :type)
            :description    (str (-> e :error :reason) " line " (-> e :error :line) " column " (-> e :error :col))
            :query_location {:line (-> e :error :line)
-                            :col   (-> e :error :col)}}})
+                            :col  (-> e :error :col)}}})
 
 (defn hash-child
   "Given a hash with a single key returns the value of that key"
   [h]
   (second (first h)))
-  
+
 (defn es-type-to-ktype
   [k value]
   (cond
-    (= (-> value :type) "date")    {k :timestamp}
-    (= (-> value :type) "long")    {k :long}
+    (= (-> value :type) "date") {k :timestamp}
+    (= (-> value :type) "long") {k :long}
     (= (-> value :type) "keyword") {k :string}
-    (= (-> value :type) "object")  {k :object}
-    (-> value :properties)         {k :object}
-    :else                          nil))
+    (= (-> value :type) "object") {k :object}
+    (-> value :properties) {k :object}
+    :else nil))
 
 (defn es-mapping-to-ktypes
   "Takes an elastic search hashmap of field keys and types. Applies
@@ -222,53 +237,53 @@
   [h]
   (into {} (map (fn [k] (es-type-to-ktype (first k) (second k))) h)))
 
- 
+
 (defn read-schema
   [source]
   (log/info "read-schema" source)
   (try+
-   (let [id       (-> source :id)
-         index    (-> source :index)
-         url      (clojure.string/join "/" [index "_mapping"])
-         response (http/get url {:headers json-headers})
-         body     (parse-json-body response)
-         mappings (-> body hash-child hash-child hash-child hash-child)]
-     {id (es-mapping-to-ktypes mappings)})
-   (catch [:status 400] {:keys [request-time headers body]}
-     (let [error (parse-json body)]
-       (log/info "Bad request" error)
-       { :error {:type        (-> error :error :type)
+    (let [id (-> source :id)
+          index (-> source :index)
+          url (clojure.string/join "/" [index "_mapping"])
+          response (http/get url {:headers json-headers})
+          body (parse-json-body response)
+          mappings (-> body hash-child hash-child hash-child hash-child)]
+      {id (es-mapping-to-ktypes mappings)})
+    (catch [:status 400] {:keys [request-time headers body]}
+      (let [error (parse-json body)]
+        (log/info "Bad request" error)
+        {:error {:type        (-> error :error :type)
                  :description (str (-> error :error :reason) " : " (-> error :error :resource.id))}}))
-   (catch [:status 404] {:keys [request-time headers body]}
-     (let [error (parse-json body)]
-       (log/info "Bad request" error)
-       { :error {:type        (-> error :error :type)
+    (catch [:status 404] {:keys [request-time headers body]}
+      (let [error (parse-json body)]
+        (log/info "Bad request" error)
+        {:error {:type        (-> error :error :type)
                  :description (-> error :error :reason)}}))
-   (catch Object _
-     (log/error (:throwable &throw-context) "Unexpected error reading schema" source)
-     { :error {:type        :unexpected
+    (catch Object _
+      (log/error (:throwable &throw-context) "Unexpected error reading schema" source)
+      {:error {:type        :unexpected
                :description (str (:throwable &throw-context))}})))
 
-  
+
 (defn query
   [source q]
   (try+
-   (let [id       (-> source :id)
-         index    (-> source :index)
-         url      (clojure.string/join "/" [index "_search"])
-         response (http/get url {:headers json-headers :body (generate-string q)})
-         body     (parse-json-body response)
-         results  (map :_source (-> body :hits :hits))
-         schema   (read-schema source)]
-     {:count   (-> body :hits :total)
-      :results results
-      :schema  schema})
-   (catch [:status 400] {:keys [request-time headers body]}
-     (let [error (parse-json body)]
-       (log/info "Bad request" error)
-       (es-error error)))
-   (catch Object _ {:error {:type :unexpected :description "Unknown error"}})))
-     
+    (let [id (-> source :id)
+          index (-> source :index)
+          url (clojure.string/join "/" [index "_search"])
+          response (http/get url {:headers json-headers :body (generate-string q)})
+          body (parse-json-body response)
+          results (map :_source (-> body :hits :hits))
+          schema (read-schema source)]
+      {:count   (-> body :hits :total)
+       :results results
+       :schema  schema})
+    (catch [:status 400] {:keys [request-time headers body]}
+      (let [error (parse-json body)]
+        (log/info "Bad request" error)
+        (es-error error)))
+    (catch Object _ {:error {:type :unexpected :description "Unknown error"}})))
+
 
 (defn find-documents
   [url]

@@ -27,12 +27,14 @@
 
 
 (defn get-project-repository
-  [username repository]
-  (wrap-http-call
-    #(let [url (string/join "/" ["https://api.github.com/repos" username repository])]
-       {:status :success
-        :github (util/parse-json-body (http/get url))
-        })))
+  "Read repository details from github"
+  ([spec] (get-project-repository (:username spec) (:repository spec)))
+  ([username repository]
+   (wrap-http-call
+     #(let [url (string/join "/" ["https://api.github.com/repos" username repository])]
+        {:status :success
+         :github (util/parse-json-body (http/get url))
+         }))))
 
 (defn get-project-repositories
   [project-name]

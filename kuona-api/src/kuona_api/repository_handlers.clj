@@ -1,15 +1,12 @@
 (ns kuona-api.repository-handlers
   (:require [cheshire.core :as json]
-            [clj-http.client :as http]
             [slingshot.slingshot :refer :all]
             [clojure.tools.logging :as log]
             [kuona-core.metric.store :as store]
             [ring.util.response :refer [resource-response response status]]
-            [clojure.string :as string]
             [kuona-core.util :as util]
             [kuona-core.github :as github])
-  (:gen-class)
-  (:import (java.net URL)))
+  (:gen-class))
 
 (defn bad-request
   [error]
@@ -47,8 +44,9 @@
   (response (:_source (store/get-document repositories id))))
 
 (defn put-repository!
-  [id repo]
-  (response (store/put-document repo repositories id)))
+  ([repo] (put-repository! repo (:id repo)))
+  ([repo id]
+   (response (store/put-document repo repositories id))))
 
 (defn put-commit!
   [id commit]
@@ -62,21 +60,20 @@
 
 (defn github-to-repository-record
   [github-repo]
-
   {:source            :github
-   :name              (-> github-repo :project :name)
-   :description       (-> github-repo :project :description)
-   :avatar_url        (-> github-repo :project :owner :avatar_url)
-   :project_url       (-> github-repo :project :html_url)
-   :created_at        (-> github-repo :project :created_at)
-   :updated_at        (-> github-repo :project :updated_at)
-   :open_issues_count (-> github-repo :project :open_issues_count)
-   :watchers          (-> github-repo :project :watchers)
-   :forks             (-> github-repo :project :forks)
-   :size              (-> github-repo :project :size)
+   :name              (-> github-repo  :name)
+   :git_url           (-> github-repo  :git_url)
+   :description       (-> github-repo  :description)
+   :avatar_url        (-> github-repo  :owner :avatar_url)
+   :project_url       (-> github-repo  :html_url)
+   :created_at        (-> github-repo  :created_at)
+   :updated_at        (-> github-repo  :updated_at)
+   :open_issues_count (-> github-repo  :open_issues_count)
+   :watchers          (-> github-repo  :watchers)
+   :forks             (-> github-repo  :forks)
+   :size              (-> github-repo  :size)
    :last_analysed     nil
-   :github            github-repo}
-  )
+   :github            github-repo})
 
 (defn test-project-url
   [project]
@@ -92,3 +89,49 @@
 
 ;(cond
 ;  (== (-> project :source) :github) (test-github-project))
+
+(def invalid-add-repository-request
+  {:status      :error
+   :description "Request not recognised"
+   :message     "Supported requests github-project"})
+
+(defn foo [resp fn]
+  (cond
+    (= (:status resp) :success) (fn resp)
+    :else resp)
+  )
+
+(defn add-id
+  [r selector]
+  (cond
+    (-> r selector) (merge r {:id (util/uuid-from (-> r selector))})
+    :else (merge r {:id (util/uuid)})
+    )
+  )
+
+(defn github-project-request?
+  [spec]
+  (= (:source spec) "github-project"))
+
+(defn handle-github-project-request
+  [spec]
+  (-> spec
+      (github/get-project-repository)
+      (:github)
+      (github-to-repository-record)
+      (add-id :git_url)
+      (put-repository!)))
+
+(defn add-repository
+  "Handles a request to add a new repository based on the supplied spec
+
+  :source
+
+   github-project - add a single project"
+
+  [spec]
+  (log/info "add-repository" spec)
+  (response
+    (cond
+      (github-project-request? spec) (handle-github-project-request spec)
+      :else invalid-add-repository-request)))

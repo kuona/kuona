@@ -32,7 +32,7 @@ function NewGithubRepoController($scope, $http) {
   $scope.testRepo = function () {
     $scope.gh = null;
     var request = {
-      "source": "github",
+      "source": "github-project",
       "username": $scope.username,
       "repository": $scope.repository
     };
@@ -46,7 +46,19 @@ function NewGithubRepoController($scope, $http) {
   };
 
   $scope.addRepo = function () {
+    $scope.gh = null;
+    var request = {
+      "source": "github-project",
+      "username": $scope.username,
+      "repository": $scope.repository
+    };
+    $http.post("/api/repositories", request).then(function (res) {
+      $scope.testResponse = res.data;
 
+      if ($scope.testResponse.github) {
+        $scope.gh = $scope.testResponse.github;
+      }
+    });
   };
 
 }
