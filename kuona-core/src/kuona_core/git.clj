@@ -1,6 +1,5 @@
 (ns kuona-core.git
-  (:require [clojure.java.io :as io]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [clj-jgit.porcelain :as git]
             [clj-jgit.querying :as git-query]
             [clj-time.core :as t]

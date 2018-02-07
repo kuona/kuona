@@ -1,6 +1,5 @@
 (ns kuona-core.util
   (:require [clojure.java.io :as io]
-            [clojure.java.shell :as shell]
             [clojure.tools.logging :as log]
             [cheshire.core :refer :all])
   (:import java.util.Properties)

@@ -1,16 +1,9 @@
 (ns kuona-api.valuestream-handlers
   (:require [cheshire.core :refer :all]
-            [clojure.tools.logging :as log]
-            [clj-http.client :as http]
             [compojure.core :refer :all]
-            [compojure.handler :as handler]
-            [compojure.route :as route]
             [kuona-api.environments :refer :all]
-            [kuona-core.metric.store :as store]
             [kuona-core.util :as util]
-            [ring.adapter.jetty :as jetty]
             [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
-            [ring.middleware.json :as middleware]
             [ring.util.response :refer [resource-response response status]])
   (:gen-class))
 

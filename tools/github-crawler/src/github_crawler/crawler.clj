@@ -1,17 +1,12 @@
 (ns github-crawler.crawler
-  (:require [clojure.string :as string]
-            [clojure.tools.logging :as log]
-            [clj-http.client :as http]
-            [cheshire.core :refer :all]
-            [clj-jgit.porcelain :as git]
-            [clj-jgit.querying :as git-query]
-            [clojure.java.io :as io]
-            [slingshot.slingshot :refer :all]
-            [kuona-core.metric.store :as store]
-            [kuona-core.git :refer :all]
-            [kuona-core.util :as util])
-  (:import (java.net InetAddress)
-           (java.util Date))
+  (:require
+    [clojure.tools.logging :as log]
+    [clj-http.client :as http]
+    [cheshire.core :refer :all]
+    [slingshot.slingshot :refer :all]
+    [kuona-core.git :refer :all]
+    [kuona-core.util :as util])
+  (:import (java.util Date))
   (:gen-class))
 
 (def config-file "properties.edn")

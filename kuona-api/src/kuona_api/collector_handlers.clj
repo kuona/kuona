@@ -1,7 +1,6 @@
 (ns kuona-api.collector-handlers
   (:require [clojure.tools.logging :as log]
             [kuona-core.metric.store :as store]
-            [kuona-core.util :as util]
             [ring.util.response :refer [resource-response response status]])
   (:gen-class))
 

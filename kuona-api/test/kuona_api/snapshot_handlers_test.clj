@@ -2,7 +2,6 @@
   (:require [cheshire.core :refer :all]
             [clj-http.client :as http]
             [kuona-api.environments :refer :all]
-            [kuona-api.repository-handlers :as h]
             [kuona-api.test-helpers :as helper]
             [kuona-api.handler :refer [app]]
             [midje.sweet :refer :all]
