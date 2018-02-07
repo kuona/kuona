@@ -10,10 +10,16 @@ function MainCtrl($scope, $http) {
   this.userName = 'Kuona Admin';
   this.helloText = 'Kuona Administration';
   this.descriptionText = 'It is an application skeleton for a typical AngularJS web app. You can use it to quickly bootstrap your angular webapp projects and dev environment for these projects.';
+
   $scope.info = {};
+  $scope.indices = [];
 
   $http.get('/api/info').then(function (res) {
     $scope.info = res.data;
+  });
+
+  $http.get("/api/indices").then(function(res){
+    $scope.indices = res.data.indices;
   });
 }
 
@@ -60,7 +66,6 @@ function NewGithubRepoController($scope, $http) {
       }
     });
   };
-
 }
 
 angular
