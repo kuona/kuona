@@ -1,7 +1,5 @@
 (ns code-collector.core
-  (:require [clojure.java.shell :as shell]
-            [clojure.data.xml :as xml]
-            [cheshire.core :refer :all]
+  (:require [cheshire.core :refer :all]
             [clojure.set :only [rename-keys]]
             [clojure.pprint :only [pprint]]
             [kuona-core.cloc :as cloc]

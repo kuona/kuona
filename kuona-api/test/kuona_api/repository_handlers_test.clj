@@ -5,7 +5,8 @@
             [kuona-api.test-helpers :as helper]
             [kuona-api.handler :refer :all]
             [kuona-core.github :as github]
-            [midje.sweet :refer :all]))
+            [midje.sweet :refer :all]
+            [kuona-core.util :as util]))
 
 (facts "about commit pagination"
        (fact (h/commits-page-link 1 11) => "/api/repositories/1/commits?page=11"))
@@ -17,9 +18,7 @@
        (fact "returns commit if created"
              (:status (helper/mock-json-put app "/api/repositories/1/commits" {:id 234})) => 200
              (provided (http/put "http://localhost:9200/kuona-repositories/commits/234" {:headers {"content-type" "application/json; charset=UTF-8"},
-                                                                                         :body    "{\"id\":234,\"repository_id\":\"1\"}"}) => {:status 200 :body (json/generate-string {:id 234})}))
-
-       )
+                                                                                         :body    "{\"id\":234,\"repository_id\":\"1\"}"}) => {:status 200 :body (json/generate-string {:id 234})})))
 
 (facts "about testing repository links"
        (fact "projects with github source are tested with github"
@@ -30,20 +29,18 @@
                (provided (github/get-project-repository "kuona" "kuona-project") => :result))))
 
 (facts "about converting github data to repository record"
-       (let [test-data {:project {:name              :test-name
-                                  :description       :test-desc
-                                  :owner             {
-                                                      :avatar_url :test-avatar}
+       (let [test-data {:name              :test-name
+                        :description       :test-desc
+                        :owner             {
+                                            :avatar_url :test-avatar}
 
-                                  :html_url          :test-html-url
-                                  :created_at        :test-created-at
-                                  :updated_at        :test-updated-at
-                                  :open_issues_count :test-open-issues-count
-                                  :watchers          :test-watchers
-                                  :forks             :test-forks
-                                  :size              :test-size
-                                  }
-
+                        :html_url          :test-html-url
+                        :created_at        :test-created-at
+                        :updated_at        :test-updated-at
+                        :open_issues_count :test-open-issues-count
+                        :watchers          :test-watchers
+                        :forks             :test-forks
+                        :size              :test-size
                         }]
          (fact "copies the project name"
                (h/github-to-repository-record test-data) => (contains {:name :test-name}))
@@ -65,4 +62,11 @@
                (h/github-to-repository-record test-data) => (contains {:size :test-size}))
          (fact "copies the original data into a github key"
                (h/github-to-repository-record test-data) => (contains {:github test-data}))))
+
+(facts "about adding ids"
+       (fact "adds id based on value of selected field"
+             (h/add-id {:foo "123"} :foo) => (contains {:id (util/uuid-from "123")}))
+       (fact "adds a uuid if field is missing"
+             (h/add-id {} :foo) => {:id 123}
+             (provided (util/uuid) => 123)))
 

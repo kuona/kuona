@@ -2,7 +2,6 @@
   (:require [clojure.tools.logging :as log]
             [kuona-api.environments :refer :all]
             [kuona-core.metric.store :as store]
-            [kuona-core.util :as util]
             [ring.util.response :refer [resource-response response status]])
   (:gen-class))
 

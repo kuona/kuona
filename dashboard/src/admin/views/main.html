@@ -42,11 +42,41 @@
     </div>
   </div>
   <div class="row">
+    <div class="col-md-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-title">
+          <h5>Indices</h5>
+        </div>
+        <div class="ibox-content">
+
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>Index</th>
+              <th style="text-align:right;">Size (bytes)</th>
+              <th style="text-align:right;">Document Count</th>
+              <th style="text-align:right;">Deleted</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="index in indices">
+              <td>{{index.name}}</td>
+              <td style="text-align:right;">{{index.total.store.size_in_bytes}}</td>
+              <td style="text-align:right;">{{index.total.docs.count}}</td>
+              <td style="text-align:right;">{{index.total.docs.deleted}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
     <div class="col-lg-5">
       <div class="jumbotron">
         <h1><i class="fa fa-github"></i> Repository</h1>
-          <p>Add a github repository for analysis.</p>
-          <p><a ui-sref="index.new-github-repository" class="btn btn-primary btn-lg" role="button">Add Github Repo</a></p>
+        <p>Add a github repository for analysis.</p>
+        <p><a ui-sref="index.new-github-repository" class="btn btn-primary btn-lg" role="button">Add Github Repo</a></p>
       </div>
     </div>
   </div>

@@ -1,6 +1,5 @@
 (ns kuona-api.handler
   (:require [cheshire.core :refer :all]
-            [clojure.tools.logging :as log]
             [clj-http.client :as http]
             [compojure.core :refer :all]
             [compojure.handler :as handler]
@@ -60,8 +59,11 @@
 
            (GET "/api/repositories/count" [] (repository/get-repository-count))
            (GET "/api/repositories" [search page] (repository/get-repositories search page))
+
+           (POST "/api/repositories" request (repository/add-repository (get-in request [:body])))
+
            (GET "/api/repositories/:id" [id] (repository/get-repository-by-id id))
-           (PUT "/api/repositories/:id" request (repository/put-repository! (get-in request [:params :id]) (get-in request [:body])))
+           (PUT "/api/repositories/:id" request (repository/put-repository! (get-in request [:body]) (get-in request [:params :id]) ))
 
            (GET "/api/repositories/:id/commits" request (repository/get-commits (get-in request [:params :id]) 1))
            (PUT "/api/repositories/:id/commits" request (repository/put-commit! (get-in request [:params :id]) (get-in request [:body])))
@@ -96,6 +98,8 @@
            (GET "/api/query/sources" [] (query/get-sources))
            (POST "/api/query/:source" request (query/query-source (get-in request [:params :source]) (get-in request [:body])))
            (GET "/api/query/:source/schema" [source] (query/source-schema source))
+
+           (GET "/api/indices" [] (response (store/indices)))
 
            (route/not-found "Not Found"))
 

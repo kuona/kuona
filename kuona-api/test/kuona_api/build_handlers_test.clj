@@ -7,8 +7,7 @@
             [kuona-core.util :as util]
             [kuona-api.collector-handlers :as h]
             [kuona-api.handler :refer :all]
-            [midje.sweet :refer :all]
-            [ring.mock.request :as mock]))
+            [midje.sweet :refer :all]))
 
 (def test-build
   {:build

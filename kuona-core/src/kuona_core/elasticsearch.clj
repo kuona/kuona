@@ -15,3 +15,6 @@
 (def disabled-object
   {:type "object" :enabled :false})
 
+(def enabled-object
+  {:type "object" :enabled :true})
+

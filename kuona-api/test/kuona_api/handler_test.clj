@@ -4,6 +4,8 @@
             [kuona-api.environments :refer :all]
             [kuona-api.handler :refer :all]
             [midje.sweet :refer :all]
+            [midje.sweet :refer :all]
+            [kuona-api.test-helpers :refer [parse-json-response]]
             [ring.mock.request :as mock]))
 
 (defn mock-json-post
@@ -17,21 +19,6 @@
   (app (-> (mock/request :put url
                          (generate-string body))
            (mock/content-type "application/json"))))
-
-
-(defn parse-json-response
-  [response]
-  (try
-    (parse-string (:body response) true)
-    (catch Exception _
-        {})))
-
-(def three-buckets { :buckets [{:key "gradle" :doc_count 748 }
-                               {:key "maven" :doc_count 254}
-                               {:key "ant" :doc_count 92}]})
-
-(def three-build-buckets
-  { :aggregations { :builder three-buckets}})
 
 
 (future-facts

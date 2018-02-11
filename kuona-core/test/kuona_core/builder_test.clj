@@ -2,7 +2,6 @@
   (:require [midje.sweet :refer :all]
             [kuona-core.builder :refer :all]
             [kuona-core.maven :as maven]
-            [clojure.data.xml :as xml]
             [kuona-core.util :refer :all]))
 
 (facts "about build tool matching"
