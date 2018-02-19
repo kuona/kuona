@@ -36,6 +36,11 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
       url: "jenkins/server",
       templateUrl: "views/jenkins/server.html",
       data: {pageTile: "Add Jenkins Build Server"}
+    })
+    .state('index.build-servers', {
+      url: 'build/servers',
+      templateUrl: 'views/build-servers.html',
+      data: {pageTitle: 'Build Servers'}
     });
 }
 

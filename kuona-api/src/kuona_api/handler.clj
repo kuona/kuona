@@ -93,6 +93,7 @@
            (GET "/api/collectors/activities" [] (collectors/get-activities))
 
            (POST "/api/collectors" request (collectors/put-collector! (get-in request [:body])))
+           (GET "/api/collectors" [] (collectors/collector-list))
 
            (POST "/api/builds" request (build/put-build! (get-in request [:body])))
 

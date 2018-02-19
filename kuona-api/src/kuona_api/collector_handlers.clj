@@ -57,3 +57,9 @@
         doc (merge {:id id} c)]
     (log/info "Adding collector document" doc)
     (response (store/put-document doc collector-config id))))
+
+(defn collector-list
+  "Reads the list of defined collectors"
+  []
+  (let [url (str collector-config "/_search?size=100")]
+    (response (store/find-documents url))))

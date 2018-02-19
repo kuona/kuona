@@ -18,7 +18,7 @@ function MainCtrl($scope, $http) {
     $scope.info = res.data;
   });
 
-  $http.get("/api/indices").then(function(res){
+  $http.get("/api/indices").then(function (res) {
     $scope.indices = res.data.indices;
   });
 }
@@ -71,12 +71,12 @@ function NewGithubRepoController($scope, $http) {
 
 function NewJenkinsServerController($scope, $http) {
   $scope.server_url = "";
-  $scope.server_url_placeholder = 'http://build.codekata.ninja'
+  $scope.server_url_placeholder = 'http://build.codekata.ninja';
   $scope.username = null;
   $scope.password = null;
-  $scope.api_response = {}
+  $scope.api_response = {};
 
-  $scope.addJenkins = function (){
+  $scope.addJenkins = function () {
 
     var request = {
       "collector": "jenkins",
@@ -87,16 +87,24 @@ function NewJenkinsServerController($scope, $http) {
       }
     };
 
-    $http.post("/api/collectors", request).then(function(res){
+    $http.post("/api/collectors", request).then(function (res) {
       $scope.api_response = res;
     });
 
   };
+}
 
+function BuildServersController($scope, $http) {
+  $scope.build_servers = [];
+
+  $http.get("/api/collectors").then(function (res) {
+    $scope.build_servers = res.data.items;
+  });
 }
 
 angular
   .module('kuona-admin')
   .controller('MainCtrl', ['$scope', '$http', MainCtrl])
   .controller('NewGithubRepoController', ['$scope', '$http', NewGithubRepoController])
-  .controller('NewJenkinsServerController', ['$scope', '$http', NewJenkinsServerController]);
+  .controller('NewJenkinsServerController', ['$scope', '$http', NewJenkinsServerController])
+  .controller('BuildServersController', ['$scope', '$http', BuildServersController]);

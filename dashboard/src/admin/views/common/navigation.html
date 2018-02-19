@@ -29,6 +29,10 @@
         <a ui-sref="index.crawlers"><i class="fa fa-cogs"></i> <span class="nav-label">Crawlers</span></a>
       </li>
 
+      <li ui-sref-active="active">
+        <a ui-sref="index.build-servers"><i class="fab fa-whmcs"></i> <span class="nav-label">Build Systems</span></a>
+      </li>
+
       <li ng-class="{active: $state.includes('index.new*')}">
         <a href="#"><i class="fa fa-plus-circle"></i> <span class="nav-label">Add</span> <span class="fa fa-arrow-left"></span></a>
         <ul class="nav nav-second-level collapse" ng-class="{in: $state.includes('index.new*')}">
