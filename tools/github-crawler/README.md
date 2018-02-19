@@ -1,14 +1,8 @@
 # kuona-trawler
 
-A Clojure library designed to ... well, that part is up to you.
+A command line tool that queries the GitHub API for interesting projects to analyze. The trawler adds the repository data to a Kuona database for further analysis.
 
-## Usage
+Using lein for details.
 
-FIXME
+`lein run --help`
 
-## License
-
-Copyright © 2017 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
