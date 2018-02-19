@@ -92,6 +92,8 @@
            (POST "/api/collectors/activities" request (collectors/put-activity! (get-in request [:body])))
            (GET "/api/collectors/activities" [] (collectors/get-activities))
 
+           (POST "/api/collectors" request (collectors/put-collector! (get-in request [:body])))
+
            (POST "/api/builds" request (build/put-build! (get-in request [:body])))
 
            (GET "/api/query" [] (redirect "/api/query/sources"))

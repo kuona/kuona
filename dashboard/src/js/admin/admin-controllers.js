@@ -68,7 +68,35 @@ function NewGithubRepoController($scope, $http) {
   };
 }
 
+
+function NewJenkinsServerController($scope, $http) {
+  $scope.server_url = "";
+  $scope.server_url_placeholder = 'http://build.codekata.ninja'
+  $scope.username = null;
+  $scope.password = null;
+  $scope.api_response = {}
+
+  $scope.addJenkins = function (){
+
+    var request = {
+      "collector": "jenkins",
+      "config": {
+        "url": $scope.server_url,
+        "username": $scope.username,
+        "password": $scope.password
+      }
+    };
+
+    $http.post("/api/collectors", request).then(function(res){
+      $scope.api_response = res;
+    });
+
+  };
+
+}
+
 angular
   .module('kuona-admin')
   .controller('MainCtrl', ['$scope', '$http', MainCtrl])
-  .controller('NewGithubRepoController', ['$scope', '$http', NewGithubRepoController]);
+  .controller('NewGithubRepoController', ['$scope', '$http', NewGithubRepoController])
+  .controller('NewJenkinsServerController', ['$scope', '$http', NewJenkinsServerController]);

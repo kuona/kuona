@@ -24,19 +24,19 @@
       <li ui-sref-active="active">
         <a ui-sref="index.main"><i class="fa fa-laptop"></i> <span class="nav-label">Main page</span> </a>
       </li>
-      <li ui-sref-active="active">
-        <a ui-sref="index.minor"><i class="fa fa-desktop"></i> <span class="nav-label">Minor page</span></a>
-      </li>
 
       <li ui-sref-active="active">
         <a ui-sref="index.crawlers"><i class="fa fa-cogs"></i> <span class="nav-label">Crawlers</span></a>
       </li>
 
       <li ng-class="{active: $state.includes('index.new*')}">
-        <a href="#"><i class="fa fa-plus-circle"></i> <span class="nav-label">Add</span> <span class="fa arrow"></span></a>
+        <a href="#"><i class="fa fa-plus-circle"></i> <span class="nav-label">Add</span> <span class="fa fa-arrow-left"></span></a>
         <ul class="nav nav-second-level collapse" ng-class="{in: $state.includes('index.new*')}">
           <li>
-            <a ui-sref="index.new-github-repository"><i class="fa fa-github"></i> Github Repo</a>
+            <a ui-sref="index.new-github-repository"><i class="fab fa-github"></i> Github Repo</a>
+          </li>
+          <li>
+            <a ui-sref="index.new-jenkins-server"><i class="fab fa-jenkins"></i> Jenkins Server</a>
           </li>
         </ul>
       </li>
