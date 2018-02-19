@@ -9,7 +9,7 @@
 function MainCtrl($scope, $http) {
   this.userName = 'Kuona Admin';
   this.helloText = 'Kuona Administration';
-  this.descriptionText = 'It is an application skeleton for a typical AngularJS web app. You can use it to quickly bootstrap your angular webapp projects and dev environment for these projects.';
+  this.descriptionText = 'Manage your Kuona metrics server here. Add and remove resources for analysis.';
 
   $scope.info = {};
   $scope.indices = [];
