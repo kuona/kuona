@@ -54,9 +54,9 @@
                           <li>
                             <label>Elasticsearch:</label>
                             <small class="label label-primary">{{ info.elastic_search.name }}</small>
-                            <small class="label label-primary">{{ info.elastic_search.version.number }}</small>
+                            <small class="label label-primary">version {{ info.elastic_search.version.number }}</small>
                             <small class="label label-info">lucene {{ info.elastic_search.version.lucene_version }}</small>
-                            <small class="label label-primary">{{ info.elastic_search.version.build_timestamp | date:'yyyy-MM-dd' }}</small>
+                            <small class="label label-primary">build date {{ info.elastic_search.version.build_date | date:'yyyy-MM-dd' }}</small>
                           </li>
                           <li>
                             <label>Cluster UUID:</label>
