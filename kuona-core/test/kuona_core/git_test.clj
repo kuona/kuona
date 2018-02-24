@@ -12,4 +12,6 @@
          (fact "traversing the commit histry by day"
                (git/each-commit (fn [repo-path sha time]) test-repo-path) => nil)
          (fact "traversing the commit histry by day"
-               (git/each-commit-by-day (fn [repo-path sha time]) test-repo-path) => nil)))
+               (git/each-commit-by-day (fn [repo-path sha time]) test-repo-path) => nil)
+         (fact "can read configured remote url"
+               (git/get-config test-repo-path "remote" "origin" "url") => "git@github.com:grahambrooks/functional-event-store.git")))

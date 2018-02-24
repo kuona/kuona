@@ -131,6 +131,13 @@
     (catch Object _
       false)))
 
+(defn delete-index-by-id
+  [id]
+  (try+
+    (parse-json-body (http/delete (clojure.string/join "/" ["http://localhost" id] )))
+    (catch Object _
+      false)))
+
 (defn mapping
   [mapping-name index]
   (clojure.string/join "/" [index (name mapping-name)]))

@@ -34,29 +34,29 @@
 (defn changes-to-map
   "Takes list of two element arrays and returns an array of maps"
   [changes]
-  (into [] (map #(file-change (first %) (second %))  changes)))
+  (into [] (map #(file-change (first %) (second %)) changes)))
 
 (defn commit-and-diff
   [mapping url repo commit]
   (let [commit-info (git-query/commit-info repo commit)
-        id          (:id commit-info)
-        metric      {:timestamp (:time commit-info)
-                     :metric    {:type      :commit
-                                 :name      "TBD"
-                                 :source    {:system :git
-                                             :url    url}
-                                 :activity  {:type          :commit
-                                             :email         (:email commit-info)
-                                             :branches      (:branches commit-info)
-                                             :change_count  (count (changes-to-map (:changed_files commit-info)))
-                                             :changed_files (changes-to-map (:changed_files commit-info))
-                                             :merge         (:merge commit-info)
-                                             :author        (:author commit-info)
-                                             :message       (:message commit-info)
-                                             :id            (:id commit-info)}
-                                 :collected (timestamp)}
-                     :collector {:name    :kuona-git-collector
-                                 :version "0.1"}}]
+        id (:id commit-info)
+        metric {:timestamp (:time commit-info)
+                :metric    {:type      :commit
+                            :name      "TBD"
+                            :source    {:system :git
+                                        :url    url}
+                            :activity  {:type          :commit
+                                        :email         (:email commit-info)
+                                        :branches      (:branches commit-info)
+                                        :change_count  (count (changes-to-map (:changed_files commit-info)))
+                                        :changed_files (changes-to-map (:changed_files commit-info))
+                                        :merge         (:merge commit-info)
+                                        :author        (:author commit-info)
+                                        :message       (:message commit-info)
+                                        :id            (:id commit-info)}
+                            :collected (timestamp)}
+                :collector {:name    :kuona-git-collector
+                            :version "0.1"}}]
     (let [result (store/put-document metric mapping id)]
       (log/info "Processing commit " url " " id " @ " (:time commit-info))
       result)))
@@ -81,40 +81,46 @@
           (f repo-path (.getName log) (:time (git-query/commit-info repo log)))
           (git/git-checkout repo "master")))))
 
+(defn get-config
+  "Reads git configuration properties"
+  [repo-path a b c]
+  (let [repo (git/load-repo repo-path)]
+    (.getString (.getConfig (.getRepository repo)) a b c)))
+
 (defn commit-history
   ([repo]
-   (let [log  (git/git-log repo)
+   (let [log (git/git-log repo)
          keys [:email :time :branches :changed_files :merge false :author :id :message]]
-     (map (fn[c] (select-keys (git-query/commit-info repo c) keys)) log)))
+     (map (fn [c] (select-keys (git-query/commit-info repo c) keys)) log)))
   ([repo start]
    (let [commits (commit-history repo)]
      (drop-while (fn [c] (not= (:id c) start)) commits)))
   ([repo start end]
    (let [commits (commit-history repo start)
-         group   (take-while (fn [c] (not= (:id c) end)) commits)]
+         group (take-while (fn [c] (not= (:id c) end)) commits)]
      (concat group [(first (drop (count group) commits))]))))
 
 (defn commits
   [repo-path]
   (log/info "commits " repo-path)
-  (let [repo   (git/load-repo repo-path)
+  (let [repo (git/load-repo repo-path)
         master (git/git-checkout repo "master")
-        head   (git/git-checkout repo "HEAD")]
+        head (git/git-checkout repo "HEAD")]
     (git/git-log repo)))
 
 (defn commit-by-day
   [repo-path]
-  (let [repo    (git/load-repo repo-path)
-        master  (git/git-checkout repo "master")
-        head    (git/git-checkout repo "HEAD")
+  (let [repo (git/load-repo repo-path)
+        master (git/git-checkout repo "master")
+        head (git/git-checkout repo "HEAD")
         history (git/git-log repo)]
     (group-by #(t/with-time-at-start-of-day (tc/from-date (:time (git-query/commit-info repo %)))) history)))
 
 (defn each-commit-by-day
   "Apply the function f to each version of the repository - based on the log"
   [f repo-path]
-  (let [repo            (git/load-repo repo-path)
-        history         (git/git-log repo)
+  (let [repo (git/load-repo repo-path)
+        history (git/git-log repo)
         grouped-commits (group-by #(t/with-time-at-start-of-day (tc/from-date (:time (git-query/commit-info repo %)))) history)]
     (log/info "Found " (count history) " commits on " (count grouped-commits) " distinct days")
     (doseq [log grouped-commits]
@@ -126,24 +132,24 @@
 (defn collect
   [vcs-mapping code-mapping workspace url]
   (try+
-   (let [local-dir (local-clone-path workspace url)]
-     (log/info "Collecting " url " to " local-dir)
-     (if (directory? local-dir) (git-pull url local-dir) (git-clone url local-dir))
-     (log-metrics vcs-mapping url local-dir)
-     (each-commit-by-day
-      (fn [path sha timestamp]
+    (let [local-dir (local-clone-path workspace url)]
+      (log/info "Collecting " url " to " local-dir)
+      (if (directory? local-dir) (git-pull url local-dir) (git-clone url local-dir))
+      (log-metrics vcs-mapping url local-dir)
+      (each-commit-by-day
+        (fn [path sha timestamp]
           (cloc/loc-collector
-           (fn [a]
-             (log/info url " @ " timestamp)
-             (store/put-document {:timestamp timestamp
-                                  :metric    {:source    {:system :git :url url}
-                                              :type      :loc
-                                              :name      "TBD"
-                                              :collected (-> a :metric :collected)
-                                              :activity  (-> a :metric :activity)}
-                                  :collector (-> a :collector)}
-                                 code-mapping (uuid-from sha "cloc"))) path sha))
+            (fn [a]
+              (log/info url " @ " timestamp)
+              (store/put-document {:timestamp timestamp
+                                   :metric    {:source    {:system :git :url url}
+                                               :type      :loc
+                                               :name      "TBD"
+                                               :collected (-> a :metric :collected)
+                                               :activity  (-> a :metric :activity)}
+                                   :collector (-> a :collector)}
+                                  code-mapping (uuid-from sha "cloc"))) path sha))
         local-dir)
-     ) 
-   (catch Object _
-     (log/error (:throwable &throw-context) "unexpected error collecting metrics for " url workspace))))
+      )
+    (catch Object _
+      (log/error (:throwable &throw-context) "unexpected error collecting metrics for " url workspace))))

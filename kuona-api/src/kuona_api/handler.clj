@@ -29,7 +29,10 @@
            {:href "/api/metrics" :rel "metrics"}
            {:href "/api/valuestreams" :rel "valuestreams"}
            {:href "/api/info" :rel "info"}
-           {:href "/api/query" :rel "query"}]})
+           {:href "/api/query" :rel "query"}
+           {:href "/api/indices"
+            :rel "indices"
+            :description "API for managing ElasticSearch indexes. Support GET and DELETE and POST /id/rebuild. Rebuild deletes and then creates the index with the appropriate schema"}]})
 
 (defn get-service-data
   []
@@ -44,8 +47,9 @@
 
 (defn get-api-info
   []
-  (let [es (util/parse-json-body (http/get "http://localhost:9200"))]
-    (response (merge (api-info) (service-data)))))
+  (response
+    (merge (api-info)
+           (service-data))))
 
 (defn get-api-status
   []
@@ -63,7 +67,7 @@
            (POST "/api/repositories" request (repository/add-repository (get-in request [:body])))
 
            (GET "/api/repositories/:id" [id] (repository/get-repository-by-id id))
-           (PUT "/api/repositories/:id" request (repository/put-repository! (get-in request [:body]) (get-in request [:params :id]) ))
+           (PUT "/api/repositories/:id" request (repository/put-repository! (get-in request [:body]) (get-in request [:params :id])))
 
            (GET "/api/repositories/:id/commits" request (repository/get-commits (get-in request [:params :id]) 1))
            (PUT "/api/repositories/:id/commits" request (repository/put-commit! (get-in request [:params :id]) (get-in request [:body])))
@@ -103,6 +107,7 @@
            (GET "/api/query/:source/schema" [source] (query/source-schema source))
 
            (GET "/api/indices" [] (response (store/indices)))
+           (DELETE "/api/indicies/:id" [id] (response (store/delete-index-by-id id)))
 
            (route/not-found "Not Found"))
 
