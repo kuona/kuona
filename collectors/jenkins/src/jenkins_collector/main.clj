@@ -26,7 +26,7 @@
 (defn collector-log
   "Posts details of the collector to the API server to record the collector run"
   [api-url collector-details parameters status]
-  (let [url  (string/join "/" [api-url "api" "collectors" "activities"])
+  (let [url (string/join "/" [api-url "api" "collectors" "activities"])
         body (util/build-json-request {:id         (util/uuid)
                                        :collector  collector-details
                                        :activity   status
@@ -38,27 +38,25 @@
 (defn log-collection
   "Wraps the collection with logging to the API server to act as a history of changes"
   [api-url collector-details params f]
-  
+
   (try+
-   (collector-log api-url collector-details params :started)
-   (f)
-   (collector-log api-url collector-details params :stopped)
-   (catch Object _
-     (collector-log api-url collector-details params :failed))))
+    (collector-log api-url collector-details params :started)
+    (f)
+    (collector-log api-url collector-details params :stopped)
+    (catch Object _
+      (collector-log api-url collector-details params :failed))))
 
 
 (defn -main
   [& args]
-  (let [config            (cli/configure "Kuona Jenkins build collector." cli-options args)
-        username          (-> config :username)
-        password          (-> config :password)
-        build-server      (-> config :jenkins)
-        api-url           (-> config :api-url)
-        source            (jenkins/http-source {:username username :password password})
+  (let [config (cli/configure "Kuona Jenkins build collector." cli-options args)
+        credentials (select-keys config [:username :password])
+        build-server (-> config :jenkins)
+        api-url (-> config :api-url)
+        source (jenkins/http-source credentials)
         collector-details {:name "jenkins-collector" :version (util/get-project-version 'kuona-jenkins-collector)}]
 
-    (log/info "Collecting metrics from:" build-server)
-
+    (log/info "Collecting metrics from:" build-server "to" api-url)
     (log-collection api-url
                     collector-details
                     [{:api api-url} {:build-server build-server}]
