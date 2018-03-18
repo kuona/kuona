@@ -1,0 +1,129 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Kuona API",
+    "version": "v0.0.0"
+  },
+  "host": "dashboard.kuona.io",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/api",
+  "paths": {
+    "/status": {
+      "get": {
+        "summary": "API Status",
+        "description": "Returns the current status of the API and it's dependencies.",
+        "operationId": "8718be96-7acc-4c1e-b602-7b155645b495",
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "API Links",
+        "description": "",
+        "operationId": "682805d9-63c0-4ebc-966f-94921431793d",
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      },
+      "post": {
+        "summary": "Request (2)",
+        "description": "",
+        "operationId": "e7673729-d037-4bd7-a831-159f489ee8e0",
+        "consumes": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\n  \"my_object\": {\n    \"my_value\": \"value\"\n  }\n}"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    },
+    "/query/sources": {
+      "get": {
+        "summary": "API Query Sources",
+        "description": "",
+        "operationId": "3e343d70-b3bb-44f1-973e-6ce9fe55f4c4",
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/repositories/count": {
+      "get": {
+        "summary": "API Repository Count",
+        "description": "",
+        "operationId": "50cd78cd-246b-4a62-b376-fecfdc6fcf93",
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/build/tools": {
+      "get": {
+        "summary": "API Get Build tools",
+        "description": "",
+        "operationId": "c16ed0a1-3319-4b2a-af53-8272035d769c",
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/environments": {
+      "get": {
+        "summary": "API Get Environments",
+        "description": "",
+        "operationId": "ab046562-6ef4-427d-a483-f1481d650101",
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/valuestreams": {
+      "get": {
+        "summary": "API Get Valuestreams",
+        "description": "",
+        "operationId": "a7ed43e7-94ad-4db7-b186-16b3ea67e0fd",
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        },
+        "parameters": []
+      }
+    }
+  },
+  "tags": []
+}
