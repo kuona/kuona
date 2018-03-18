@@ -1,8 +1,7 @@
 (ns kuona-core.git-test
   (:require [midje.sweet :refer :all]
             [kuona-core.util :refer :all]
-            [kuona-core.git :as git])
-  (:import (java.net MalformedURLException URL)))
+            [kuona-core.git :as git]))
 
 (facts "about commit history"
        (let [test-repo-path (clojure.string/join "/" [(canonical-path "..") "test" "test-repo"])]
