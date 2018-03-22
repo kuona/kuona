@@ -34,6 +34,7 @@ fi
 banner "Building collector libs"
 
 find collectors/maven -iname 'pom.xml' -not -path '*/test/*' -execdir ${MAVEN_BUILD} \;
+find lib -iname 'pom.xml' -not -path '*/test/*' -execdir ${MAVEN_BUILD} \;
 find collectors/lib -iname 'pom.xml' -not -path '*/test/*' -execdir ${MAVEN_BUILD} \;
 
 banner "Building core"

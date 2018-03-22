@@ -10,7 +10,6 @@
 .nrepl-port
 /checkouts
 /classes
-/lib
 /pom.xml
 /target
 node_modules/
