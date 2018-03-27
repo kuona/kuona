@@ -13,8 +13,6 @@
 
 (facts "about query conversion"
        (fact "term forms simple text query"
-             (query/generate "cat") => {"simple_query_string" {"query" "cat"}}
-             )
+             (query/generate "cat") => {"simple_query_string" {"query" "cat"}})
        (fact "terms form simple text query"
-             (query/generate "cat dog") => {"simple_query_string" {"query" "cat dog"}}
-             ))
+             (query/generate "cat dog") => {"simple_query_string" {"query" "cat dog"}}))

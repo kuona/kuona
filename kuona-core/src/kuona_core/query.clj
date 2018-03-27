@@ -14,7 +14,7 @@
 
 (defn generate [text]
   (let [q (parse text)]
-    {"simple_query_string" {"query" (reduce (fn [a b] (str a " " b)) (:terms q))}}))
+    {"simple_query_string" {"query" (clojure.string/join " " (:terms q))}}))
 
 
 
