@@ -4,7 +4,7 @@
   :main github-crawler.core
   :license {:name "Apache V2.0"
             :url  "http://www.apache.org/licenses/"}
-  :dependencies [[org.clojure/clojure "1.8.0"]
+  :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/tools.logging "0.3.1"]
                  [log4j/log4j "1.2.17" :exclusions [javax.mail/mail
                                                     javax.jms/jms
@@ -17,6 +17,7 @@
                  [cheshire "5.6.3"]
                  [kuona-core "0.0.2"]
                  [org.clojure/tools.cli "0.3.5"]]
-:plugins [[lein-midje "3.0.0"]
-          [lein-ancient "0.6.14"]]
-  :profiles {:dev {:dependencies [[midje "1.9.0-alpha5"]]}})
+  :plugins [[lein-midje "3.2.1"]
+            [lein-ancient "0.6.14"]]
+  :profiles {:dev {:dependencies [[midje "1.9.1"]]}
+             :uberjar {:aot :all}})

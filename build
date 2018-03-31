@@ -59,4 +59,6 @@ find . -iname 'gruntfile.js' -not -path '*/node_modules/*' -exec echo "»»» Bu
 
 find . -iname '*standalone.jar' -not -path './target' -exec cp -f {} ./target \;
 
+find tools -iname 'project.clj' -exec echo "»»» Building: " {} \; -execdir ${LEIN_BUILD} \; -exec echo "»»» Installing (local): " {} \; -execdir ${LEIN_PACKAGE} \;
+
 echo "${pblue}Binaries collected to ./target${preset}"

@@ -9,7 +9,7 @@
                                                     javax.jms/jms
                                                     com.sun.jdmk/jmxtools
                                                     com.sun.jmx/jmxri]]
-                 [clj-http "3.7.0"]
+                 [clj-http "3.8.0"]
                  [org.slf4j/slf4j-log4j12 "1.7.25"]
                  [clj-jgit "0.8.10"]
                  [cheshire "5.8.0"]
