@@ -13,8 +13,8 @@
                  [com.jcabi/jcabi-log "0.18"]
                  [clj-http "3.8.0"]
                  [cheshire "5.8.0"]
-                 [kuona-core "0.0.2"]
-                 [org.clojure/tools.cli "0.3.5"]]
+                 [org.clojure/tools.cli "0.3.5"]
+                 [kuona-core "0.0.2"]]
   :plugins [[lein-midje "3.2.1"]
             [lein-ancient "0.6.14"]]
   :profiles {:dev     {:dependencies [[midje "1.9.1"]]}

@@ -78,5 +78,6 @@ symlink_core "collectors/http/"
 symlink_core "collectors/jenkins/"
 symlink_core "kuona-api"
 symlink_core "tools/github-crawler"
+symlink_core "tools/tfs-crawler"
 
 echo "${pgreen}Ready to develop! Start with the readme.${preset}"

@@ -44,5 +44,5 @@
   (let [options (validate-args app-name cli-options args)]
     (cond
       (contains? options :exit-message) (exit (exit-code options) (:exit-message options))
-      :else
-      (merge options (util/load-config (-> options :config)) options))))
+      (contains? options :config) (merge options (util/load-config (-> options :config)) options)
+      :else options)))
