@@ -41,6 +41,11 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
       url: 'build/servers',
       templateUrl: 'views/build-servers.html',
       data: {pageTitle: 'Build Servers'}
+    })
+    .state('index.new-github-collector', {
+      url: 'github/collector',
+      templateUrl: 'views/github/collector.html',
+      data: {pageTitle: 'GitHub Collector'}
     });
 }
 

@@ -154,6 +154,30 @@ function NewCrawlerController($scope, $http) {
   $scope.orgChange();
 }
 
+function GitHubCrawlerController($scope, $http, $window) {
+  $scope.user_org_name = "";
+  $scope.password = "";
+  $scope.username = "";
+
+  $scope.addGithub = function () {
+    var request = {
+      "collector_type": "VCS",
+      "collector": "GitHubOrg",
+      "config": {
+        "org": $scope.user_org_name,
+        "username": $scope.username,
+        "token": $scope.password
+      }
+    };
+
+    $http.post("/api/collectors", request).then(function (res) {
+      $scope.api_response = res;
+      $window.location.href = '/admin/index.html';
+    });
+  };
+}
+
+
 angular
   .module('kuona-admin')
   .controller('MainCtrl', ['$scope', '$http', MainCtrl])
@@ -161,4 +185,6 @@ angular
   .controller('NewJenkinsServerController', ['$scope', '$http', NewJenkinsServerController])
   .controller('BuildServersController', ['$scope', '$http', BuildServersController])
   .controller('CrawlerController', ['$scope', '$http', CrawlerController])
-  .controller('NewCrawlerController', ['$scope', '$http', NewCrawlerController]);
+  .controller('NewCrawlerController', ['$scope', '$http', NewCrawlerController])
+  .controller('GitHubCrawlerController', ['$scope', '$http', '$window', GitHubCrawlerController])
+;
