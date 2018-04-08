@@ -17,6 +17,7 @@
                  [clj-time "0.14.2"]
                  [org.clojure/data.xml "0.0.8"]
                  [org.clojure/tools.cli "0.3.5"]
+                 [clojurewerkz/quartzite "2.1.0"]
                  [kuona/maven-dot-parser "0.1"]
                  [kuona/query-parser "0.0.1"]]
   :plugins [[lein-midje "3.0.0"]

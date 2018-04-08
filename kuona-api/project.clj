@@ -19,6 +19,7 @@
                  [ring/ring-json "0.4.0"]
                  [cheshire "5.8.0"]
                  [slingshot "0.12.2"]
+                 [clojurewerkz/quartzite "2.1.0"]
                  [kuona-core "0.0.2"]]
   :plugins [[lein-ring "0.9.7"]
             [lein-midje "3.0.0"]

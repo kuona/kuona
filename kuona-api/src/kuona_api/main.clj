@@ -6,6 +6,7 @@
             [ring.adapter.jetty :as jetty]
             [clojure.tools.logging :as log]
             [kuona-core.metric.store :as store]
+            [kuona-core.scheduler :as scheduler]
             [kuona-api.handler :as service]
             [kuona-api.collector-handlers :refer [create-collectors-index-if-missing]]
             [kuona-api.build-handlers :as build])
@@ -85,6 +86,7 @@
     (create-snapshot-index-if-missing)
     (create-collectors-index-if-missing)
     (create-build-index-if-missing)
+    (scheduler/start)
     (exit 0 (jetty/run-jetty #'service/app {:port port}))
     (catch [:type :config/missing-parameter] {:keys [parameter p]}
       (log/error "Missing configuration parameter " p))))
