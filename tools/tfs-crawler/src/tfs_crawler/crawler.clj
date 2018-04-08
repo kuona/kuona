@@ -23,7 +23,8 @@
    :github_language nil
    :url             (-> item :sshUrl)
    :project         item
-   :last_analysed   nil})
+   :last_analysed   nil
+   :name            (-> item :name)})
 
 (defn read-available-repositories
   [url, token]
