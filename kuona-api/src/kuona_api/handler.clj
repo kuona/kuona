@@ -71,7 +71,6 @@
 
            (GET "/api/repositories/:id/commits" request (repository/get-commits (get-in request [:params :id]) 1))
            (PUT "/api/repositories/:id/commits" request (repository/put-commit! (get-in request [:params :id]) (get-in request [:body])))
-
            (POST "/api/repositories/test" request (repository/test-project-url (get-in request [:body])))
 
            (GET "/api/build/tools" [] (snap-handlers/build-tool-buckets))
