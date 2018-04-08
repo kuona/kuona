@@ -1,11 +1,4 @@
-/**
- * INSPINIA - Responsive Admin Theme
- *
- */
 
-/**
- * MainCtrl - controller
- */
 function MainCtrl($scope, $http) {
   this.userName = 'Kuona Admin';
   this.helloText = 'Kuona Administration';
@@ -79,6 +72,7 @@ function NewJenkinsServerController($scope, $http) {
   $scope.addJenkins = function () {
 
     var request = {
+      "collector_type": "BUILD",
       "collector": "jenkins",
       "config": {
         "url": $scope.server_url,
@@ -90,16 +84,74 @@ function NewJenkinsServerController($scope, $http) {
     $http.post("/api/collectors", request).then(function (res) {
       $scope.api_response = res;
     });
-
   };
 }
 
 function BuildServersController($scope, $http) {
-  $scope.build_servers = [];
+  $scope.collectors = [];
 
-  $http.get("/api/collectors").then(function (res) {
-    $scope.build_servers = res.data.items;
-  });
+  $scope.refresh = function () {
+    $http.get("/api/collectors?collector-type=BUILD").then(function (res) {
+      $scope.collectors = res.data.items;
+    });
+  };
+
+  $scope.deleteCollector = function (id) {
+    console.log("Delete collector" + id);
+    $http.delete("/api/collectors/" + id).then(function () {
+      $scope.refresh();
+    });
+    $scope.refresh();
+  };
+  $scope.refresh();
+}
+
+function CrawlerController($scope, $http) {
+  $scope.collectors = [];
+
+  $scope.refresh = function () {
+    $http.get("/api/collectors?collector-type=VCS").then(function (res) {
+      $scope.collectors = res.data.items;
+    });
+  };
+
+  $scope.deleteCollector = function (id) {
+    console.log("Delete collector" + id);
+    $http.delete("/api/collectors/" + id).then(function () {
+      $scope.refresh();
+    });
+    $scope.refresh();
+  };
+
+  $scope.refresh();
+}
+
+function NewCrawlerController($scope, $http) {
+  $scope.crawler_type = "TFS";
+  $scope.tfs_org_name = "";
+  $scope.token = "";
+  $scope.tfs_url = "";
+
+  $scope.orgChange = function () {
+    $scope.tfs_url = "https://" + $scope.tfs_org_name + ".visualstudio.com/";
+  };
+
+  $scope.addTfsServer = function () {
+    var request = {
+      "collector_type": "VCS",
+      "collector": "TFS",
+      "config": {
+        "org": $scope.tfs_org_name,
+        "token": $scope.token
+      }
+    };
+
+    $http.post("/api/collectors", request).then(function (res) {
+      $scope.api_response = res;
+    });
+  };
+
+  $scope.orgChange();
 }
 
 angular
@@ -107,4 +159,6 @@ angular
   .controller('MainCtrl', ['$scope', '$http', MainCtrl])
   .controller('NewGithubRepoController', ['$scope', '$http', NewGithubRepoController])
   .controller('NewJenkinsServerController', ['$scope', '$http', NewJenkinsServerController])
-  .controller('BuildServersController', ['$scope', '$http', BuildServersController]);
+  .controller('BuildServersController', ['$scope', '$http', BuildServersController])
+  .controller('CrawlerController', ['$scope', '$http', CrawlerController])
+  .controller('NewCrawlerController', ['$scope', '$http', NewCrawlerController]);

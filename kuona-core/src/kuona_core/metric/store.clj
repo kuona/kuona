@@ -134,7 +134,7 @@
 (defn delete-index-by-id
   [id]
   (try+
-    (parse-json-body (http/delete (clojure.string/join "/" ["http://localhost" id] )))
+    (parse-json-body (http/delete (clojure.string/join "/" ["http://localhost" id])))
     (catch Object _
       false)))
 
@@ -332,3 +332,8 @@
              parse-json-body
              :hits
              :hits))))
+
+(defn delete-document [mapping id]
+  (let [url (clojure.string/join "/" [mapping id])]
+    (log/info "delete-document " mapping id url)
+    (parse-json-body (http/delete url {:headers json-headers}))))
