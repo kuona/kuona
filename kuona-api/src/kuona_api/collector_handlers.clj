@@ -58,8 +58,19 @@
     (log/info "Adding collector document" doc)
     (response (store/put-document doc collector-config id))))
 
+(defn delete-collector!
+  [id]
+  (log/info "Deleting collector with id" id)
+  (response (store/delete-document collector-config id)))
+
 (defn collector-list
   "Reads the list of defined collectors"
-  []
-  (let [url (str collector-config "/_search?size=100")]
-    (response (store/find-documents url))))
+  ([]
+   (let [url (str collector-config "/_search?size=100")]
+     (response (store/find-documents url))))
+
+  ([collector-type]
+   (if (nil? collector-type)
+     (collector-list)
+     (let [url (str collector-config "/_search?size=100&q=collector_type:" collector-type)]
+       (response (store/find-documents url))))))

@@ -16,7 +16,8 @@
             [kuona-api.build-handlers :as build]
             [kuona-api.query-handlers :as query]
             [ring.middleware.json :as middleware]
-            [ring.util.response :refer [resource-response response status redirect]])
+            [ring.util.response :refer [resource-response response status redirect]]
+            [clojure.java.io :as io])
   (:gen-class))
 
 
@@ -30,8 +31,8 @@
            {:href "/api/valuestreams" :rel "valuestreams"}
            {:href "/api/info" :rel "info"}
            {:href "/api/query" :rel "query"}
-           {:href "/api/indices"
-            :rel "indices"
+           {:href        "/api/indices"
+            :rel         "indices"
             :description "API for managing ElasticSearch indexes. Support GET and DELETE and POST /id/rebuild. Rebuild deletes and then creates the index with the appropriate schema"}]})
 
 (defn get-service-data
@@ -57,6 +58,11 @@
              :store  {:health (store/health)}}))
 
 (defroutes app-routes
+           (GET "/" [] (io/resource "public/index.html"))
+           (GET "/repositories" [] (io/resource "public/repositories/index.html"))
+           (GET "/valuestreams" [] (io/resource "public/valuestreams/index.html"))
+           (GET "/query" [] (io/resource "public/query/index.html"))
+           (route/resources "/")
            (GET "/api" [] (get-service-data))
            (GET "/api/info" [] (get-api-info))
            (GET "/api/status" [] (get-api-status))
@@ -97,7 +103,8 @@
            (GET "/api/collectors/activities" [] (collectors/get-activities))
 
            (POST "/api/collectors" request (collectors/put-collector! (get-in request [:body])))
-           (GET "/api/collectors" [] (collectors/collector-list))
+           (GET "/api/collectors" [collector-type] (collectors/collector-list collector-type))
+           (DELETE "/api/collectors/:id" [id] (collectors/delete-collector! id))
 
            (POST "/api/builds" request (build/put-build! (get-in request [:body])))
 

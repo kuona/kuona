@@ -1,12 +1,56 @@
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content animated fadeInRight" ng-controller="CrawlerController">
   <div class="row">
     <div class="col-lg-12">
       <div class="text-center m-t-lg">
         <h1>
-          Simple example of second view
+          Crawlers
         </h1>
-        <small>Configure in config.js as minor state.</small>
       </div>
     </div>
   </div>
+
+  <ng-include src="'views/common/collector-list.html'"></ng-include>
+
+  <div class="row">
+    <div class="ibox-content">
+      <form class="form-horizontal" ng-controller="NewCrawlerController">
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Crawler type</label>
+
+          <div class="col-sm-10">
+            <input id="tfs-crawler" type="radio" ng-model="crawler_type" value="TFS">
+            <label for="tfs-crawler">Team Foundation Server</label>
+          </div>
+        </div>
+
+        <div ng-show="{{crawler_type == 'TFS'}}">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Organization</label>
+            <div class="col-sm-10">
+              <input type="text" ng-model="tfs_org_name" ng-change="orgChange()" class="form-control"
+                     placeholder="organisation name">
+              <span class="help-block m-b-none">{{tfs_url}}.</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Access token</label>
+            <div class="col-sm-10">
+              <input type="password" ng-model="token" class="form-control"></div>
+          </div>
+
+          <div class="hr-line-dashed"></div>
+
+          <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-2">
+              <button class="btn btn-primary" type="submit" ng-click="addTfsServer()">Add</button>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
 </div>

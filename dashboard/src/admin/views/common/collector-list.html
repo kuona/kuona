@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col-lg-12">
+    <table class="table">
+      <tr>
+        <th>ID</th>
+        <th>Collector type</th>
+        <th>URL/Organisation</th>
+        <th>Credentials</th>
+        <th></th>
+      </tr>
+
+      </th>
+      <tbody>
+      <tr ng-repeat="i in collectors">
+        <td>{{i.id}}</td>
+        <td>{{i.collector_type}}/{{i.collector}}</td>
+        <td>{{i.config.url || i.config.org}}</td>
+        <td>{{i.config.username}} : {{i.config.password || i.config.token}}</td>
+        <td>
+          <button class="btn btn-danger btn-circle" type="button" ng-click="deleteCollector(i.id)">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

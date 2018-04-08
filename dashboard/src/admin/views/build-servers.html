@@ -9,29 +9,5 @@
     </div>
   </div>
 
-
-  <div class="row">
-    <div class="col-lg-12">
-      <table class="table">
-        <tr>
-          <th>Collector type</th>
-          <th>id</th>
-          <th>url</th>
-          <th>username</th>
-          <th>password</th>
-        </tr>
-
-        </th>
-        <tbody>
-        <tr ng-repeat="i in build_servers">
-          <td>{{i.collector}}</td>
-          <td>{{i.id}}</td>
-          <td>{{i.config.url}}</td>
-          <td>{{i.config.username}}</td>
-          <td>{{i.config.password}}</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <ng-include src="'views/common/collector-list.html'"></ng-include>
 </div>
