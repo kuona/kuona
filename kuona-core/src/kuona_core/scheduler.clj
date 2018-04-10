@@ -5,14 +5,18 @@
             [clojurewerkz.quartzite.jobs :refer [defjob]]
             [clojurewerkz.quartzite.schedule.simple :refer [schedule repeat-forever with-repeat-count with-interval-in-milliseconds]]
             [clojure.tools.logging :as log]
-            [kuona-core.metric.store :as store]))
+            [kuona-core.metric.store :as store]
+            [kuona-core.github :as github]
+            [kuona-core.collector.tfs :as tfs]
+            [clj-http.client :as http]
+            [kuona-core.util :as util]))
 
 (def collector-config (store/mapping :collector (store/index :kuona-collector-config "http://localhost:9200")))
 
-(defn refresh-github-org
-  [& {:keys [org username token]}]
-
-  )
+(defn tfs-org-collector-config? [config]
+  (and
+    (= (-> config :collector_type) "VCS")
+    (= (-> config :collector) "TFS")))
 
 (defn github-org-collector-config?
   [config]
@@ -20,30 +24,72 @@
     (= (-> config :collector_type) "VCS")
     (= (-> config :collector) "GitHubOrg")))
 
-(defjob refresh-repositories-worker
-        [ctx]
-        (let [url (str collector-config "/_search?size=100&q=collector_type:VCS")
-              docs (store/find-documents url)]
-          (clojure.pprint/pprint docs)
-          (doall (map (fn [e]
-                        (cond
-                          (github-org-collector-config? e) (refresh-github-org (-> e :config))
-                          :else (log/info "collector type not supported")
-                          )) (-> docs :items)))))
+(defn refresh-github-org
+  [org username password]
+  (github/get-project-repositories org))
 
-(defjob kuona-worker
+(def repositories-index-url (store/mapping :repositories (store/index :kuona-repositories "http://localhost:9200")))
+
+(defn repository-id [repo]
+  (util/uuid-from (-> repo :url)))
+
+(defn put-repository
+  [entry]
+  (log/info "put-repository")
+  (clojure.pprint/pprint entry)
+  (let [id (repository-id entry)]
+    (store/put-document entry repositories-index-url id)
+    ))
+
+(defn refresh-tfs-org
+  [org token]
+  (let [entries (tfs/find-organization-repositories org token)]
+    (doseq [entry entries] (put-repository entry)))
+
+  )
+
+(defn collect [e]
+  (let [config (-> e :config)]
+    (cond
+      (github-org-collector-config? e) (refresh-github-org
+                                         (-> config :org)
+                                         (-> config :username)
+                                         (-> config :token))
+      (tfs-org-collector-config? e) (refresh-tfs-org (-> config :org) (-> config :token))
+      :else (log/info "collector type not supported")
+      )))
+
+(defn refresh-repositories
+  []
+  (log/info "Refreshing known repositories")
+  (let [url (str collector-config "/_search?size=100&q=collector_type:VCS")
+        docs (store/find-documents url)]
+    (clojure.pprint/pprint docs)
+    (doall (map collect (-> docs :items)))))
+
+(defn collect-repository-metrics []
+  (log/info "Collecting metrics from known repositories"))
+
+(defn refresh-build-metrics []
+  (log/info "Collecting build information from build servers"))
+
+(defn collect-environment-metrics []
+  (log/info "Collecting environment status data"))
+
+(defjob background-data-collector
         [ctx]
-        (log/info "worker run")
-        (comment "Does nothing"))
+        (refresh-repositories)
+        (collect-repository-metrics)
+        (refresh-build-metrics)
+        (collect-environment-metrics))
+
+
 
 (defn start
   []
   (let [s (-> (qs/initialize) qs/start)
-        job (j/build
-              (j/of-type kuona-worker)
-              (j/with-identity (j/key "jobs.noop.1")))
         refresh-repositories-job (j/build
-                                   (j/of-type refresh-repositories-worker)
+                                   (j/of-type background-data-collector)
                                    (j/with-identity (j/key "repositories.refresh.1")))
         trigger (t/build
                   (t/with-identity (t/key "triggers.1"))
@@ -51,7 +97,6 @@
                   (t/with-schedule (schedule
                                      (repeat-forever)
                                      ;(with-repeat-count 10)
-                                     (with-interval-in-milliseconds 2000))))]
+                                     (with-interval-in-milliseconds 10000))))]
     (qs/schedule s refresh-repositories-job trigger)
-    ;(qs/schedule s job trigger)
     ))

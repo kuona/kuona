@@ -134,7 +134,7 @@
 (defn delete-index-by-id
   [id]
   (try+
-    (parse-json-body (http/delete (clojure.string/join "/" ["http://localhost" id])))
+    (parse-json-body (http/delete (clojure.string/join "/" ["http://localhost:9200" id])))
     (catch Object _
       false)))
 

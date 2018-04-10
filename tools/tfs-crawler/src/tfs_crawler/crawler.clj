@@ -3,11 +3,11 @@
             [clj-http.client :as http]
             [cheshire.core :refer :all]
             [slingshot.slingshot :refer :all]
-            [kuona-core.util :as util])
+            [kuona-core.util :as util]
+            [kuona-core.collector.tfs :as tfs])
   (:gen-class))
 
-(defn vs-url [org]
-  (str "https://" org ".visualstudio.com/_apis/git/repositories?api-version=4.1"))
+
 
 
 (defn put-repository
@@ -17,18 +17,6 @@
     (log/info "put-repository " (-> entry :url) "to" url)
     (util/parse-json-body (http/put url {:headers {"content-type" "application/json; charset=UTF-8"}
                                          :body    (generate-string entry)}))))
-(defn tfs-to-repository-entry
-  [item]
-  {:source          :tfs
-   :github_language nil
-   :url             (-> item :sshUrl)
-   :project         item
-   :last_analysed   nil
-   :name            (-> item :name)})
-
-(defn read-available-repositories
-  [url, token]
-  (util/parse-json-body (http/get url {:basic-auth ["" token]})))
 
 (defn crawl
   [config]
@@ -39,7 +27,5 @@
     (log/info "Publish to           " api-url)
     (log/info "Organisation         " org)
 
-    (let [vs-response (read-available-repositories (vs-url (-> config :org)) token)
-          items (-> vs-response :value)
-          entries (map #(tfs-to-repository-entry %) items)]
+    (let [entries (tfs/find-organization-repositories org token)]
       (doseq [entry entries] (put-repository entry api-url)))))

@@ -1,4 +1,3 @@
-
 function MainCtrl($scope, $http) {
   this.userName = 'Kuona Admin';
   this.helloText = 'Kuona Administration';
@@ -7,13 +6,24 @@ function MainCtrl($scope, $http) {
   $scope.info = {};
   $scope.indices = [];
 
-  $http.get('/api/info').then(function (res) {
-    $scope.info = res.data;
-  });
+  $scope.rebuildIndex = function (name) {
+    $http.delete("/api/indicies/" + name).then(function (res) {
+      $scope.refresh();
+    });
+  }
 
-  $http.get("/api/indices").then(function (res) {
-    $scope.indices = res.data.indices;
-  });
+  $scope.refresh = function () {
+
+    $http.get('/api/info').then(function (res) {
+      $scope.info = res.data;
+    });
+
+    $http.get("/api/indices").then(function (res) {
+      $scope.indices = res.data.indices;
+    });
+  };
+
+  $scope.refresh();
 }
 
 function NewGithubRepoController($scope, $http) {
@@ -126,34 +136,6 @@ function CrawlerController($scope, $http) {
   $scope.refresh();
 }
 
-function NewCrawlerController($scope, $http) {
-  $scope.crawler_type = "TFS";
-  $scope.tfs_org_name = "";
-  $scope.token = "";
-  $scope.tfs_url = "";
-
-  $scope.orgChange = function () {
-    $scope.tfs_url = "https://" + $scope.tfs_org_name + ".visualstudio.com/";
-  };
-
-  $scope.addTfsServer = function () {
-    var request = {
-      "collector_type": "VCS",
-      "collector": "TFS",
-      "config": {
-        "org": $scope.tfs_org_name,
-        "token": $scope.token
-      }
-    };
-
-    $http.post("/api/collectors", request).then(function (res) {
-      $scope.api_response = res;
-    });
-  };
-
-  $scope.orgChange();
-}
-
 function GitHubCrawlerController($scope, $http, $window) {
   $scope.user_org_name = "";
   $scope.password = "";
@@ -177,6 +159,34 @@ function GitHubCrawlerController($scope, $http, $window) {
   };
 }
 
+function TfsCrawlerController($scope, $http, $window) {
+  $scope.tfs_org_name = "";
+  $scope.token = "";
+  $scope.tfs_url = "";
+
+  $scope.orgChange = function () {
+    $scope.tfs_url = "https://" + $scope.tfs_org_name + ".visualstudio.com/";
+  };
+
+  $scope.addTfsServer = function () {
+    var request = {
+      "collector_type": "VCS",
+      "collector": "TFS",
+      "config": {
+        "org": $scope.tfs_org_name,
+        "token": $scope.token
+      }
+    };
+
+    $http.post("/api/collectors", request).then(function (res) {
+      $scope.api_response = res;
+      $window.location.href = '/admin/index.html';
+    });
+  };
+
+  $scope.orgChange();
+}
+
 
 angular
   .module('kuona-admin')
@@ -185,6 +195,6 @@ angular
   .controller('NewJenkinsServerController', ['$scope', '$http', NewJenkinsServerController])
   .controller('BuildServersController', ['$scope', '$http', BuildServersController])
   .controller('CrawlerController', ['$scope', '$http', CrawlerController])
-  .controller('NewCrawlerController', ['$scope', '$http', NewCrawlerController])
+  .controller('TfsCrawlerController', ['$scope', '$http', '$window', TfsCrawlerController])
   .controller('GitHubCrawlerController', ['$scope', '$http', '$window', GitHubCrawlerController])
 ;

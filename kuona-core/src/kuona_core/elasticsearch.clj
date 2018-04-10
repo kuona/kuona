@@ -2,6 +2,9 @@
 
 (def string
   {:type "text"})
+(def string-analyzed
+  {:type  "keyword"
+   :index "true"})
 
 (def string-not-analyzed
   {:type "keyword" :index "false"})

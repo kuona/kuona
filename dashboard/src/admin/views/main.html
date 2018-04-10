@@ -64,6 +64,11 @@
               <td style="text-align:right;">{{index.total.store.size_in_bytes}}</td>
               <td style="text-align:right;">{{index.total.docs.count}}</td>
               <td style="text-align:right;">{{index.total.docs.deleted}}</td>
+              <td>
+                <button class="btn btn-danger btn-circle" type="button" ng-click="rebuildIndex(index.name)">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
             </tr>
             </tbody>
           </table>
@@ -91,7 +96,15 @@
       <div class="jumbotron">
         <h1><i class="fab fa-github"></i> GitHub</h1>
         <p>Add a GitHub account for collection.</p>
-        <p><a ui-sref="index.new-github-collector" class="btn btn-primary btn-lg" role="button">Add Github Repo</a></p>
+        <p><a ui-sref="index.new-github-collector" class="btn btn-primary btn-lg" role="button">Add Github Account</a></p>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="jumbotron">
+        <h1><i class="fab fa-git"></i> TFS</h1>
+        <p>Add a TFS account for collection.</p>
+        <p><a ui-sref="index.new-tfs-collector" class="btn btn-primary btn-lg" role="button">Add TFS Account</a></p>
       </div>
     </div>
   </div>

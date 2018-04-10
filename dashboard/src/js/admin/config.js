@@ -46,6 +46,11 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
       url: 'github/collector',
       templateUrl: 'views/github/collector.html',
       data: {pageTitle: 'GitHub Collector'}
+    })
+    .state('index.new-tfs-collector', {
+      url: 'tfs/collector',
+      templateUrl: 'views/tfs/collector.html',
+      data: {pageTitle: 'TFS/Visual Studio Collector'}
     });
 }
 
