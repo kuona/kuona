@@ -7,7 +7,7 @@
             [slingshot.slingshot :refer :all]
             [kuona-core.util :refer :all]
             [kuona-core.cloc :as cloc]
-            [kuona-core.metric.store :as store])
+            [kuona-core.store :as store])
   (:gen-class))
 
 (defn local-clone-path

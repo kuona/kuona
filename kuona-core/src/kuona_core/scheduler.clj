@@ -5,13 +5,14 @@
             [clojurewerkz.quartzite.jobs :refer [defjob]]
             [clojurewerkz.quartzite.schedule.simple :refer [schedule repeat-forever with-repeat-count with-interval-in-milliseconds]]
             [clojure.tools.logging :as log]
-            [kuona-core.metric.store :as store]
+            [kuona-core.store :as store]
             [kuona-core.github :as github]
             [kuona-core.collector.tfs :as tfs]
             [clj-http.client :as http]
             [kuona-core.util :as util]
             [kuona-core.git :as git]
-            [kuona-core.stores :refer [repositories-store commit-logs-store code-metric-store collector-config-store]]))
+            [kuona-core.stores :refer [repositories-store commit-logs-store code-metric-store collector-config-store]]
+            [kuona-core.workspace :refer [get-workspace-path]]))
 
 (defn tfs-org-collector-config? [config]
   (and
@@ -61,20 +62,18 @@
 (defn refresh-repositories
   []
   (log/info "Refreshing known repositories")
-  (let [url (str collector-config-store "/_search?size=100&q=collector_type:VCS")
+  (let [url  (.url collector-config-store ["_search"] ["size=100" "q=collector_type:VCS"])
         docs (store/find-documents url)]
     (clojure.pprint/pprint docs)
     (doall (map collect (-> docs :items)))))
-
-(def workspace-path "/Volumes/data-drive/workspace")
 
 (defn collect-repository-metrics []
   (log/info "Collecting metrics from known repositories")
   (let [
         repositories (store/all-documents repositories-store)
-        urls (map #(-> % :url) repositories)]
+        urls         (map #(-> % :url) repositories)]
     (log/info "Found " (count repositories) " configured repositories for analysis")
-    (doseq [url urls] (git/collect commit-logs-store code-metric-store workspace-path url))))
+    (doseq [url urls] (git/collect commit-logs-store code-metric-store (get-workspace-path) url))))
 
 (defn refresh-build-metrics []
   (log/info "Collecting build information from build servers"))
@@ -93,16 +92,16 @@
 
 (defn start
   []
-  (let [s (-> (qs/initialize) qs/start)
+  (let [s                        (-> (qs/initialize) qs/start)
         refresh-repositories-job (j/build
                                    (j/of-type background-data-collector)
                                    (j/with-identity (j/key "repositories.refresh.1")))
-        trigger (t/build
-                  (t/with-identity (t/key "triggers.1"))
-                  (t/start-now)
-                  (t/with-schedule (schedule
-                                     (repeat-forever)
-                                     ;(with-repeat-count 10)
-                                     (with-interval-in-milliseconds 10000))))]
+        trigger                  (t/build
+                                   (t/with-identity (t/key "triggers.1"))
+                                   (t/start-now)
+                                   (t/with-schedule (schedule
+                                                      (repeat-forever)
+                                                      ;(with-repeat-count 10)
+                                                      (with-interval-in-milliseconds 10000))))]
     (qs/schedule s refresh-repositories-job trigger)
     ))

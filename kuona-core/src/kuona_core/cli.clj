@@ -1,7 +1,8 @@
 (ns kuona-core.cli
   (:require [clojure.string :as string]
             [clojure.tools.cli :refer [parse-opts]]
-            [kuona-core.util :as util])
+            [kuona-core.util :as util]
+            [clojure.tools.logging :as log])
   (:gen-class))
 
 (defn usage
@@ -32,7 +33,9 @@
       :else options)))
 
 (defn exit [status msg]
-  (println msg)
+  (cond
+    (= status 0) (log/info msg)
+    :else (log/error msg))
   (System/exit status))
 
 (defn exit-code

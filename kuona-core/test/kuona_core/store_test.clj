@@ -1,8 +1,9 @@
-(ns kuona-core.metric.store-test
+(ns kuona-core.store-test
   (:require [cheshire.core :refer :all]
             [clj-http.client :as http]
-            [kuona-core.metric.store :as store]
-            [midje.sweet :refer :all]))
+            [kuona-core.store :as store]
+            [midje.sweet :refer :all])
+  (:import (kuona_core.stores DataStore)))
 
 (facts "about elasticsearch mapping to ktypes"
        (fact "empty mapping is empty"
@@ -46,23 +47,24 @@
        (fact (store/pagination-param :size 10 :page "3") => "size=10&from=20"))
 
 
+(def test-store (DataStore. :kuona-test :tests {}))
+
+
 (facts "search"
        (let [no-search-results {:body (generate-string {:hits {:total 0 :hits  []}})}
              expected-no-results {:count 0 :items '() :links []}]
-       (fact (store/search "mapping" "term" 10 1 #(%)) => expected-no-results
+       (fact (store/search test-store "term" 10 1 #(%)) => expected-no-results
              (provided
               (http/get anything anything) => no-search-results :times 1 ))
-       (fact (store/search "mapping" "term" 10 1 #(%)) => expected-no-results
+       (fact (store/search test-store "term" 10 1 #(%)) => expected-no-results
              (provided
-              (http/get "mapping/_search?q=term&size=10" anything) => no-search-results :times 1 ))
-
-       (fact (store/search "mapping" "term" 10 1 #(%)) => expected-no-results
+              (http/get "http://localhost:9200/kuona-test/tests/_search?q=term&size=10" anything) => no-search-results :times 1 ))
+       (fact (store/search test-store "term" 10 1 #(%)) => expected-no-results
              (provided
-              (http/get "mapping/_search?q=term&size=10" anything) => no-search-results :times 1 ))
-       (fact (store/search "mapping" "term" 10 2 #(%)) => expected-no-results
+              (http/get "http://localhost:9200/kuona-test/tests/_search?q=term&size=10" anything) => no-search-results :times 1 ))
+       (fact (store/search test-store "term" 10 2 #(%)) => expected-no-results
              (provided
-              (http/get "mapping/_search?q=term&size=10&from=10" anything) => no-search-results :times 1 ))))
-
+              (http/get "http://localhost:9200/kuona-test/tests/_search?q=term&size=10&from=10" anything) => no-search-results :times 1 ))))
 
 (def parsing-exception
   {:error {:root_cause [{:type   :parsing_exception

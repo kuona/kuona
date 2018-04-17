@@ -7,7 +7,7 @@
             [kuona-api.environments :refer :all]
             [kuona-api.environments :refer :all]
             [kuona-api.environment-handlers :as environments]
-            [kuona-core.metric.store :as store]
+            [kuona-core.store :as store]
             [kuona-core.stores :as stores]
             [kuona-core.util :as util]
             [kuona-api.valuestream-handlers :as valuestream]

@@ -2,7 +2,7 @@
 
 A Clojure library to help in developing Kuona collectors
 
-The library contains some utilities `kuona-core.util` and an elastic search wrapper for storing metrics `kuona-core.metric.store` that can be used in writing collectors.
+The library contains some utilities `kuona-core.util` and an elastic search wrapper for storing metrics `kuona-core.store` that can be used in writing collectors.
 
 
 ## Building

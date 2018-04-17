@@ -2,7 +2,7 @@
   (:require [midje.sweet :refer :all]
             [kuona-core.cloc :refer :all]
             [kuona-core.git :refer :all]
-            [kuona-core.metric.store :as store]
+            [kuona-core.store :as store]
             [kuona-core.stores :refer [code-metric-store]]
             [kuona-core.util :refer :all]))
 

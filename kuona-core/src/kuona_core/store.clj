@@ -1,18 +1,13 @@
-(ns kuona-core.metric.store
+(ns kuona-core.store
   (:require [cheshire.core :refer :all]
             [clj-http.client :as http]
             [clojure.tools.logging :as log]
             [kuona-core.util :refer :all]
-            [kuona-core.elasticsearch :as es]
-            [slingshot.slingshot :refer :all])
-  (:gen-class))
-
-
-
-
-
-
-
+            [slingshot.slingshot :refer :all]
+            [kuona-core.stores :refer []]
+            )
+  (:gen-class)
+  (:import (kuona_core.stores DataStore)))
 
 (defn health
   []
@@ -27,25 +22,25 @@
 
 
 (defn put-document
-  ([metric mapping] (put-document metric mapping (uuid)))
-  ([metric mapping id]
-   (let [url (clojure.string/join "/" [mapping id])]
-     (log/info "put-document " mapping id url)
+  ([metric ^DataStore store] (put-document metric store (uuid)))
+  ([metric ^DataStore store id]
+   (let [url (.url store [id])]
+     (log/info "put-document " store id url)
      (parse-json-body (http/put url {:headers json-headers
                                      :body    (generate-string metric)})))))
 
 
 (defn put-partial-document
-  [mapping id update]
-  (let [url (clojure.string/join "/" [mapping id "_update"])
+  [^DataStore store id update]
+  (let [url     (.url store '(id "_update"))
         request {:doc update}]
-    (log/info "put-partial-update " mapping id)
+    (log/info "put-partial-update " store id)
     (parse-json-body (http/post url {:headers json-headers
                                      :body    (generate-string request)}))))
 
 (defn get-count
-  [mapping]
-  (let [url (clojure.string/join "/" [mapping "_count"])]
+  [^DataStore store]
+  (let [url (.url store ["_count"])]
     (log/info "Reading document count for " url)
     (parse-json-body (http/get url {:headers json-headers}))))
 
@@ -76,24 +71,23 @@
       :else (str "size=" size "&" "from=" (* (- page-number 1) size)))))
 
 (defn internal-search
-  [mapping query]
-  (log/info "internal-search" mapping)
-  (let [url (clojure.string/join "/" [mapping "_search"])
+  [^DataStore store query]
+  (log/info "internal-search" store)
+  (let [url      (.url store '("_search"))
         response (http/post url {:headers json-headers :body (generate-string query)})]
-    (log/info "internal-search result" response)
     (parse-json-body response)))
 
 (defn search
-  [mapping search-term size page page-fn]
+  [^DataStore store search-term size page page-fn]
   (log/info "document-search" search-term size page)
-  (let [base-url (clojure.string/join "/" [mapping "_search"])
+  (let [base-url   (.url store ["_search"])
         search-url (str base-url "?" "q=" search-term "&" (pagination-param :size size :page page))
-        all-url (str base-url "?" (pagination-param :size size :page page))
-        url (if (clojure.string/blank? search-term) all-url search-url)]
+        all-url    (str base-url "?" (pagination-param :size size :page page))
+        url        (if (clojure.string/blank? search-term) all-url search-url)]
     (log/info "Reading document count for " url)
     (let [json-response (parse-json-body (http/get url {:headers json-headers}))
-          result-count (-> json-response :hits :total)
-          documents (map #(merge {:id (:_id %)} (:_source %)) (-> json-response :hits :hits))
+          result-count  (-> json-response :hits :total)
+          documents     (map #(merge {:id (:_id %)} (:_source %)) (-> json-response :hits :hits))
           ]
       {:count (count documents)
        :items documents
@@ -140,11 +134,11 @@
   [source]
   (log/info "read-schema" source)
   (try+
-    (let [id (-> source :id)
-          index (-> source :index)
-          url (clojure.string/join "/" [index "_mapping"])
+    (let [id       (-> source :id)
+          index    (-> source :index)
+          url      (.mapping-url index)
           response (http/get url {:headers json-headers})
-          body (parse-json-body response)
+          body     (parse-json-body response)
           mappings (-> body hash-child hash-child hash-child hash-child)]
       {id (es-mapping-to-ktypes mappings)})
     (catch [:status 400] {:keys [request-time headers body]}
@@ -166,13 +160,13 @@
 (defn query
   [source q]
   (try+
-    (let [id (-> source :id)
-          index (-> source :index)
-          url (clojure.string/join "/" [index "_search"])
+    (let [id       (-> source :id)
+          store    (-> source :index)
+          url      (.url store '("_search"))
           response (http/get url {:headers json-headers :body (generate-string q)})
-          body (parse-json-body response)
-          results (map :_source (-> body :hits :hits))
-          schema (read-schema source)]
+          body     (parse-json-body response)
+          results  (map :_source (-> body :hits :hits))
+          schema   (read-schema source)]
       {:count   (-> body :hits :total)
        :results results
        :schema  schema})
@@ -185,31 +179,31 @@
 
 (defn find-documents
   [url]
-  (log/info "store/find" url)
+  (log/info "find-documents" url)
   (let [json-response (parse-json-body (http/get url {:headers json-headers}))
-        result-count (-> json-response :hits :total)
-        documents (map #(merge {:id (:_id %)} (:_source %)) (-> json-response :hits :hits))]
+        result-count  (-> json-response :hits :total)
+        documents     (map #(merge {:id (:_id %)} (:_source %)) (-> json-response :hits :hits))]
     {:count (count documents)
      :items documents
      :links []}))
 
 (defn get-document
-  [mapping id]
+  [^DataStore mapping id]
   (log/debug "getting" mapping id)
-  (parse-json-body (http/get (clojure.string/join "/" [mapping id]))))
+  (parse-json-body (http/get (.url mapping [id]))))
 
 (defn has-document?
-  [mapping id]
-  (:found (get-document mapping id)))
+  [^DataStore store id]
+  (:found (get-document store id)))
 
 (defn all-documents
   "Retrieves all the activity based on the supplied key from the index."
-  [mapping]
-  (log/debug "all documents in " mapping)
-  (let [url (str (http-path mapping "_search") "?size=10000")
+  [^DataStore store]
+  (log/debug "all documents in " store)
+  (let [url          (.url store ["_search"] ["?size=10000"])
         query-string (generate-string {:query {:from 0 :size 10000}})
-        query {:form-params query-string}
-        response (http/get url)]
+        query        {:form-params query-string}
+        response     (http/get url)]
     (log/debug "all-documents response " response)
     (map #(:_source %)
          (-> response
@@ -217,7 +211,7 @@
              :hits
              :hits))))
 
-(defn delete-document [mapping id]
-  (let [url (clojure.string/join "/" [mapping id])]
-    (log/info "delete-document " mapping id url)
+(defn delete-document [^DataStore store id]
+  (let [url (.url store [id])]
+    (log/info "delete-document " store id url)
     (parse-json-body (http/delete url {:headers json-headers}))))

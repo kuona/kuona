@@ -19,9 +19,6 @@
    :url  (string/join "/" [(deref es-host) (name index-name)])
    :type type})
 
-(defn mapping-url [index]
-  (string/join "/" [(-> index :url) "_mapping"]))
-
 (defn- index
   [index-name host]
   (clojure.string/join "/" [host (name index-name)]))
@@ -30,17 +27,17 @@
   [mapping-name index]
   (clojure.string/join "/" [index (name mapping-name)]))
 
-
 (defn has-index?
   "Test to see if the given elasticsearch index exists. Returns true if
   the index exists, false if the index does not exist and throws an
   exception if there is an error or unexpected response"
   [index]
-  (log/debug "Testing index" index)
+  (log/info "Testing index" index)
   (try+
     (let [response (http/head index)]
       (= (-> response :status) 200))
     (catch [:status 404] {:keys [request-time headers body]} false)
+    (catch [:status 405] {:keys [request-time headers body]} false)
     (catch Object _
       (log/error (:throwable &throw-context) "unexpected error")
       (throw+))))
@@ -99,17 +96,6 @@
                                               :username es/string
                                               :password es/string-not-analyzed}}}}})
 
-
-(def builds-store (mapping :builds (index :kuona-builds default-es-host)))
-(def collector-activity-store (mapping :activity (index :kuona-collectors default-es-host)))
-(def collector-config-store (mapping :collector (index :kuona-collector-config default-es-host)))
-(def environments-store (mapping :environments (index :kuona-env default-es-host)))
-(def environments-comment-store (mapping :comments (index :kuona-env default-es-host)))
-(def metrics-store (index :kuona-metrics default-es-host))
-(def snapshots-store (mapping :snapshots (index :kuona-snapshots default-es-host)))
-(def repositories-store (mapping :repositories (index :kuona-repositories default-es-host)))
-(def commit-logs-store (mapping :commit-log (index :kuona-vcs-commit default-es-host)))
-(def code-metric-store (mapping :content (index :kuona-vcs-content default-es-host)))
 
 (def repository-metric-type
   {:repositories {:properties {:source            es/string-not-analyzed
@@ -182,14 +168,10 @@
 
 (defn create-store-if-missing
   [store schema]
-  (if (has-index? store) nil (create-index store schema)))
+  (cond
+    (has-index? store) (log/info "Store" store "exists")
+    :else (create-index store schema)))
 
-(defn create-stores []
-  (create-store-if-missing repositories-store repository-metric-type)
-  (create-store-if-missing snapshots-store {:snapshots {}})
-  (create-store-if-missing builds-store build-metric-mapping-type)
-  (create-store-if-missing collector-activity-store collector-activity-schema)
-  (create-store-if-missing collector-config-store collector-config-schema))
 
 (defn count-url [index]
   (string/join "/" [(-> index :url) "_count"]))
@@ -202,9 +184,6 @@
     :else nil
     ))
 
-(defn es-options [options]
-  (select-keys options '(:term :size :from)))
-
 (defn parse-integer
   [n]
   (cond
@@ -213,8 +192,8 @@
                 (catch Object _ nil))))
 (defn pagination-param
   [options]
-  (let [page (-> options :page)
-        size (-> options :size)
+  (let [page        (-> options :page)
+        size        (-> options :size)
         page-number (parse-integer page)]
     (cond
       (and size (> page-number 1)) {:size size :from (* (- page-number 1) size)}
@@ -227,18 +206,48 @@
   (let [pagination (pagination-param options)]
     (string/join "&" (filter #(not (nil? %)) (map option-to-es-search-param (merge options pagination))))))
 
-(defn search-url
-  ([index]
-   (string/join "/" [(-> index :url) "_search"]))
 
-  ([index options]
-   (let [query-string (query-string options)
-         path (string/join "/" [(-> index :url) "_search"])]
-     (str path (if options (str "?" query-string))))))
+(defprotocol Store
+  (exists? [this] "Tests for the stores existence")
+  (create [this] "Creates the store if it does not exist")
+  (mapping-url [this] "URL for reading the index schema")
+  (url [this] [this args] [this path params] "returns the URL for the store"))
 
-(defn id-url [index id]
-  (string/join "/" [(-> index :url) id]))
 
-(defn update-url [index id]
-  (string/join "/" [(-> index :url) id "_update"]))
+(defrecord DataStore [index-name mapping-name schema]
+  Store
+  (exists? [this] (has-index? (index (-> this :index-name) default-es-host)))
+  (create [this] (create-store-if-missing (index (-> this :index-name) default-es-host) (-> this :schema)))
+  (mapping-url [this] (string/join "/" [(index (-> this :index-name) default-es-host) "_mapping"]))
+  (url [this] (mapping (-> this :mapping-name) (index (-> this :index-name) default-es-host)))
+  (url [this args]
+    (let [m        (mapping (-> this :mapping-name) (index (-> this :index-name) default-es-host))
+          elements (into [m] args)]
+      (string/join "/" elements)))
+  (url [this args params]
+    (let [m        (mapping (-> this :mapping-name) (index (-> this :index-name) default-es-host))
+          elements (into [m] args)
+          p        (string/join "&" params)]
+      (str (string/join "/" elements) "?" p)
+      )))
 
+(def builds-store (DataStore. :kuona-builds :builds build-metric-mapping-type))
+(def collector-activity-store (DataStore. :kuona-collectors :activity collector-activity-schema))
+(def collector-config-store (DataStore. :kuona-collector-config :collector collector-config-schema))
+(def environments-store (mapping :environments (index :kuona-env default-es-host)))
+(def environments-comment-store (mapping :comments (index :kuona-env default-es-host)))
+(def metrics-store (index :kuona-metrics default-es-host))
+(def snapshots-store (DataStore. :kuona-snapshots :snapshots {:snapshots {}}))
+(def repositories-store (DataStore. :kuona-repositories :repositories repository-metric-type))
+(def commit-logs-store (DataStore. :kuona-vcs-commit :commit-log {}))
+(def code-metric-store (DataStore. :kuona-vcs-content :content {}))
+
+
+
+
+(defn create-stores []
+  (create repositories-store)
+  (create snapshots-store)
+  (create builds-store)
+  (create collector-activity-store)
+  (create collector-config-store))

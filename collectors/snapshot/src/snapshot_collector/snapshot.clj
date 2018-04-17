@@ -5,7 +5,7 @@
             [cheshire.core :refer :all]
             [slingshot.slingshot :refer :all]
             [clj-http.client :as http]
-            [kuona-core.metric.store :as store]
+            [kuona-core.store :as store]
             [kuona-core.git :refer :all]
             [kuona-core.util :as util]
             [kuona-core.cloc :as cloc]

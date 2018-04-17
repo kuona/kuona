@@ -3,7 +3,7 @@
             [clojure.tools.logging :as log]
             [clojure.tools.cli :refer [parse-opts]]
             [cheshire.core :refer :all]
-            [kuona-core.metric.store :as store]
+            [kuona-core.store :as store]
             [kuona-core.git :refer :all]
             [kuona-core.util :as util]
             [kuona-core.stores :as stores])

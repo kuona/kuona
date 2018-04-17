@@ -18,7 +18,7 @@
              (let [response (helper/mock-json-put app "/api/repositories/1/commits" {})]
                (:status response) => 400))
        (fact "returns commit if created"
-             (let [expected-store-url (string/join "/" [stores/commit-logs-store "234"])]
+             (let [expected-store-url (.url stores/commit-logs-store ["234"])]
                (:status (helper/mock-json-put app "/api/repositories/1/commits" {:id 234})) => 200
                (provided (http/put expected-store-url {:headers {"content-type" "application/json; charset=UTF-8"},
                                                        :body    "{\"id\":234,\"repository_id\":\"1\"}"}) => {:status 200 :body (json/generate-string {:id 234})}))))

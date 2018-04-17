@@ -17,7 +17,7 @@
     :name      "test build"
     :system    :jenkins
     :url       "some url"
-    :number    1
+    :number    12345
     :duration  123
     :result    "success"
     :collected (util/timestamp)

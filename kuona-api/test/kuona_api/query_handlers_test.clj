@@ -10,11 +10,11 @@
 
 (def match-all
   {:query {:match_all {}}})
- 
+
 (facts "about queries"
        (let [std-headers            {"content-type" "application/json; charset=UTF-8"}
              empty-mapping-response (util/json-encode-body {:status 200
-                                                :body   {:index-name {:mappings {:mapping-name {:properties {}}}}}})]
+                                                            :body   {:index-name {:mappings {:mapping-name {:properties {}}}}}})]
          (fact "query endpoint lists available data sources"
                (:status (app (mock/request :get "/api/query/sources"))) => 200)
          (fact "returns available sources"
@@ -24,7 +24,7 @@
          (fact "returns 200 for valid index"
                (:status (helper/mock-json-post app "/api/query/builds" {})) => 200
                (provided (http/get "http://localhost:9200/kuona-builds/builds/_search" {:headers std-headers :body "{}"}) => {:status 200 :body "{}"}
-                         (http/get "http://localhost:9200/kuona-builds/builds/_mapping" {:headers std-headers}) => empty-mapping-response))
+                         (http/get "http://localhost:9200/kuona-builds/_mapping" {:headers std-headers}) => empty-mapping-response))
          (fact "returns content"
                (let [expected-response          {:body    {:count   0
                                                            :results []
@@ -34,7 +34,6 @@
                      es-stubbed-search-response (util/json-encode-body {:headers std-headers :body match-all})]
                  (helper/mock-json-request app :post "/api/query/snapshots" match-all) => expected-response
                  (provided (http/get "http://localhost:9200/kuona-snapshots/snapshots/_search" es-stubbed-search-response) => (util/json-encode-body {:status 200,
-                                                                                                                                          :body   {:hits {:total 0 :hits []}}}),
-               
-                           (http/get "http://localhost:9200/kuona-snapshots/snapshots/_mapping" {:headers std-headers}) => empty-mapping-response)))))
+                                                                                                                                                      :body   {:hits {:total 0 :hits []}}}),
+                           (http/get "http://localhost:9200/kuona-snapshots/_mapping" {:headers std-headers}) => empty-mapping-response)))))
        

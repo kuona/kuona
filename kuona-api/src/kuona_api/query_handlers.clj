@@ -1,6 +1,6 @@
 (ns kuona-api.query-handlers
   (:require [clojure.tools.logging :as log]
-            [kuona-core.metric.store :as store]
+            [kuona-core.store :as store]
             [kuona-api.build-handlers :as build]
             [kuona-api.snapshot-handlers :as snapshots]
             [kuona-api.repository-handlers :as repo]
@@ -41,7 +41,7 @@
 (defn query-source
   "Query an available source"
   [source-name query]
-  (let [id (keyword source-name)
+  (let [id     (keyword source-name)
         source (-> sources id)]
     (log/info "Query source" source-name)
     (cond
@@ -53,7 +53,7 @@
   an error if the schema is not known"
   [source-name]
   (log/info "Query source schema for" source-name)
-  (let [id (keyword source-name)
+  (let [id     (keyword source-name)
         source (-> sources id)]
     (cond
       source (response {:schema (store/read-schema source)})

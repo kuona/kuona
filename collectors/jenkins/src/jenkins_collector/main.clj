@@ -5,7 +5,7 @@
             [clojure.tools.logging :as log]
             [jenkins-collector.jenkins :as jenkins]
             [kuona-core.cli :as cli]
-            [kuona-core.metric.store :as store]
+            [kuona-core.store :as store]
             [kuona-core.util :as util]
             [slingshot.slingshot :refer :all])
   (:gen-class))
