@@ -24,8 +24,8 @@
   :plugins [[lein-ring "0.9.7"]
             [lein-midje "3.0.0"]
             [lein-ancient "0.6.14"]]
-  :ring {:handler       kuona-api.handler/app
-         :auto-reload?  true
+  :ring {:handler      kuona-api.handler/app
+         :auto-reload? true
          :auto-refresh true}
   :profiles {:dev     {:dependencies [[javax.servlet/servlet-api "2.5"]
                                       [ring/ring-mock "0.3.2"]

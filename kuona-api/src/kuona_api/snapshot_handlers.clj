@@ -3,15 +3,15 @@
             [kuona-api.environments :refer :all]
             [kuona-core.metric.store :as store]
             [ring.util.response :refer [resource-response response status]]
-            [kuona-core.stores :refer [snapshots]])
+            [kuona-core.stores :as stores])
   (:gen-class))
 
 
 (defn build-tool-buckets
   []
   (log/info "build-tool-buckets")
-  (let [result  (store/internal-search snapshots-store { :size  0
-                                                  :aggregations {:builder { :terms { :field "build.builder" }}}})
+  (let [result (store/internal-search stores/snapshots-store {:size         0
+                                                              :aggregations {:builder {:terms {:field "build.builder"}}}})
         buckets (-> result :aggregations :builder :buckets)]
     (log/info "build-tool-buckets" result)
     (log/info "buckets" buckets)
@@ -19,9 +19,9 @@
 
 (defn get-snapshot-by-id
   [id]
-  (response (:_source (store/get-document snapshots-store id))))
+  (response (:_source (store/get-document stores/snapshots-store id))))
 
 (defn put-snapshot!
   [id snapshot]
-  (response (store/put-document snapshot snapshots-store id)))
+  (response (store/put-document snapshot stores/snapshots-store id)))
 

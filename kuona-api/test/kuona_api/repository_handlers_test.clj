@@ -6,7 +6,9 @@
             [kuona-api.handler :refer :all]
             [kuona-core.github :as github]
             [midje.sweet :refer :all]
-            [kuona-core.util :as util]))
+            [kuona-core.util :as util]
+            [kuona-core.stores :as stores]
+            [clojure.string :as string]))
 
 (facts "about commit pagination"
        (fact (h/commits-page-link 1 11) => "/api/repositories/1/commits?page=11"))
@@ -16,9 +18,10 @@
              (let [response (helper/mock-json-put app "/api/repositories/1/commits" {})]
                (:status response) => 400))
        (fact "returns commit if created"
-             (:status (helper/mock-json-put app "/api/repositories/1/commits" {:id 234})) => 200
-             (provided (http/put "http://localhost:9200/kuona-repositories/commits/234" {:headers {"content-type" "application/json; charset=UTF-8"},
-                                                                                         :body    "{\"id\":234,\"repository_id\":\"1\"}"}) => {:status 200 :body (json/generate-string {:id 234})})))
+             (let [expected-store-url (string/join "/" [stores/commit-logs-store "234"])]
+               (:status (helper/mock-json-put app "/api/repositories/1/commits" {:id 234})) => 200
+               (provided (http/put expected-store-url {:headers {"content-type" "application/json; charset=UTF-8"},
+                                                       :body    "{\"id\":234,\"repository_id\":\"1\"}"}) => {:status 200 :body (json/generate-string {:id 234})}))))
 
 (facts "about testing repository links"
        (fact "projects with github source are tested with github"

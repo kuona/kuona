@@ -10,6 +10,7 @@
             [kuona-core.collector.tfs :as tfs]
             [clj-http.client :as http]
             [kuona-core.util :as util]
+            [kuona-core.git :as git]
             [kuona-core.stores :refer [repositories-store commit-logs-store code-metric-store collector-config-store]]))
 
 (defn tfs-org-collector-config? [config]
@@ -73,7 +74,7 @@
         repositories (store/all-documents repositories-store)
         urls (map #(-> % :url) repositories)]
     (log/info "Found " (count repositories) " configured repositories for analysis")
-    (doseq [url urls] (kuona-core.git/collect commit-logs-store code-metric-store workspace-path url))))
+    (doseq [url urls] (git/collect commit-logs-store code-metric-store workspace-path url))))
 
 (defn refresh-build-metrics []
   (log/info "Collecting build information from build servers"))

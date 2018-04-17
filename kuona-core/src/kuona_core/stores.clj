@@ -52,7 +52,7 @@
   (try+
     (log/info "Creating index" index)
     (util/parse-json-body (http/put index {:headers util/json-headers
-                                      :body         (generate-string {:mappings types})}))
+                                           :body    (generate-string {:mappings types})}))
     (catch [:status 400] {:keys [request-time headers body]}
       (log/error (str "Unexpected error creating index " index) body)
       (log/error (util/parse-json body))
@@ -111,15 +111,85 @@
 (def commit-logs-store (mapping :commit-log (index :kuona-vcs-commit default-es-host)))
 (def code-metric-store (mapping :content (index :kuona-vcs-content default-es-host)))
 
-(defn create-collectors-index-if-missing
-  []
-  (let [collector-index (index "kuona-collectors" default-es-host)
-        collector-config-index (index "kuona-collector-config" default-es-host)]
-    (if (has-index? collector-index) nil (create-index collector-index collector-activity-schema))
-    (if (has-index? collector-config-index) nil (create-index collector-config-index collector-config-schema))))
+(def repository-metric-type
+  {:repositories {:properties {:source            es/string-not-analyzed
+                               :name              es/string
+                               :git_url           es/string-not-analyzed
+                               :description       es/string
+                               :avatar_url        es/string-not-analyzed
+                               :project_url       es/string-not-analyzed
+                               :created_at        es/timestamp
+                               :updated_at        es/timestamp
+                               :open_issues_count es/long-integer
+                               :watchers          es/long-integer
+                               :forks             es/long-integer
+                               :size              es/long-integer
+                               :last_analysed     es/timestamp
+                               :github            es/enabled-object}}})
+
+(def collector-mapping-type
+  {:properties {:name    es/string-not-analyzed
+                :version es/string-not-analyzed}})
+
+(def build-metric-mapping-type
+  {:builds {:properties {:id        es/string-not-analyzed
+                         :source    es/string-not-analyzed
+                         :timestamp es/timestamp
+                         :name      es/string-not-analyzed
+                         :system    es/string-not-analyzed
+                         :url       es/string-not-analyzed
+                         :number    es/long-integer
+                         :duration  es/long-integer
+                         :result    es/string-not-analyzed
+                         :collected es/timestamp
+                         :collector collector-mapping-type
+                         :jenkins   es/disabled-object}}})
 
 
 
+;; Needs to be split into two stores or removed.
+(def metric-mapping-type
+  {:build {:properties {:timestamp es/timestamp,
+                        :collector collector-mapping-type
+                        :metric    {:properties {:activity  {:properties {:duration {:type "long"},
+                                                                          :name     es/string-not-analyzed
+                                                                          :id       es/string-not-analyzed
+                                                                          :number   {:type "long"},
+                                                                          :result   es/string-not-analyzed
+                                                                          :type     es/string-not-analyzed}},
+                                                 :collected es/timestamp,
+                                                 :source    {:properties {:system es/string-not-analyzed,
+                                                                          :url    es/string-not-analyzed}},
+                                                 :type      es/string-not-analyzed}}}}
+   :vcs   {:properties {:collector collector-mapping-type
+                        :metric    {:properties {:activity  {:properties {:author        es/string
+                                                                          :branches      es/string-not-analyzed
+                                                                          :change_count  {:type "long"},
+                                                                          :changed_files {:properties {:change es/string-not-analyzed
+                                                                                                       :path   es/string-not-analyzed}}
+                                                                          :email         es/string-not-analyzed
+                                                                          :id            es/string-not-analyzed
+                                                                          :merge         {:type "boolean"}
+                                                                          :message       es/string}}
+                                                 :collected es/timestamp
+                                                 :name      es/string-not-analyzed
+                                                 :source    {:properties {:system es/string-not-analyzed
+                                                                          :url    es/string-not-analyzed}}
+                                                 :type      {:type "keyword"}}}
+                        :timestamp es/timestamp}}})
+
+
+
+(defn create-store-if-missing
+  [store schema]
+  (if (has-index? store) nil (create-index store schema)))
+
+(defn create-stores []
+  (create-store-if-missing repositories-store repository-metric-type)
+  (create-store-if-missing snapshots-store {:snapshots {}})
+  (create-store-if-missing builds-store build-metric-mapping-type)
+  (create-store-if-missing collector-activity-store collector-activity-schema)
+  (create-store-if-missing collector-config-store collector-config-schema))
 
 (defn count-url [index]
   (string/join "/" [(-> index :url) "_count"]))
@@ -172,10 +242,3 @@
 (defn update-url [index id]
   (string/join "/" [(-> index :url) id "_update"]))
 
-
-
-
-;
-;
-;(def kuona-code
-;  (es-index :kuona-code {:code {:properties {:id es/string-not-analyzed}}}))

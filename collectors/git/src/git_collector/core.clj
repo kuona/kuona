@@ -5,7 +5,8 @@
             [cheshire.core :refer :all]
             [kuona-core.metric.store :as store]
             [kuona-core.git :refer :all]
-            [kuona-core.util :as util])
+            [kuona-core.util :as util]
+            [kuona-core.stores :as stores])
   (:gen-class))
 
 (def cli-options
@@ -37,12 +38,9 @@
   (let [options (parse-opts args cli-options)
         config-file (:config (:options options))
         config (load-config (util/file-reader config-file))
-        index (store/index :kuona-data "http://localhost:9200")
-        vcs-mapping (store/mapping :vcs index)
-        code-mapping (store/mapping :code index)
-        repositories-url (store/mapping :repositories index)
-        repositories (store/all-documents repositories-url)
+        repositories (store/all-documents stores/repositories-store)
         urls (map #(-> % :url) repositories)]
     (log/info "Found " (count repositories) " configured repositories for analysis")
-    (if (not (store/has-index? index)) (store/create-index index store/metric-mapping-type))
-    (doseq [url urls] (collect vcs-mapping code-mapping "/Volumes/data-drive/workspace" url))))
+    (stores/create-stores)
+
+    (doseq [url urls] (collect stores/commit-logs-store stores/code-metric-store "/Volumes/data-drive/workspace" url))))

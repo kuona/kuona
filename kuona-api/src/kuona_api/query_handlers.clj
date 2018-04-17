@@ -4,7 +4,7 @@
             [kuona-api.build-handlers :as build]
             [kuona-api.snapshot-handlers :as snapshots]
             [kuona-api.repository-handlers :as repo]
-            [kuona-core.stores :refer [build-mapping snapshots-store repositories-store commit-logs-store]]
+            [kuona-core.stores :refer [builds-store snapshots-store repositories-store commit-logs-store]]
             [ring.util.response :refer [resource-response response status not-found]])
   (:gen-class))
 

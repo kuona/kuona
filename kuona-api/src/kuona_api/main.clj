@@ -5,11 +5,9 @@
             [slingshot.slingshot :refer [try+]]
             [ring.adapter.jetty :as jetty]
             [clojure.tools.logging :as log]
-            [kuona-core.metric.store :as store]
             [kuona-core.scheduler :as scheduler]
             [kuona-api.handler :as service]
-            [kuona-api.collector-handlers :refer [create-collectors-index-if-missing]]
-            [kuona-api.build-handlers :as build])
+            [kuona-core.stores :as stores])
   (:gen-class))
 
 (def cli-options
@@ -63,29 +61,11 @@
   (not= (count options) 1))
 
 
-(defn create-repository-index-if-missing
-  []
-  (let [index (store/index "kuona-repositories" "http://localhost:9200")]
-    (if (store/has-index? index) nil (store/create-index index store/repository-metric-type))))
-
-(defn create-snapshot-index-if-missing
-  []
-  (let [index (store/index "kuona-snapshots" "http://localhost:9200")]
-    (if (store/has-index? index) nil (store/create-index index {:snapshots {}}))))
-
-(defn create-build-index-if-missing
-  []
-  (let [index build/build-index]
-    (if (store/has-index? index) false (store/create-index index store/build-metric-mapping-type))))
-
 (defn start-application
   [port]
   (log/info "Starting API on port " port)
   (try+
-    (create-repository-index-if-missing)
-    (create-snapshot-index-if-missing)
-    (kuona-core.stores/create-collectors-index-if-missing)
-    (create-build-index-if-missing)
+    (stores/create-stores)
     (scheduler/start)
     (exit 0 (jetty/run-jetty #'service/app {:port port}))
     (catch [:type :config/missing-parameter] {:keys [parameter p]}

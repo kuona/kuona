@@ -5,8 +5,10 @@
             [compojure.handler :as handler]
             [compojure.route :as route]
             [kuona-api.environments :refer :all]
+            [kuona-api.environments :refer :all]
             [kuona-api.environment-handlers :as environments]
             [kuona-core.metric.store :as store]
+            [kuona-core.stores :as stores]
             [kuona-core.util :as util]
             [kuona-api.valuestream-handlers :as valuestream]
             [kuona-api.repository-handlers :as repository]
@@ -113,7 +115,7 @@
            (GET "/api/query/:source/schema" [source] (query/source-schema source))
 
            (GET "/api/indices" [] (response (store/indices)))
-           (DELETE "/api/indicies/:id" [id] (response (store/delete-index-by-id id)))
+           (DELETE "/api/indicies/:id" [id] (response (stores/delete-index-by-id id)))
 
            (route/not-found "Not Found"))
 

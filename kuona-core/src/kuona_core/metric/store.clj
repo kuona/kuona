@@ -8,70 +8,10 @@
   (:gen-class))
 
 
-(def collector-mapping-type
-  {:properties {:name    es/string-not-analyzed
-                :version es/string-not-analyzed}})
-
-(def build-metric-mapping-type
-  {:builds {:properties {:id        es/string-not-analyzed
-                         :source    es/string-not-analyzed
-                         :timestamp es/timestamp
-                         :name      es/string-not-analyzed
-                         :system    es/string-not-analyzed
-                         :url       es/string-not-analyzed
-                         :number    es/long-integer
-                         :duration  es/long-integer
-                         :result    es/string-not-analyzed
-                         :collected es/timestamp
-                         :collector collector-mapping-type
-                         :jenkins   es/disabled-object}}})
-
-(def repository-metric-type
-  {:repositories {:properties {:source            es/string-not-analyzed
-                               :name              es/string
-                               :git_url           es/string-not-analyzed
-                               :description       es/string
-                               :avatar_url        es/string-not-analyzed
-                               :project_url       es/string-not-analyzed
-                               :created_at        es/timestamp
-                               :updated_at        es/timestamp
-                               :open_issues_count es/long-integer
-                               :watchers          es/long-integer
-                               :forks             es/long-integer
-                               :size              es/long-integer
-                               :last_analysed     es/timestamp
-                               :github            es/enabled-object}}})
 
 
-(def metric-mapping-type
-  {:build {:properties {:timestamp es/timestamp,
-                        :collector collector-mapping-type
-                        :metric    {:properties {:activity  {:properties {:duration {:type "long"},
-                                                                          :name     es/string-not-analyzed
-                                                                          :id       es/string-not-analyzed
-                                                                          :number   {:type "long"},
-                                                                          :result   es/string-not-analyzed
-                                                                          :type     es/string-not-analyzed}},
-                                                 :collected es/timestamp,
-                                                 :source    {:properties {:system es/string-not-analyzed,
-                                                                          :url    es/string-not-analyzed}},
-                                                 :type      es/string-not-analyzed}}}}
-   :vcs   {:properties {:collector collector-mapping-type
-                        :metric    {:properties {:activity  {:properties {:author        es/string
-                                                                          :branches      es/string-not-analyzed
-                                                                          :change_count  {:type "long"},
-                                                                          :changed_files {:properties {:change es/string-not-analyzed
-                                                                                                       :path   es/string-not-analyzed}}
-                                                                          :email         es/string-not-analyzed
-                                                                          :id            es/string-not-analyzed
-                                                                          :merge         {:type "boolean"}
-                                                                          :message       es/string}}
-                                                 :collected es/timestamp
-                                                 :name      es/string-not-analyzed
-                                                 :source    {:properties {:system es/string-not-analyzed
-                                                                          :url    es/string-not-analyzed}}
-                                                 :type      {:type "keyword"}}}
-                        :timestamp es/timestamp}}})
+
+
 
 
 (defn health
