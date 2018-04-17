@@ -9,9 +9,8 @@
             [kuona-core.github :as github]
             [kuona-core.collector.tfs :as tfs]
             [clj-http.client :as http]
-            [kuona-core.util :as util]))
-
-(def collector-config (store/mapping :collector (store/index :kuona-collector-config "http://localhost:9200")))
+            [kuona-core.util :as util]
+            [kuona-core.stores :refer [repositories-store commit-logs-store code-metric-store collector-config-store]]))
 
 (defn tfs-org-collector-config? [config]
   (and
@@ -28,7 +27,6 @@
   [org username password]
   (github/get-project-repositories org))
 
-(def repositories-index-url (store/mapping :repositories (store/index :kuona-repositories "http://localhost:9200")))
 
 (defn repository-id [repo]
   (util/uuid-from (-> repo :url)))
@@ -38,7 +36,7 @@
   (log/info "put-repository")
   (clojure.pprint/pprint entry)
   (let [id (repository-id entry)]
-    (store/put-document entry repositories-index-url id)
+    (store/put-document entry repositories-store id)
     ))
 
 (defn refresh-tfs-org
@@ -62,13 +60,20 @@
 (defn refresh-repositories
   []
   (log/info "Refreshing known repositories")
-  (let [url (str collector-config "/_search?size=100&q=collector_type:VCS")
+  (let [url (str collector-config-store "/_search?size=100&q=collector_type:VCS")
         docs (store/find-documents url)]
     (clojure.pprint/pprint docs)
     (doall (map collect (-> docs :items)))))
 
+(def workspace-path "/Volumes/data-drive/workspace")
+
 (defn collect-repository-metrics []
-  (log/info "Collecting metrics from known repositories"))
+  (log/info "Collecting metrics from known repositories")
+  (let [
+        repositories (store/all-documents repositories-store)
+        urls (map #(-> % :url) repositories)]
+    (log/info "Found " (count repositories) " configured repositories for analysis")
+    (doseq [url urls] (kuona-core.git/collect commit-logs-store code-metric-store workspace-path url))))
 
 (defn refresh-build-metrics []
   (log/info "Collecting build information from build servers"))

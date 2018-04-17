@@ -84,7 +84,7 @@
   (try+
     (create-repository-index-if-missing)
     (create-snapshot-index-if-missing)
-    (create-collectors-index-if-missing)
+    (kuona-core.stores/create-collectors-index-if-missing)
     (create-build-index-if-missing)
     (scheduler/start)
     (exit 0 (jetty/run-jetty #'service/app {:port port}))

@@ -4,23 +4,24 @@
             [kuona-api.build-handlers :as build]
             [kuona-api.snapshot-handlers :as snapshots]
             [kuona-api.repository-handlers :as repo]
+            [kuona-core.stores :refer [build-mapping snapshots-store repositories-store commit-logs-store]]
             [ring.util.response :refer [resource-response response status not-found]])
   (:gen-class))
 
 
 (def sources
   {:builds       {:id          :builds
-                  :index       build/build-mapping
+                  :index       builds-store
                   :description "Build data - software construction data read from Jenkins"
-                  :path "/api/query/builds"}
+                  :path        "/api/query/builds"}
    :snapshots    {:id          :snapshots
-                  :index       snapshots/snapshots
+                  :index       snapshots-store
                   :description "Snapshot data from source code analysis"}
    :repositories {:id          :repositories
-                  :index       repo/repositories
+                  :index       repositories-store
                   :description "Captured repository data"}
    :commits      {:id          :commits
-                  :index       repo/commits
+                  :index       commit-logs-store
                   :description "Captured commit data"}})
 
 (defn get-sources
@@ -40,20 +41,20 @@
 (defn query-source
   "Query an available source"
   [source-name query]
-  (let [id     (keyword source-name)
+  (let [id (keyword source-name)
         source (-> sources id)]
     (log/info "Query source" source-name)
     (cond
       source (response (make-query source query))
-      :else  (not-found {:error {:description "Invalid source name in query"}}))))
+      :else (not-found {:error {:description "Invalid source name in query"}}))))
 
 (defn source-schema
   "Handles requests for source schemas. Returns the requested schema or
   an error if the schema is not known"
   [source-name]
   (log/info "Query source schema for" source-name)
-  (let [id     (keyword source-name)
+  (let [id (keyword source-name)
         source (-> sources id)]
     (cond
       source (response {:schema (store/read-schema source)})
-      :else  (not-found {:error {:description "Invalid source name in request for schema"}}))))
+      :else (not-found {:error {:description "Invalid source name in request for schema"}}))))

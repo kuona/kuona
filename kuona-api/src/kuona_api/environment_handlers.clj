@@ -3,11 +3,9 @@
             [kuona-api.environments :refer :all]
             [kuona-core.metric.store :as store]
             [kuona-core.util :as util]
-            [ring.util.response :refer [resource-response response status]])
+            [ring.util.response :refer [resource-response response status]]
+            [kuona-core.stores :refer [environments-store environments-comment-store]])
   (:gen-class))
-
-(def environments (store/mapping :environments (store/index :kuona-env "http://localhost:9200")))
-(def environment-comments (store/mapping :comments (store/index :kuona-env "http://localhost:9200")))
 
 
 (defn environment-links
@@ -33,29 +31,29 @@
 
 (defn get-environments
   []
-  (response { :environments (environment-link-decorate-environment-list (store/all-documents environments)) }))
+  (response { :environments (environment-link-decorate-environment-list (store/all-documents environments-store)) }))
 
 (defn get-environment-by-id
   [id]
-  (decorate-response decorate-environment (store/get-document environments id)))
+  (decorate-response decorate-environment (store/get-document environments-store id)))
 
 (defn get-environment-comments
   [id]
-  (response (get-comments environment-comments id)))
+  (response (get-comments environments-comment-store id)))
 
 (defn put-environment-comment!
   [id comment]
   (response
-   (decorate-environment (put-comment environments environment-comments id comment))))
+    (decorate-environment (put-comment environments-store environments-comment-store id comment))))
 
 (defn put-environment-version!
   [id version]
-  (response  (decorate-environment (put-version environments id version))))
+  (response (decorate-environment (put-version environments-store id version))))
 
 (defn put-environment-status!
   [id status]
-  (response (decorate-environment (put-status environments id status))))
+  (response (decorate-environment (put-status environments-store id status))))
 
 (defn put-environment!
   [environment]
-  (response (decorate-environment (store/put-document environments environment))))
+  (response (decorate-environment (store/put-document environments-store environment))))

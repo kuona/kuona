@@ -24,18 +24,7 @@
        (fact "maps object to object"
              (store/es-type-to-ktype :collector {:type "object"}) => {:collector :object}))
 
-(facts
- (let [host "http://localhost:9200"]
- (fact (store/index :kuona-index host) => "http://localhost:9200/kuona-index")
- (fact (store/mapping :vcs (store/index :kuona-index host)) => "http://localhost:9200/kuona-index/vcs")
- (fact (store/put-document {} (store/mapping :vcs (store/index :kuona-index host)) 1) => (contains {:_id "1"}))
- (fact (store/get-document (store/mapping :vcs (store/index :kuona-index host)) 1) => (contains {:found true}))
- (fact (store/has-document? (store/mapping :vcs (store/index :kuona-index host)) 1) => true)
- (fact (store/has-index? (store/index :missing-index host)) => false)
- (fact (store/has-index? (store/index :kuona-index host)) =not=> {})
- (fact (store/create-index (store/index :kuona-test-index host) store/metric-mapping-type) =not=> {})
- (fact (store/has-index? (store/index :kuona-test-index host)) =not=> {})
- (fact (store/delete-index (store/index :kuona-test-index host)) =not=> {})))
+
 
 
 

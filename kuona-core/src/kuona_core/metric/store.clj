@@ -85,62 +85,6 @@
   (clojure.string/join "/" elements))
 
 
-(defn index
-  [index-name host]
-  (clojure.string/join "/" [host (name index-name)]))
-
-(defn has-index?
-  "Test to see if the given elasticsearch index exists. Returns true if
-  the index exists, false if the index does not exist and throws an
-  exception if there is an error or unexpected response"
-  [index]
-  (log/debug "Testing index" index)
-  (try+
-    (let [response (http/head index)]
-      (= (-> response :status) 200))
-    (catch [:status 404] {:keys [request-time headers body]} false)
-    (catch Object _
-      (log/error (:throwable &throw-context) "unexpected error")
-      (throw+))))
-
-
-(def json-headers {"content-type" "application/json; charset=UTF-8"})
-
-(defn create-index
-  "Creates the currently configured index if it does not already
-  exist."
-  [index types]
-  (try+
-    (log/info "Creating index" index)
-    (parse-json-body (http/put index {:headers json-headers
-                                      :body    (generate-string {:mappings types})}))
-    (catch [:status 400] {:keys [request-time headers body]}
-      (log/error (str "Unexpected error creating index " index) body)
-      (log/error (parse-json body))
-      (log/error types)
-      (throw+))
-    (catch Object _
-      (log/error (:throwable &throw-context) (str "Unexpected error creating index " index))
-      (throw+)
-      )))
-
-(defn delete-index
-  [index]
-  (try+
-    (parse-json-body (http/delete index))
-    (catch Object _
-      false)))
-
-(defn delete-index-by-id
-  [id]
-  (try+
-    (parse-json-body (http/delete (clojure.string/join "/" ["http://localhost:9200" id])))
-    (catch Object _
-      false)))
-
-(defn mapping
-  [mapping-name index]
-  (clojure.string/join "/" [index (name mapping-name)]))
 
 (defn put-document
   ([metric mapping] (put-document metric mapping (uuid)))

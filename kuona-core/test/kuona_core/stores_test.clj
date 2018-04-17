@@ -1,6 +1,7 @@
 (ns kuona-core.stores-test
   (:require [midje.sweet :refer :all]
-            [kuona-core.stores :as stores]))
+            [kuona-core.stores :as stores]
+            [kuona-core.metric.store :as store]))
 
 (facts "about indexes"
        (fact (stores/es-index :foo {}) => {:name "foo"
@@ -21,3 +22,11 @@
 
          )
        )
+
+;(facts
+;  (let [host "http://localhost:9200"]
+;    (fact (stores/has-index? (stores/index :missing-index host)) => false)
+;    (fact (stores/has-index? (stores/index :kuona-index host)) =not=> {})
+;    (fact (stores/create-index (stores/index :kuona-test-index host) store/metric-mapping-type) =not=> {})
+;    (fact (stores/has-index? (stores/index :kuona-test-index host)) =not=> {})
+;    (fact (stores/delete-index (stores/index :kuona-test-index host)) =not=> {})))

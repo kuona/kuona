@@ -5,6 +5,7 @@
   (:import java.util.Properties)
   (:gen-class))
 
+
 (defn uuid [] (str (java.util.UUID/randomUUID)))
 
 (defn uuid-from
@@ -101,3 +102,5 @@
     (do
       (log/warn (str "Configuration file \"" filename "\" not found"))
       {})))
+
+(def json-headers {"content-type" "application/json; charset=UTF-8"})
