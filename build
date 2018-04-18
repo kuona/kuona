@@ -18,7 +18,7 @@ function banner() {
 
 PWD=`pwd`
 
-readonly LEIN_BUILD="lein midje"
+readonly LEIN_TEST="lein midje"
 readonly LEIN_PACKAGE="lein uberjar"
 readonly LEIN_INSTALL="lein install"
 readonly MAVEN_BUILD="mvn clean install"
@@ -30,35 +30,27 @@ if [ ! -d "target" ]; then
    mkdir target
 fi
 
+(cd dashboard; grunt build)
 
-banner "Building collector libs"
-
-find collectors/maven -iname 'pom.xml' -not -path '*/test/*' -execdir ${MAVEN_BUILD} \;
-find lib -iname 'pom.xml' -not -path '*/test/*' -execdir ${MAVEN_BUILD} \;
-find collectors/lib -iname 'pom.xml' -not -path '*/test/*' -execdir ${MAVEN_BUILD} \;
-
-banner "Building core"
-
-cd kuona-core
-${LEIN_BUILD}
-${LEIN_INSTALL}
-cd ..
-
-banner "Building the API"
-
-cd kuona-api
-${LEIN_BUILD}
-${LEIN_PACKAGE}
-cd ..
-
-banner "Building Collectors"
-
-find collectors -iname 'project.clj' -exec echo "»»» Building: " {} \; -execdir ${LEIN_BUILD} \; -exec echo "»»» Installing (local): " {} \; -execdir ${LEIN_PACKAGE} \;
-
-find . -iname 'gruntfile.js' -not -path '*/node_modules/*' -exec echo "»»» Building: " {} \; -execdir grunt build \;
+mkdir -p kuona-api/resources/public
+cp -r dashboard/out/* kuona-api/resources/public
 
 
-find tools -iname 'project.clj' -exec echo "»»» Building: " {} \; -execdir ${LEIN_BUILD} \; -exec echo "»»» Installing (local): " {} \; -execdir ${LEIN_PACKAGE} \;
+
+(cd ./collectors/maven; ${MAVEN_BUILD})
+(cd ./collectors/lib/maven-dot-parser; ${MAVEN_BUILD})
+(cd ./lib/query-parser; ${MAVEN_BUILD})
+
+
+(cd ./kuona-core; ${LEIN_TEST}; ${LEIN_INSTALL})
+(cd ./kuona-api; ${LEIN_TEST}; ${LEIN_PACKAGE})
+(cd ./tools/github-crawler; ${LEIN_TEST}; ${LEIN_PACKAGE})
+(cd ./tools/tfs-crawler; ${LEIN_TEST}; ${LEIN_PACKAGE})
+(cd ./collectors/snapshot; ${LEIN_TEST}; ${LEIN_PACKAGE})
+(cd ./collectors/code; ${LEIN_TEST}; ${LEIN_PACKAGE})
+(cd ./collectors/http; ${LEIN_TEST}; ${LEIN_PACKAGE})
+(cd ./collectors/jenkins; ${LEIN_TEST}; ${LEIN_PACKAGE})
+(cd ./collectors/git; ${LEIN_TEST}; ${LEIN_PACKAGE})
 
 find . -iname '*standalone.jar' -not -path './target' -exec cp -f {} ./target \;
 echo "${pblue}Binaries collected to ./target${preset}"

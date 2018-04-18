@@ -20,16 +20,21 @@
 
 (defn git-clone
   [url path]
-  (log/debug "Cloning " url " to " path)
-  (git/git-clone-full url path))
+  (log/info "Cloning " url " to " path)
+  (git/with-identity {:name "~/.ssh/id_rsa" :exclusive true}
+                     (git/git-clone-full url path)))
 
 (defn git-pull
   [url path]
   (let [repo (git/load-repo path)]
-    (log/debug "Updating local repository for" url)
-    (git/git-checkout repo "master")
-    (git/git-reset repo "master" :hard)
-    (git/git-pull repo)))
+    (log/info "Updating local repository for" path url)
+    (git/with-identity {:name "~/.ssh/id_rsa" :exclusive true}
+                       (log/info "Checkout master")
+                       (git/git-checkout repo "master")
+                       (log/info "reset master")
+                       (git/git-reset repo "master" :hard)
+                       (log/info "pull updates")
+                       (git/git-pull repo))))
 
 (defn changes-to-map
   "Takes list of two element arrays and returns an array of maps"
@@ -39,24 +44,24 @@
 (defn commit-and-diff
   [mapping url repo commit]
   (let [commit-info (git-query/commit-info repo commit)
-        id (:id commit-info)
-        metric {:timestamp (:time commit-info)
-                :metric    {:type      :commit
-                            :name      "TBD"
-                            :source    {:system :git
-                                        :url    url}
-                            :activity  {:type          :commit
-                                        :email         (:email commit-info)
-                                        :branches      (:branches commit-info)
-                                        :change_count  (count (changes-to-map (:changed_files commit-info)))
-                                        :changed_files (changes-to-map (:changed_files commit-info))
-                                        :merge         (:merge commit-info)
-                                        :author        (:author commit-info)
-                                        :message       (:message commit-info)
-                                        :id            (:id commit-info)}
-                            :collected (timestamp)}
-                :collector {:name    :kuona-git-collector
-                            :version "0.1"}}]
+        id          (:id commit-info)
+        metric      {:timestamp (:time commit-info)
+                     :metric    {:type      :commit
+                                 :name      "TBD"
+                                 :source    {:system :git
+                                             :url    url}
+                                 :activity  {:type          :commit
+                                             :email         (:email commit-info)
+                                             :branches      (:branches commit-info)
+                                             :change_count  (count (changes-to-map (:changed_files commit-info)))
+                                             :changed_files (changes-to-map (:changed_files commit-info))
+                                             :merge         (:merge commit-info)
+                                             :author        (:author commit-info)
+                                             :message       (:message commit-info)
+                                             :id            (:id commit-info)}
+                                 :collected (timestamp)}
+                     :collector {:name    :kuona-git-collector
+                                 :version "0.1"}}]
     (let [result (store/put-document metric mapping id)]
       (log/info "Processing commit " url " " id " @ " (:time commit-info))
       result)))
@@ -89,7 +94,7 @@
 
 (defn commit-history
   ([repo]
-   (let [log (git/git-log repo)
+   (let [log  (git/git-log repo)
          keys [:email :time :branches :changed_files :merge false :author :id :message]]
      (map (fn [c] (select-keys (git-query/commit-info repo c) keys)) log)))
   ([repo start]
@@ -97,30 +102,30 @@
      (drop-while (fn [c] (not= (:id c) start)) commits)))
   ([repo start end]
    (let [commits (commit-history repo start)
-         group (take-while (fn [c] (not= (:id c) end)) commits)]
+         group   (take-while (fn [c] (not= (:id c) end)) commits)]
      (concat group [(first (drop (count group) commits))]))))
 
 (defn commits
   [repo-path]
   (log/info "commits " repo-path)
-  (let [repo (git/load-repo repo-path)
+  (let [repo   (git/load-repo repo-path)
         master (git/git-checkout repo "master")
-        head (git/git-checkout repo "HEAD")]
+        head   (git/git-checkout repo "HEAD")]
     (git/git-log repo)))
 
 (defn commit-by-day
   [repo-path]
-  (let [repo (git/load-repo repo-path)
-        master (git/git-checkout repo "master")
-        head (git/git-checkout repo "HEAD")
+  (let [repo    (git/load-repo repo-path)
+        master  (git/git-checkout repo "master")
+        head    (git/git-checkout repo "HEAD")
         history (git/git-log repo)]
     (group-by #(t/with-time-at-start-of-day (tc/from-date (:time (git-query/commit-info repo %)))) history)))
 
 (defn each-commit-by-day
   "Apply the function f to each version of the repository - based on the log"
   [f repo-path]
-  (let [repo (git/load-repo repo-path)
-        history (git/git-log repo)
+  (let [repo            (git/load-repo repo-path)
+        history         (git/git-log repo)
         grouped-commits (group-by #(t/with-time-at-start-of-day (tc/from-date (:time (git-query/commit-info repo %)))) history)]
     (log/info "Found " (count history) " commits on " (count grouped-commits) " distinct days")
     (doseq [log grouped-commits]

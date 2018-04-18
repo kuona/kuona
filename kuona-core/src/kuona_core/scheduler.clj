@@ -3,7 +3,7 @@
             [clojurewerkz.quartzite.triggers :as t]
             [clojurewerkz.quartzite.jobs :as j]
             [clojurewerkz.quartzite.jobs :refer [defjob]]
-            [clojurewerkz.quartzite.schedule.simple :refer [schedule repeat-forever with-repeat-count with-interval-in-milliseconds]]
+            [clojurewerkz.quartzite.schedule.simple :refer [schedule repeat-forever with-repeat-count with-interval-in-minutes]]
             [clojure.tools.logging :as log]
             [kuona-core.store :as store]
             [kuona-core.github :as github]
@@ -36,17 +36,13 @@
 (defn put-repository
   [entry]
   (log/info "put-repository")
-  (clojure.pprint/pprint entry)
   (let [id (repository-id entry)]
-    (store/put-document entry repositories-store id)
-    ))
+    (store/put-document entry repositories-store id)))
 
 (defn refresh-tfs-org
   [org token]
   (let [entries (tfs/find-organization-repositories org token)]
-    (doseq [entry entries] (put-repository entry)))
-
-  )
+    (doseq [entry entries] (put-repository entry))))
 
 (defn collect [e]
   (let [config (-> e :config)]
@@ -56,21 +52,18 @@
                                          (-> config :username)
                                          (-> config :token))
       (tfs-org-collector-config? e) (refresh-tfs-org (-> config :org) (-> config :token))
-      :else (log/info "collector type not supported")
-      )))
+      :else (log/info "collector type not supported"))))
 
 (defn refresh-repositories
   []
   (log/info "Refreshing known repositories")
   (let [url  (.url collector-config-store ["_search"] ["size=100" "q=collector_type:VCS"])
         docs (store/find-documents url)]
-    (clojure.pprint/pprint docs)
     (doall (map collect (-> docs :items)))))
 
 (defn collect-repository-metrics []
   (log/info "Collecting metrics from known repositories")
-  (let [
-        repositories (store/all-documents repositories-store)
+  (let [repositories (store/all-documents repositories-store)
         urls         (map #(-> % :url) repositories)]
     (log/info "Found " (count repositories) " configured repositories for analysis")
     (doseq [url urls] (git/collect commit-logs-store code-metric-store (get-workspace-path) url))))
@@ -102,6 +95,6 @@
                                    (t/with-schedule (schedule
                                                       (repeat-forever)
                                                       ;(with-repeat-count 10)
-                                                      (with-interval-in-milliseconds 10000))))]
+                                                      (with-interval-in-minutes 30))))]
     (qs/schedule s refresh-repositories-job trigger)
     ))
