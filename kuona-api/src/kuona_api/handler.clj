@@ -17,6 +17,7 @@
             [kuona-api.collector-handlers :as collectors]
             [kuona-api.build-handlers :as build]
             [kuona-api.query-handlers :as query]
+            [kuona-api.dashboard-handlers :as dashboards]
             [ring.middleware.json :as middleware]
             [ring.util.response :refer [resource-response response status redirect]]
             [clojure.java.io :as io])
@@ -108,6 +109,10 @@
            (DELETE "/api/collectors/:id" [id] (collectors/delete-collector! id))
 
            (POST "/api/builds" request (build/put-build! (get-in request [:body])))
+
+           (GET "/api/dashboards" [search page] (dashboards/list search page))
+           (POST "/api/dashboards" request (dashboards/put! (get-in request [:body])))
+           (GET "/api/dashboards/:id" [id] (dashboards/get-by-id id))
 
            (GET "/api/query" [] (redirect "/api/query/sources"))
            (GET "/api/query/sources" [] (query/get-sources))

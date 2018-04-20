@@ -22,12 +22,13 @@
 
 
 (defn put-document
-  ([metric ^DataStore store] (put-document metric store (uuid)))
-  ([metric ^DataStore store id]
+  ([document ^DataStore store] (put-document document store (uuid)))
+  ([document ^DataStore store id]
    (let [url (.url store [id])]
-     (log/info "put-document " store id url)
+     (log/info "put-document " id url)
+     (log/info "document " document)
      (parse-json-body (http/put url {:headers json-headers
-                                     :body    (generate-string metric)})))))
+                                     :body    (generate-string document)})))))
 
 
 (defn put-partial-document

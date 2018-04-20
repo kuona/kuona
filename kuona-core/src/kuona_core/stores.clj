@@ -164,6 +164,9 @@
                                                  :type      {:type "keyword"}}}
                         :timestamp es/timestamp}}})
 
+(def dashboards-schema {:dashboard {:properties {:id        es/string-not-analyzed
+                                              :name    es/string-not-analyzed
+                                              :description es/string}}})
 
 
 (defn create-store-if-missing
@@ -241,7 +244,7 @@
 (def repositories-store (DataStore. :kuona-repositories :repositories repository-metric-type))
 (def commit-logs-store (DataStore. :kuona-vcs-commit :commit-log {}))
 (def code-metric-store (DataStore. :kuona-vcs-content :content {}))
-
+(def dashboards-store (DataStore. :kuona-dashboards :dashboard dashboards-schema))
 
 
 
@@ -250,4 +253,5 @@
   (create snapshots-store)
   (create builds-store)
   (create collector-activity-store)
-  (create collector-config-store))
+  (create collector-config-store)
+  (create dashboards-store))

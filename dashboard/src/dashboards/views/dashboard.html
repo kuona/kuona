@@ -1,0 +1,151 @@
+<div class="wrapper wrapper-content  animated fadeInRight" ng-controller="DashboardController">
+  <div class="row">
+
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-title">
+          <h5>Dashboard</h5>
+
+        </div>
+        <div class="ibox-content">
+          <form class="form-horizontal" name="DashboardForm">
+            <p>Describe your dashboard and give it a unique name.</p>
+            <div class="form-group"><label class="col-lg-2 control-label">Name</label>
+
+              <div class="col-lg-10"><input type="text"
+                                            placeholder="Dashboard"
+                                            class="form-control"
+                                            ng-model="dashboard.name" required
+                                            name="dashboardName"
+                                            ng-minlength="3"
+                                            ng-maxlength="100"
+                                            ng-pattern="dashboardNameRegex">
+                <span class="help-block m-b-none">Dashboard names are alpha-numeric and can include - or _.</span>
+                <span class="help-block m-b-none">A Unique dashboard name is required. Names are between 3 and 100 characters
+                and may contain letters, numbers underscores (_) or minus (-) </span>
+
+                <div ng-show="DashboardForm.dashboardName.$invalid">
+                  <div class="alert alert-danger" ng-show="DashboardForm.dashboardName.$dirty">
+                    <span ng-show="DashboardForm.dashboardName.$error.minlength"> Too short (<3)!</span>
+                    <span ng-show="DashboardForm.dashboardName.$error.maxlength"> Too long!</span>
+                    <span ng-show="DashboardForm.dashboardName.$error.pattern"> contain letters, numbers underscores (_) or minus (-)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group"><label class="col-lg-2 control-label">Description</label>
+              <div class="col-lg-10"><textarea placeholder="Description"
+                                               class="form-control"
+                                               ng-model="dashboard.description"></textarea></div>
+            </div>
+            <div class="form-group">
+              <div class="col-lg-offset-2 col-lg-10">
+                <button class="btn btn-sm btn-primary" type="submit" ng-click="saveDashboard()">Create Dashboard</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row" id="sortable-view">
+    <div class="col-lg-6 ui-sortable">
+
+      <div class="ibox" style="opacity: 1; z-index: 0;">
+        <div class="ibox-title ui-sortable-handle">
+          <h5>Drag&amp;Drop</h5>
+          <div class="ibox-tools">
+            <a class="collapse-link ui-sortable">
+              <i class="fa fa-chevron-up"></i>
+            </a>
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+              <i class="fa fa-wrench"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-user">
+              <li><a href="#">Config option 1</a>
+              </li>
+              <li><a href="#">Config option 2</a>
+              </li>
+            </ul>
+            <a class="close-link">
+              <i class="fa fa-times"></i>
+            </a>
+          </div>
+        </div>
+        <div class="ibox-content">
+          <h2>
+            This is simple box container nr. 3
+          </h2>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+            industry's standard dummy text ever since the 1500s, when an unknown
+            printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five
+            centuries, but also the leap into electronic typesetting,
+            remaining essentially unchanged.
+          </p>
+        </div>
+      </div>
+      <div class="ibox" style="opacity: 1; z-index: 0;">
+        <div class="ibox-title ui-sortable-handle">
+          <h5>Drag&amp;Drop</h5>
+        </div>
+        <div class="ibox-content">
+          <h2>
+            This is simple box container nr. 2
+          </h2>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+            industry's standard dummy text ever since the 1500s, when an unknown
+            printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five
+            centuries, but also the leap into electronic typesetting,
+            remaining essentially unchanged.
+          </p>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-lg-6 ui-sortable">
+      <div class="ibox" style="opacity: 1; z-index: 0;">
+        <div class="ibox-title ui-sortable-handle">
+          <h5>Drag&amp;Drop</h5>
+        </div>
+        <div class="ibox-content">
+          <h2>
+            This is simple box container nr. 4
+          </h2>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+            industry's standard dummy text ever since the 1500s, when an unknown
+            printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five
+            centuries, but also the leap into electronic typesetting,
+            remaining essentially unchanged.
+          </p>
+        </div>
+      </div>
+      <div class="ibox" style="opacity: 1; z-index: 0;">
+        <div class="ibox-title ui-sortable-handle">
+          <h5>Drag&amp;Drop</h5>
+          <div class="ibox-tools">
+            <label class="label label-primary">You can drag and drop me to other box.</label>
+          </div>
+        </div>
+        <div class="ibox-content">
+          <h2>
+            This is simple box container nr. 1
+          </h2>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+            industry's standard dummy text ever since the 1500s, when an unknown
+            printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five
+            centuries, but also the leap into electronic typesetting,
+            remaining essentially unchanged.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
