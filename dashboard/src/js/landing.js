@@ -39,7 +39,7 @@ function MainController($scope, $http) {
     $scope.repository_count = res.data.count;
   });
 
-  $http.get('/api/metrics/vcs/count').then(function(res) {
+  $http.get('/api/metrics/commits/count').then(function(res) {
     $scope.vcs_count = res.data.count;
   });
 

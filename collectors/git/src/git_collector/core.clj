@@ -35,12 +35,11 @@
   [& args]
   (log/info "Kuona Git Collector")
 
-  (let [options (parse-opts args cli-options)
-        config-file (:config (:options options))
-        config (load-config (util/file-reader config-file))
-        repositories (store/all-documents stores/repositories-store)
-        urls (map #(-> % :url) repositories)]
+  (let [options      (parse-opts args cli-options)
+        config-file  (:config (:options options))
+        config       (load-config (util/file-reader config-file))
+        repositories (store/all-documents stores/repositories-store)]
     (log/info "Found " (count repositories) " configured repositories for analysis")
     (stores/create-stores)
 
-    (doseq [url urls] (collect stores/commit-logs-store stores/code-metric-store "/Volumes/data-drive/workspace" url))))
+    (doseq [repo repositories] (collect-commits stores/commit-logs-store stores/code-metric-store "/Volumes/data-drive/workspace" (-> repo :url) (-> repo :id)))))

@@ -42,27 +42,37 @@
   (into [] (map #(file-change (first %) (second %)) changes)))
 
 (defn commit-and-diff
-  [mapping url repo commit]
+  [commit-store url repo commit repository-id]
   (let [commit-info (git-query/commit-info repo commit)
         id          (:id commit-info)
-        metric      {:timestamp (:time commit-info)
-                     :metric    {:type      :commit
-                                 :name      "TBD"
-                                 :source    {:system :git
-                                             :url    url}
-                                 :activity  {:type          :commit
-                                             :email         (:email commit-info)
-                                             :branches      (:branches commit-info)
-                                             :change_count  (count (changes-to-map (:changed_files commit-info)))
-                                             :changed_files (changes-to-map (:changed_files commit-info))
-                                             :merge         (:merge commit-info)
-                                             :author        (:author commit-info)
-                                             :message       (:message commit-info)
-                                             :id            (:id commit-info)}
-                                 :collected (timestamp)}
-                     :collector {:name    :kuona-git-collector
-                                 :version "0.1"}}]
-    (let [result (store/put-document metric mapping id)]
+        metric      {:timestamp     (:time commit-info)
+                     :repository_id repository-id
+                     :commit        {:time          (:time commit-info)
+                                     :email         (:email commit-info)
+                                     :branches      (:branches commit-info)
+                                     :change_count  (count (changes-to-map (:changed_files commit-info)))
+                                     :changed_files (changes-to-map (:changed_files commit-info))
+                                     :merge         (:merge commit-info)
+                                     :author        (:author commit-info)
+                                     :message       (:message commit-info)
+                                     :id            (:id commit-info)}
+                     :metric        {:type      :commit
+                                     :name      "TBD"
+                                     :source    {:system :git
+                                                 :url    url}
+                                     :activity  {:type          :commit
+                                                 :email         (:email commit-info)
+                                                 :branches      (:branches commit-info)
+                                                 :change_count  (count (changes-to-map (:changed_files commit-info)))
+                                                 :changed_files (changes-to-map (:changed_files commit-info))
+                                                 :merge         (:merge commit-info)
+                                                 :author        (:author commit-info)
+                                                 :message       (:message commit-info)
+                                                 :id            (:id commit-info)}
+                                     :collected (timestamp)}
+                     :collector     {:name    :kuona-git-collector
+                                     :version "0.1"}}]
+    (let [result (store/put-document metric commit-store id)]
       (log/info "Processing commit " url " " id " @ " (:time commit-info))
       result)))
 
@@ -71,11 +81,11 @@
   (= (-> metric :result) "updated"))
 
 (defn log-metrics
-  [mapping url path]
+  [store url path repository-id]
+  (log/info "Collecting commit metrics for " url " master branch ")
   (let [repo (git/load-repo path)]
-    (log/info "Collecting commit metrics for " url " master branch ")
     (git/git-checkout repo "master")
-    (first (filter #(updated-metric? %) (map #(commit-and-diff mapping url repo %) (git/git-log repo))))))
+    (first (filter #(updated-metric? %) (map #(commit-and-diff store url repo % repository-id) (git/git-log repo))))))
 
 (defn each-commit
   "Apply the function f to each version of the repository - based on the log"
@@ -134,25 +144,27 @@
             (f repo-path (.getName c) (:time (git-query/commit-info repo c))))
           (git/git-checkout repo "master")))))
 
-(defn collect
-  [vcs-mapping code-mapping workspace url]
+(defn collect-commits
+  [vcs-mapping code-mapping workspace url repository-id]
+  (log/info "Collect commits workspace" workspace "url" url)
   (try+
     (let [local-dir (local-clone-path workspace url)]
       (log/info "Collecting " url " to " local-dir)
       (if (directory? local-dir) (git-pull url local-dir) (git-clone url local-dir))
-      (log-metrics vcs-mapping url local-dir)
+      (log-metrics vcs-mapping url local-dir repository-id)
       (each-commit-by-day
         (fn [path sha timestamp]
           (cloc/loc-collector
             (fn [a]
               (log/info url " @ " timestamp)
-              (store/put-document {:timestamp timestamp
-                                   :metric    {:source    {:system :git :url url}
-                                               :type      :loc
-                                               :name      "TBD"
-                                               :collected (-> a :metric :collected)
-                                               :activity  (-> a :metric :activity)}
-                                   :collector (-> a :collector)}
+              (store/put-document {:timestamp     timestamp
+                                   :repository_id repository-id
+                                   :metric        {:source    {:system :git :url url}
+                                                   :type      :loc
+                                                   :name      "TBD"
+                                                   :collected (-> a :metric :collected)
+                                                   :activity  (-> a :metric :activity)}
+                                   :collector     (-> a :collector)}
                                   code-mapping (uuid-from sha "cloc"))) path sha))
         local-dir)
       )

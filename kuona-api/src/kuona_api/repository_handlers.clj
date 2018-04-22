@@ -24,7 +24,7 @@
 (defn get-repositories
   [search page]
   (log/info "get repositories" search page)
-  (response (store/search repositories-store search 100 page repository-page-link)))
+  (response (store/search repositories-store search 1000 page repository-page-link)))
 
 (defn commits-page-link
   [id page-number]
@@ -48,7 +48,7 @@
   [id commit]
   (log/info "new commit for repository " id)
   (let [commit-id (-> commit :id)
-        entity (merge commit {:repository_id id})]
+        entity    (merge commit {:repository_id id})]
     (cond
       (nil? commit-id) (bad-request "malformed request - missing commit identity")
       :else (response (store/put-document entity commit-logs-store commit-id)))))
@@ -57,25 +57,26 @@
 (defn github-to-repository-record
   [github-repo]
   {:source            :github
-   :name              (-> github-repo  :name)
-   :git_url           (-> github-repo  :git_url)
-   :description       (-> github-repo  :description)
-   :avatar_url        (-> github-repo  :owner :avatar_url)
-   :project_url       (-> github-repo  :html_url)
-   :created_at        (-> github-repo  :created_at)
-   :updated_at        (-> github-repo  :updated_at)
-   :open_issues_count (-> github-repo  :open_issues_count)
-   :watchers          (-> github-repo  :watchers)
-   :forks             (-> github-repo  :forks)
-   :size              (-> github-repo  :size)
+   :name              (-> github-repo :name)
+   :url               (-> github-repo :git_url)
+   :git_url           (-> github-repo :git_url)
+   :description       (-> github-repo :description)
+   :avatar_url        (-> github-repo :owner :avatar_url)
+   :project_url       (-> github-repo :html_url)
+   :created_at        (-> github-repo :created_at)
+   :updated_at        (-> github-repo :updated_at)
+   :open_issues_count (-> github-repo :open_issues_count)
+   :watchers          (-> github-repo :watchers)
+   :forks             (-> github-repo :forks)
+   :size              (-> github-repo :size)
    :last_analysed     nil
-   :github            github-repo})
+   :project           github-repo})
 
 (defn test-project-url
   [project]
   (log/info "test-project-url" project)
 
-  (let [username (-> project :username)
+  (let [username   (-> project :username)
         repository (-> project :repository)]
 
     (cond

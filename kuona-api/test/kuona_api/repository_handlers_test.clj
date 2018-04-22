@@ -34,6 +34,7 @@
 (facts "about converting github data to repository record"
        (let [test-data {:name              :test-name
                         :description       :test-desc
+                        :git_url           :test-git-url
                         :owner             {
                                             :avatar_url :test-avatar}
 
@@ -45,6 +46,8 @@
                         :forks             :test-forks
                         :size              :test-size
                         }]
+         (fact "copies the git_url to the repo url"
+               (h/github-to-repository-record test-data) => (contains {:url :test-git-url}))
          (fact "copies the project name"
                (h/github-to-repository-record test-data) => (contains {:name :test-name}))
          (fact "copies the project description"
@@ -63,8 +66,8 @@
                (h/github-to-repository-record test-data) => (contains {:forks :test-forks}))
          (fact "copies the repo size"
                (h/github-to-repository-record test-data) => (contains {:size :test-size}))
-         (fact "copies the original data into a github key"
-               (h/github-to-repository-record test-data) => (contains {:github test-data}))))
+         (fact "copies the original data into a project key"
+               (h/github-to-repository-record test-data) => (contains {:project test-data}))))
 
 (facts "about adding ids"
        (fact "adds id based on value of selected field"

@@ -4,25 +4,12 @@
             [kuona-api.build-handlers :as build]
             [kuona-api.snapshot-handlers :as snapshots]
             [kuona-api.repository-handlers :as repo]
-            [kuona-core.stores :refer [builds-store snapshots-store repositories-store commit-logs-store]]
+            [kuona-core.stores :refer [sources]]
             [ring.util.response :refer [resource-response response status not-found]])
   (:gen-class))
 
 
-(def sources
-  {:builds       {:id          :builds
-                  :index       builds-store
-                  :description "Build data - software construction data read from Jenkins"
-                  :path        "/api/query/builds"}
-   :snapshots    {:id          :snapshots
-                  :index       snapshots-store
-                  :description "Snapshot data from source code analysis"}
-   :repositories {:id          :repositories
-                  :index       repositories-store
-                  :description "Captured repository data"}
-   :commits      {:id          :commits
-                  :index       commit-logs-store
-                  :description "Captured commit data"}})
+
 
 (defn get-sources
   "Returns a list of available sources that can be queried."

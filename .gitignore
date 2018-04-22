@@ -26,3 +26,5 @@ target/
 checkouts/
 local-*
 kuona-core/dependency.dot
+kuona-api/dependency.dot
+kuona-api/resources/public/

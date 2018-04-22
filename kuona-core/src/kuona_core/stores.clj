@@ -164,9 +164,9 @@
                                                  :type      {:type "keyword"}}}
                         :timestamp es/timestamp}}})
 
-(def dashboards-schema {:dashboard {:properties {:id        es/string-not-analyzed
-                                              :name    es/string-not-analyzed
-                                              :description es/string}}})
+(def dashboards-schema {:dashboard {:properties {:id          es/string-not-analyzed
+                                                 :name        es/string-not-analyzed
+                                                 :description es/string}}})
 
 
 (defn create-store-if-missing
@@ -234,24 +234,46 @@
       (str (string/join "/" elements) "?" p)
       )))
 
-(def builds-store (DataStore. :kuona-builds :builds build-metric-mapping-type))
-(def collector-activity-store (DataStore. :kuona-collectors :activity collector-activity-schema))
-(def collector-config-store (DataStore. :kuona-collector-config :collector collector-config-schema))
 (def environments-store (mapping :environments (index :kuona-env default-es-host)))
 (def environments-comment-store (mapping :comments (index :kuona-env default-es-host)))
 (def metrics-store (index :kuona-metrics default-es-host))
-(def snapshots-store (DataStore. :kuona-snapshots :snapshots {:snapshots {}}))
+
 (def repositories-store (DataStore. :kuona-repositories :repositories repository-metric-type))
+(def snapshots-store (DataStore. :kuona-snapshots :snapshots {}))
+(def builds-store (DataStore. :kuona-builds :builds build-metric-mapping-type))
+(def collector-activity-store (DataStore. :kuona-collectors :activity collector-activity-schema))
+(def collector-config-store (DataStore. :kuona-collector-config :collector collector-config-schema))
 (def commit-logs-store (DataStore. :kuona-vcs-commit :commit-log {}))
 (def code-metric-store (DataStore. :kuona-vcs-content :content {}))
 (def dashboards-store (DataStore. :kuona-dashboards :dashboard dashboards-schema))
 
+(def sources
+  {:builds       {:id          :builds
+                  :index       builds-store
+                  :description "Build data - software construction data read from Jenkins"
+                  :path        "/api/query/builds"}
+   :snapshots    {:id          :snapshots
+                  :index       snapshots-store
+                  :description "Snapshot data from source code analysis"}
+   :repositories {:id          :repositories
+                  :index       repositories-store
+                  :description "Captured repository data"}
+   :commits      {:id          :commits
+                  :index       commit-logs-store
+                  :description "Captured commit data"}
+   :code         {:id          :code
+                  :index       code-metric-store
+                  :description "Results of source analysis"}})
 
-
-(defn create-stores []
-  (create repositories-store)
-  (create snapshots-store)
-  (create builds-store)
-  (create collector-activity-store)
-  (create collector-config-store)
-  (create dashboards-store))
+(defn create-stores
+  []
+  (log/info "Creating missing data stores")
+  (.create repositories-store)
+  (.create snapshots-store)
+  (.create builds-store)
+  (.create collector-activity-store)
+  (.create collector-config-store)
+  (.create snapshots-store)
+  (.create commit-logs-store)
+  (.create code-metric-store)
+  (.create dashboards-store))

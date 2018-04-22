@@ -3,11 +3,9 @@
             [clj-http.client :as http]
             [clojure.tools.logging :as log]
             [kuona-core.util :refer :all]
-            [slingshot.slingshot :refer :all]
-            [kuona-core.stores :refer []]
-            )
+            [slingshot.slingshot :refer :all])
   (:gen-class)
-  (:import (kuona_core.stores DataStore)))
+  (:import (kuona_core.stores DataStore Store)))
 
 (defn health
   []
@@ -26,7 +24,6 @@
   ([document ^DataStore store id]
    (let [url (.url store [id])]
      (log/info "put-document " id url)
-     (log/info "document " document)
      (parse-json-body (http/put url {:headers json-headers
                                      :body    (generate-string document)})))))
 
@@ -133,7 +130,7 @@
 
 (defn read-schema
   [source]
-  (log/info "read-schema" source)
+  (log/info "read-schema" (:id source))
   (try+
     (let [id       (-> source :id)
           index    (-> source :index)
@@ -189,9 +186,14 @@
      :links []}))
 
 (defn get-document
-  [^DataStore mapping id]
-  (log/debug "getting" mapping id)
-  (parse-json-body (http/get (.url mapping [id]))))
+  [^Store mapping id]
+  (try+
+    (log/debug "getting" mapping id)
+    (parse-json-body (http/get (.url mapping [id])))
+    (catch [:status 404] {:keys [request-time headers body]}
+      (let [error (parse-json body)]
+        (es-error error))
+      )))
 
 (defn has-document?
   [^DataStore store id]

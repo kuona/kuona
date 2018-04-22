@@ -72,12 +72,9 @@
 
            (GET "/api/repositories/count" [] (repository/get-repository-count))
            (GET "/api/repositories" [search page] (repository/get-repositories search page))
-
            (POST "/api/repositories" request (repository/add-repository (get-in request [:body])))
-
            (GET "/api/repositories/:id" [id] (repository/get-repository-by-id id))
            (PUT "/api/repositories/:id" request (repository/put-repository! (get-in request [:body]) (get-in request [:params :id])))
-
            (GET "/api/repositories/:id/commits" request (repository/get-commits (get-in request [:params :id]) 1))
            (PUT "/api/repositories/:id/commits" request (repository/put-commit! (get-in request [:params :id]) (get-in request [:body])))
            (POST "/api/repositories/test" request (repository/test-project-url (get-in request [:body])))
