@@ -7,7 +7,7 @@
 
     <title>Kuona | IT analytics dashboard</title>
 
-    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="/font-awesome/css/fontawesome-all.css" rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <link href="css/animate.css" rel="stylesheet">
@@ -78,7 +78,7 @@
                         <div class="timeline-item" ng-repeat="a in collector_activity | limitTo:2">
                           <div class="row">
                             <div class="col-xs-3 date">
-                              <i class="fa fa-clock-o"></i>
+                              <i class="fas fa-clock-o"></i>
                               {{ a.timestamp | date: 'yyyy-MM-dd hh:mm:ss' }}
                               <br>
                               <small class="text-navy">{{a.timestamp | age}}</small>
@@ -103,7 +103,7 @@
 
                     <div class="widget navy-bg no-padding">
                       <div class="p-m">
-                        <i class="fa fa-github fa-5x pull-right"></i>
+                        <i class="fab fa-github fa-5x pull-right"></i>
                         <h1 class="m-xs">{{repository_count | number}}</h1>
                         <h3 class="font-bold no-margins">Github Git Repositories</h3>
                         <p class="small">Repositories are cloned and analysed for file types, build tools etc.</p>
@@ -113,7 +113,7 @@
 
                     <div class="widget navy-bg no-padding">
                       <div class="p-m">
-                        <i class="fa fa-clock-o fa-5x pull-right"></i>
+                        <i class="far fa-clock fa-5x pull-right"></i>
                         <h1 class="m-xs">{{vcs_count | number}}</h1>
                         <h3 class="font-bold no-margins">Commit History records</h3>
                         <p class="small">The commit history records from the master branch</p>
@@ -122,7 +122,7 @@
 
                     <div class="widget navy-bg no-padding">
                       <div class="p-m">
-                        <i class="fa fa-bar-chart-o fa-4x pull-right"></i>
+                        <i class="fas fa-chart-bar fa-4x pull-right"></i>
                         <h1 class="m-xs">{{code_metric_count | number }}</h1>
                         <h3 class="font-bold no-margins">Collected metric count</h3>
                         <p class="small">Count of collected metrics from analysing the repositories</p>
