@@ -2,7 +2,6 @@
   <div class="sidebar-collapse">
     <ul side-navigation class="nav metismenu" id="side-menu">
       <li class="nav-header">
-        <a href="/"><strong class="font-bold">Kuona</strong></a>
       </li>
 
       <li ui-sref-active="active">
@@ -10,24 +9,27 @@
       </li>
 
       <li ui-sref-active="active">
-        <a ui-sref="index.crawlers"><i class="fa fa-cogs"></i> <span class="nav-label">Crawlers</span></a>
+        <a ui-sref="index.crawlers"><i class="fa fa-cogs"></i> <span class="nav-label">Source Collectors</span></a>
       </li>
 
       <li ui-sref-active="active">
-        <a ui-sref="index.build-servers"><i class="fab fa-whmcs"></i> <span class="nav-label">Build Systems</span></a>
+        <a ui-sref="index.build-servers"><i class="fab fa-whmcs"></i> Build Collectors</a>
       </li>
 
-      <li ng-class="{active: $state.includes('index.new*')}">
-        <a href="#"><i class="fa fa-plus-circle"></i> <span class="nav-label">Add</span> <span class="fa fa-arrow-left"></span></a>
-        <ul class="nav nav-second-level collapse" ng-class="{in: $state.includes('index.new*')}">
-          <li>
-            <a ui-sref="index.new-github-repository"><i class="fab fa-github"></i> Github Repo</a>
-          </li>
-          <li>
-            <a ui-sref="index.new-jenkins-server"><i class="fab fa-jenkins"></i> Jenkins Server</a>
-          </li>
-        </ul>
+      <li>
+        <a ui-sref="index.new-github-collector"><i class="fab fa-github"></i> Add Github Account</a>
       </li>
-    </ul>
+
+      <li>
+        <a ui-sref="index.new-tfs-collector"><i class="fab fa-git"></i> Add TFS Account</a>
+      </li>
+
+      <li>
+        <a ui-sref="index.new-jenkins-server"><i class="fab fa-jenkins"></i> Add Jenkins Server</a>
+      </li>
+
+      <li>
+        <a ui-sref="index.new-github-repository"><i class="fab fa-git"></i> Add GitHub Repo</a>
+      </li>
   </div>
 </nav>
