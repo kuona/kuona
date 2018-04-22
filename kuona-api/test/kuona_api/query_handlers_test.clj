@@ -6,7 +6,8 @@
             [kuona-api.test-helpers :as helper]
             [kuona-core.util :as util]
             [midje.sweet :refer :all]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as mock]
+            [kuona-core.stores :as stores]))
 
 (def match-all
   {:query {:match_all {}}})
@@ -18,7 +19,7 @@
          (fact "query endpoint lists available data sources"
                (:status (app (mock/request :get "/api/query/sources"))) => 200)
          (fact "returns available sources"
-               (count (-> (helper/parse-json-response (app (mock/request :get "/api/query/sources"))) :sources)) => 4)
+               (count (-> (helper/parse-json-response (app (mock/request :get "/api/query/sources"))) :sources)) => (count stores/sources))
          (fact "returns 404 for invalid index"
                (:status (helper/mock-json-post app "/api/query/invalid" {})) => 404)
          (fact "returns 200 for valid index"

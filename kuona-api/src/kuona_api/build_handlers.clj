@@ -5,8 +5,6 @@
             [kuona-core.stores :refer [builds-store]])
   (:gen-class))
 
-
-
 (defn put-build!
   [data]
   (let [build (-> data :build)

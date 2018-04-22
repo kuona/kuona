@@ -27,7 +27,7 @@
   [mapping-name index]
   (clojure.string/join "/" [index (name mapping-name)]))
 
-(defn has-index?
+(defn store-exists?
   "Test to see if the given elasticsearch index exists. Returns true if
   the index exists, false if the index does not exist and throws an
   exception if there is an error or unexpected response"
@@ -172,7 +172,7 @@
 (defn create-store-if-missing
   [store schema]
   (cond
-    (has-index? store) (log/info "Store" store "exists")
+    (store-exists? store) (log/info "Store" store "exists")
     :else (create-index store schema)))
 
 
@@ -193,6 +193,7 @@
     (= (type n) java.lang.Long) n
     :else (try+ (. Integer parseInt n)
                 (catch Object _ nil))))
+
 (defn pagination-param
   [options]
   (let [page        (-> options :page)
@@ -219,7 +220,7 @@
 
 (defrecord DataStore [index-name mapping-name schema]
   Store
-  (exists? [this] (has-index? (index (-> this :index-name) default-es-host)))
+  (exists? [this] (store-exists? (index (-> this :index-name) default-es-host)))
   (create [this] (create-store-if-missing (index (-> this :index-name) default-es-host) (-> this :schema)))
   (mapping-url [this] (string/join "/" [(index (-> this :index-name) default-es-host) "_mapping"]))
   (url [this] (mapping (-> this :mapping-name) (index (-> this :index-name) default-es-host)))

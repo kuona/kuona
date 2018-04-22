@@ -1,8 +1,0 @@
-#!/bin/bash
-
-set -e -u -x
-#cd kuona-core-lib
-ls -la
-lein test
-lein midje
-lein install

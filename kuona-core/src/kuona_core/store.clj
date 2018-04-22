@@ -3,9 +3,10 @@
             [clj-http.client :as http]
             [clojure.tools.logging :as log]
             [kuona-core.util :refer :all]
-            [slingshot.slingshot :refer :all])
+            [slingshot.slingshot :refer :all]
+            [kuona-core.stores :refer []])
   (:gen-class)
-  (:import (kuona_core.stores DataStore Store)))
+  (:import (kuona_core.stores DataStore)))
 
 (defn health
   []
@@ -186,7 +187,7 @@
      :links []}))
 
 (defn get-document
-  [^Store mapping id]
+  [^DataStore mapping id]
   (try+
     (log/debug "getting" mapping id)
     (parse-json-body (http/get (.url mapping [id])))

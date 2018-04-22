@@ -10,7 +10,7 @@
 
        (fact "400" (github/wrap-http-call (fn [] (throw+ {:status 400 :request-time 0 :headers {} :body "{}"}))) => {:status :error})
        (fact "404" (github/wrap-http-call (fn [] (throw+ {:status 404 :request-time 0 :headers {} :body "{}"}))) => {:status :error :cause 404})
-       (fact "Exception" (github/wrap-http-call (fn [] (throw (RuntimeException. "Some random failure")))) => (contains {:message "Some random failure" :status :error})))
+       (fact "Exceptions are turned into error messages" (github/wrap-http-call (fn [] (throw (RuntimeException. "Test exception message")))) => (contains {:message "Test exception message" :status :error})))
 
 (facts "about querying github api"
        (fact "reading a single repository"
