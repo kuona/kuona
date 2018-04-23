@@ -1,19 +1,19 @@
 (ns kuona-api.main
-  (:require [clojure.java.io :as io]
-            [clojure.string :as string]
-            [clojure.tools.cli :as cli]
-            [slingshot.slingshot :refer [try+]]
+  (:require [slingshot.slingshot :refer [try+]]
             [ring.adapter.jetty :as jetty]
             [clojure.tools.logging :as log]
             [kuona-core.scheduler :as scheduler]
             [kuona-api.handler :as service]
             [kuona-core.stores :as stores]
-            [kuona-core.cli :as kcli])
+            [kuona-core.cli :as kcli]
+            [kuona-core.workspace :refer [set-workspace-path]])
   (:gen-class))
 
 (def cli-options
   [["-c" "--config FILE" "API Key used to communicate with the API service (deprecated/ignored)" :default "kuona-properties.json"]
    ["-w" "--workspace WORKSPACE" "Workspace for working files and repositories"]
+   ["-s" "--store STORE" "Prefix for elastic search data store index names" :default "kuona"]
+   ["-r" "--rebuild" "Rebuild/Destroy the current data stores" :default false]
    ["-p" "--port PORT" "API port" :default 9001]
    ["-h" "--help"]])
 
@@ -32,7 +32,15 @@
 (defn -main
   [& args]
   (let [options (kcli/configure "Kuona server" cli-options args)]
-    (kuona-core.workspace/set-workspace-path (-> options :workspace))
+    (set-workspace-path (-> options :workspace))
+    (stores/set-store-prefix (-> options :store))
+    (if (-> options :rebuild)
+      (do
+        (println "Are you sure you want to delete all the stores? This step is irreversible: (y/N) ")
+        (let [user-input (read-line)]
+          (if (or (= user-input "Y") (= user-input "y"))
+            (stores/rebuild)
+            (kcli/exit 1 "Cancelling - indexes not updated")))))
     (if (not (kuona-core.workspace/workspace-path-valid?)) (kcli/exit 1 "Invalid workspace path"))
     (log/info "Using workspace" (-> options :workspace))
     (start-application (-> options :port))))

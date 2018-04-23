@@ -65,6 +65,8 @@
            (GET "/repositories" [] (io/resource "public/repositories/index.html"))
            (GET "/valuestreams" [] (io/resource "public/valuestreams/index.html"))
            (GET "/query" [] (io/resource "public/query/index.html"))
+           (GET "/admin" [] (io/resource "public/admin/index.html"))
+           (GET "/dashboards" [] (io/resource "public/dashboards/index.html"))
            (route/resources "/")
            (GET "/api" [] (get-service-data))
            (GET "/api/info" [] (get-api-info))
@@ -107,7 +109,7 @@
 
            (POST "/api/builds" request (build/put-build! (get-in request [:body])))
 
-           (GET "/api/dashboards" [search page] (dashboards/list search page))
+           (GET "/api/dashboards" [search page] (dashboards/search page))
            (POST "/api/dashboards" request (dashboards/put! (get-in request [:body])))
            (GET "/api/dashboards/:id" [id] (dashboards/get-by-id id))
 

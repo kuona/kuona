@@ -9,7 +9,7 @@
   (str "/api/repositories?page=" page-number))
 
 
-(defn list
+(defn search
   [search page]
   (log/info "get repositories" search page)
   (response (store/search stores/dashboards-store search 100 page dashboards-page-link)))

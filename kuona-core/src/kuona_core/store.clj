@@ -203,12 +203,10 @@
 (defn all-documents
   "Retrieves all the activity based on the supplied key from the index."
   [^DataStore store]
-  (log/debug "all documents in " store)
   (let [url          (.url store ["_search"] ["size=10000"])
         query-string (generate-string {:query {:from 0 :size 10000}})
         query        {:form-params query-string}
         response     (http/get url)]
-    (log/debug "all-documents response " response)
     (map #(:_source %)
          (-> response
              parse-json-body

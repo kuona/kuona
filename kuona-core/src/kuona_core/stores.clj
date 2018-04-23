@@ -10,8 +10,14 @@
 
 
 (def default-es-host "http://localhost:9200")
+(def default-store-prefix "kuona")
 
 (def es-host (atom default-es-host))
+
+(def store-prefix (atom default-store-prefix))
+
+(defn set-store-prefix [prefix]
+  (reset! store-prefix prefix))
 
 (defn es-index
   [index-name type]
@@ -196,8 +202,8 @@
 
 (defn pagination-param
   [options]
-  (let [page        (-> options :page)
-        size        (-> options :size)
+  (let [page (-> options :page)
+        size (-> options :size)
         page-number (parse-integer page)]
     (cond
       (and size (> page-number 1)) {:size size :from (* (- page-number 1) size)}
@@ -214,57 +220,73 @@
 (defprotocol Store
   (exists? [this] "Tests for the stores existence")
   (create [this] "Creates the store if it does not exist")
+  (destroy [this] "Destroys the index and all content in that index")
   (mapping-url [this] "URL for reading the index schema")
   (url [this] [this args] [this path params] "returns the URL for the store"))
 
 
+(defn- index-name [iname]
+  (str (deref store-prefix) "-" (name iname)))
+
+(defn- data-store-index-name [store]
+  (index (index-name (-> store :index-name)) default-es-host))
+
 (defrecord DataStore [index-name mapping-name schema]
   Store
-  (exists? [this] (store-exists? (index (-> this :index-name) default-es-host)))
-  (create [this] (create-store-if-missing (index (-> this :index-name) default-es-host) (-> this :schema)))
-  (mapping-url [this] (string/join "/" [(index (-> this :index-name) default-es-host) "_mapping"]))
-  (url [this] (mapping (-> this :mapping-name) (index (-> this :index-name) default-es-host)))
+  (exists? [this] (store-exists? (data-store-index-name this)))
+  (create [this] (create-store-if-missing (data-store-index-name this) (-> this :schema)))
+  (destroy [this] (delete-index (data-store-index-name this)))
+  (mapping-url [this] (string/join "/" [(data-store-index-name this) "_mapping"]))
+  (url [this] (mapping (-> this :mapping-name) (data-store-index-name this)))
   (url [this args]
-    (let [m        (mapping (-> this :mapping-name) (index (-> this :index-name) default-es-host))
+    (let [m (mapping (-> this :mapping-name) (data-store-index-name this))
           elements (into [m] args)]
       (string/join "/" elements)))
   (url [this args params]
-    (let [m        (mapping (-> this :mapping-name) (index (-> this :index-name) default-es-host))
+    (let [m (mapping (-> this :mapping-name) (data-store-index-name this))
           elements (into [m] args)
-          p        (string/join "&" params)]
-      (str (string/join "/" elements) "?" p)
-      )))
+          p (string/join "&" params)]
+      (str (string/join "/" elements) "?" p))))
 
 (def environments-store (mapping :environments (index :kuona-env default-es-host)))
 (def environments-comment-store (mapping :comments (index :kuona-env default-es-host)))
 (def metrics-store (index :kuona-metrics default-es-host))
 
-(def repositories-store (DataStore. :kuona-repositories :repositories repository-metric-type))
-(def snapshots-store (DataStore. :kuona-snapshots :snapshots {}))
-(def builds-store (DataStore. :kuona-builds :builds build-metric-mapping-type))
-(def collector-activity-store (DataStore. :kuona-collectors :activity collector-activity-schema))
-(def collector-config-store (DataStore. :kuona-collector-config :collector collector-config-schema))
-(def commit-logs-store (DataStore. :kuona-vcs-commit :commit-log {}))
-(def code-metric-store (DataStore. :kuona-vcs-content :content {}))
-(def dashboards-store (DataStore. :kuona-dashboards :dashboard dashboards-schema))
+(def repositories-store (DataStore. :repositories :repositories repository-metric-type))
+(def snapshots-store (DataStore. :snapshots :snapshots {}))
+(def builds-store (DataStore. :builds :builds build-metric-mapping-type))
+(def collector-activity-store (DataStore. :collectors :activity collector-activity-schema))
+(def collector-config-store (DataStore. :collector-config :collector collector-config-schema))
+(def commit-logs-store (DataStore. :vcs-commit :commit-log {}))
+(def code-metric-store (DataStore. :vcs-content :content {}))
+(def dashboards-store (DataStore. :dashboards :dashboard dashboards-schema))
 
 (def sources
-  {:builds       {:id          :builds
-                  :index       builds-store
-                  :description "Build data - software construction data read from Jenkins"
-                  :path        "/api/query/builds"}
-   :snapshots    {:id          :snapshots
-                  :index       snapshots-store
-                  :description "Snapshot data from source code analysis"}
-   :repositories {:id          :repositories
-                  :index       repositories-store
-                  :description "Captured repository data"}
-   :commits      {:id          :commits
-                  :index       commit-logs-store
-                  :description "Captured commit data"}
-   :code         {:id          :code
-                  :index       code-metric-store
-                  :description "Results of source analysis"}})
+  {:builds             {:id          :builds
+                        :index       builds-store
+                        :description "Build data - software construction data read from Jenkins"
+                        :path        "/api/query/builds"}
+   :snapshots          {:id          :snapshots
+                        :index       snapshots-store
+                        :description "Snapshot data from source code analysis"}
+   :repositories       {:id          :repositories
+                        :index       repositories-store
+                        :description "Captured repository data"}
+   :commits            {:id          :commits
+                        :index       commit-logs-store
+                        :description "Captured commit data"}
+   :code               {:id          :code
+                        :index       code-metric-store
+                        :description "Results of source analysis"}
+   :collector-activity {:id          :collector-activity
+                        :index       collector-activity-store
+                        :description "Records collector activity"}
+   :collector-config   {:id          :collector-config
+                        :index       collector-config-store
+                        :description "Stores the configuration of configured collectors"}
+   :dashboards         {:id          :dashboards
+                        :index       dashboards-store
+                        :description "Dashboard configuration store"}})
 
 (defn create-stores
   []
@@ -278,3 +300,13 @@
   (.create commit-logs-store)
   (.create code-metric-store)
   (.create dashboards-store))
+
+(defn rebuild-store
+  [source]
+  (let [^DataStore index (-> source :index)]
+    (log/info "Rebuilding store index " index)
+    (.destroy index)
+    (.create index)))
+
+(defn rebuild []
+  (doall (map rebuild-store (vals sources))))
