@@ -14,17 +14,19 @@
    ["-w" "--workspace WORKSPACE" "Workspace for working files and repositories"]
    ["-s" "--store STORE" "Prefix for elastic search data store index names" :default "kuona"]
    ["-r" "--rebuild" "Rebuild/Destroy the current data stores" :default false]
+   ["-m" "--mode MODE" "Run mode standalone/passive. Standalone a local scheduler runs to collect data. In passive mode external collection is assumed" :default "standalone"]
    ["-p" "--port PORT" "API port" :default 9001]
    ["-h" "--help"]])
 
 
 
 (defn start-application
-  [port]
+  [port mode]
   (log/info "Starting API on port " port)
   (try+
     (stores/create-stores)
-    (scheduler/start)
+    (if (= mode "standalone")
+      (scheduler/start))
     (kcli/exit 0 (jetty/run-jetty #'service/app {:port port}))
     (catch [:type :config/missing-parameter] {:keys [parameter p]}
       (log/error "Missing configuration parameter " p))))
@@ -43,5 +45,5 @@
             (kcli/exit 1 "Cancelling - indexes not updated")))))
     (if (not (kuona-core.workspace/workspace-path-valid?)) (kcli/exit 1 "Invalid workspace path"))
     (log/info "Using workspace" (-> options :workspace))
-    (start-application (-> options :port))))
+    (start-application (-> options :port) (-> options :mode))))
 

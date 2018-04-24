@@ -80,4 +80,6 @@ symlink_core "kuona-api"
 symlink_core "tools/github-crawler"
 symlink_core "tools/tfs-crawler"
 
+ln -s "${PWD}/dashboard/out" "kuona-api/resources/public"
+
 echo "${pgreen}Ready to develop! Start with the readme.${preset}"

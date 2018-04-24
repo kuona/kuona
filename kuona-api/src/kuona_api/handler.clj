@@ -65,8 +65,6 @@
            (GET "/repositories" [] (io/resource "public/repositories/index.html"))
            (GET "/valuestreams" [] (io/resource "public/valuestreams/index.html"))
            (GET "/query" [] (io/resource "public/query/index.html"))
-           (GET "/admin" [] (io/resource "public/admin/index.html"))
-           (GET "/dashboards" [] (io/resource "public/dashboards/index.html"))
            (route/resources "/")
            (GET "/api" [] (get-service-data))
            (GET "/api/info" [] (get-api-info))
