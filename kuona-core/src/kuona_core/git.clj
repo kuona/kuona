@@ -164,6 +164,7 @@
                                                    :name      "TBD"
                                                    :collected (-> a :metric :collected)
                                                    :activity  (-> a :metric :activity)}
+                                   :code          (-> a :code)
                                    :collector     (-> a :collector)}
                                   code-mapping (uuid-from sha "cloc"))) path sha))
         local-dir)

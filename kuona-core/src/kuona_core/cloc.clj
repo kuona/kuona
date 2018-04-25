@@ -1,5 +1,6 @@
 (ns kuona-core.cloc
   (:require [clojure.java.shell :as shell]
+            [clojure.set :refer [rename-keys]]
             [cheshire.core :refer :all]
             [clojure.tools.logging :as log]
             [kuona-core.util :refer :all])
@@ -22,14 +23,14 @@
 
 (defn sum-count
   [d k]
-  (reduce + (map #(k %) d))) 
+  (reduce + (map #(k %) d)))
 
 (defn add-metadata
   [metrics]
-  {:loc {:total     {:file-count    (sum-count metrics :file-count)
-                     :comment-lines (sum-count metrics :comment-lines)
-                     :blank-lines   (sum-count metrics :blank-lines)
-                     :code-lines    (sum-count metrics :code-lines)}
+  {:loc {:total     {:files    (sum-count metrics :files)
+                     :comments (sum-count metrics :comments)
+                     :blanks   (sum-count metrics :blanks)
+                     :code     (sum-count metrics :code)}
          :languages metrics}})
 
 ;(defn add-metadata
@@ -39,13 +40,13 @@
 ;               :name      "TBD"
 ;               :source    {:system :git
 ;                           :url    "TBD"}
-;               :activity  {:file-count    (sum-count metrics :file-count)
-;                           :comment-lines (sum-count metrics :comment-lines)
-;                           :blank-lines   (sum-count metrics :blank-lines)
-;                           :code-lines    (sum-count metrics :code-lines)
- ;                          :languages     metrics}
- ;;              :collected (timestamp)}
- ;  :collector {:name    :kuona-code-collector
+;               :activity  {:files    (sum-count metrics :files)
+;                           :comments (sum-count metrics :comments)
+;                           :blanks   (sum-count metrics :blanks)
+;                           :code    (sum-count metrics :code)
+;                          :languages     metrics}
+;;              :collected (timestamp)}
+;  :collector {:name    :kuona-code-collector
 ;               :version "0.1"}})
 
 (defn root-relative-path
@@ -72,11 +73,11 @@
 
 (defn map-cloc-metric
   [language d]
-  {:language      (language-name language)
-   :file-count    (:nFiles d)
-   :blank-lines   (:blank d)
-   :comment-lines (:comment d)
-   :code-lines    (:code d)})
+  {:language (language-name language)
+   :files    (:nFiles d)
+   :blanks   (:blank d)
+   :comments (:comment d)
+   :code     (:code d)})
 
 (defn cloc-language-metric
   [entry]
@@ -85,13 +86,13 @@
 (defn remove-cloc-header
   [data]
   (let [header-keys #{:header "header" :SUM "SUM"}
-        keys (keys data)
-        data-keys (filter (fn [x] (not (contains? header-keys x))) keys)]
+        keys        (keys data)
+        data-keys   (filter (fn [x] (not (contains? header-keys x))) keys)]
     (into {} (map (fn [k] {k (get data k)}) data-keys))))
 
 (defn cloc
   [path]
-  (let [result (shell/sh "cloc" "--json" path) ]
+  (let [result (shell/sh "cloc" "--json" path)]
     (parse-string (-> result :out) true)))
 
 (defn maven-loc-module
@@ -100,15 +101,15 @@
   (let [module-path (.getParent (clojure.java.io/file pom-path))
         main-path   (clojure.string/join "/" [module-path "src" "main"])
         test-path   (clojure.string/join "/" [module-path "src" "test"])
-        key         (root-relative-path  root module-path)]
+        key         (root-relative-path root module-path)]
     {key {:production (add-metadata (map cloc-language-metric (remove-cloc-header (cloc main-path))))
           :test       (add-metadata (map cloc-language-metric (remove-cloc-header (cloc test-path))))}}
-     ))
+    ))
 
 (defn module-summary
   [details]
-  (let [production-code (reduce + (map #(-> (second %) :production :loc :total :code-lines) details))
-        test-code       (reduce + (map #(-> (second %) :test :loc :total :code-lines) details))]
+  (let [production-code (reduce + (map #(-> (second %) :production :loc :total :code) details))
+        test-code       (reduce + (map #(-> (second %) :test :loc :total :code) details))]
     {:summary {:production   production-code
                :test         test-code
                :ratio        (float (/ production-code test-code))
@@ -124,22 +125,24 @@
 
 (defn cloc-language-metric
   [entry]
-  (map (fn [key] (map-cloc-metric key (get entry key)))  (keys entry)))
+  (map (fn [key] (map-cloc-metric key (get entry key))) (keys entry)))
 
 (defn as-activity
-  [metrics]
+  [metrics original]
   {:metric    {:collected (timestamp)
-               :activity  {:file-count    (sum-count metrics :file-count)
-                           :comment-lines (sum-count metrics :comment-lines)
-                           :blank-lines   (sum-count metrics :blank-lines)
-                           :code-lines    (sum-count metrics :code-lines)
-                           :languages     metrics}}
+               :activity  {:files     (sum-count metrics :files)
+                           :comments  (sum-count metrics :comments)
+                           :blanks    (sum-count metrics :blanks)
+                           :code      (sum-count metrics :code)
+                           :languages metrics}}
+   :code      (map (fn [[k v]] {(language-name k) (rename-keys v {:nFiles :files :blank :blanks :comment :comments :code :code})}) original)
    :collector {:name    :kuona-collector-cloc
-               :version "0.1"}})
+               :version "0.2"}})
 
 (defn collect-loc
   [path]
-  (as-activity (map (fn [x] (map-cloc-metric (first x) (second x))) (remove-cloc-header (cloc path)))))
+  (let [cleaned-metrics (remove-cloc-header (cloc path))]
+    (as-activity (map (fn [x] (map-cloc-metric (first x) (second x))) cleaned-metrics) cleaned-metrics)))
 
 (defn loc-collector
   [f path sha]

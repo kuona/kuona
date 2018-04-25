@@ -47,7 +47,7 @@
        (fact (store/pagination-param :size 10 :page "3") => "size=10&from=20"))
 
 
-(def test-store (DataStore. :kuona-test :tests {}))
+(def test-store (DataStore. :test :tests {}))
 
 
 (facts "search"
