@@ -135,7 +135,7 @@
                            :blanks    (sum-count metrics :blanks)
                            :code      (sum-count metrics :code)
                            :languages metrics}}
-   :code      (map (fn [[k v]] {(language-name k) (rename-keys v {:nFiles :files :blank :blanks :comment :comments :code :code})}) original)
+   :code      (into {} (map (fn [[k v]] {(language-name k) (rename-keys v {:nFiles :files :blank :blanks :comment :comments :code :code})}) original))
    :collector {:name    :kuona-collector-cloc
                :version "0.2"}})
 

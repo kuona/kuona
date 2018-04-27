@@ -32,21 +32,21 @@
 
 (facts "about as-activity"
        (let [r (as-activity (list {:language "clojure" :files 10, :blanks 20, :comments 30, :code 40}
-                                  {:language "clojure" :files 10, :blanks 20, :comments 30, :code 40}) {:code :original})]
+                                  {:language "clojure" :files 11, :blanks 21, :comments 31, :code 41}) {:clojure {}})]
          (fact "names the collector"
                (-> r :collector :name) => :kuona-collector-cloc)
          (fact "contains the file count"
-               (-> r :metric :activity :files) => 20)
+               (-> r :metric :activity :files) => 21)
          (fact "totals blank lines"
-               (-> r :metric :activity :blanks) => 40)
+               (-> r :metric :activity :blanks) => 41)
          (fact "totals comment lines"
-               (-> r :metric :activity :comments) => 60)
+               (-> r :metric :activity :comments) => 61)
          (fact "totals code lines"
-               (-> r :metric :activity :code) => 80)
+               (-> r :metric :activity :code) => 81)
          (fact "contains the details"
                (-> r :metric :activity :languages count) => 2)
          (fact "contains code details"
-               r => (contains {:code {:code :original}}))))
+               r => (contains {:code {"clojure" {}}}))))
 
 (facts
   (let [data {:header   {:cloc_url         "github.com/AlDanial/cloc",
@@ -63,7 +63,7 @@
                                                           :Markdown {:blank 4, :code 6, :comment 0, :nFiles 2}})
     (fact "mapping activity" (map (fn [x] (map-cloc-metric (first x) (second x))) (remove-cloc-header data)) = "")
     (fact "full trip"
-          (let [activity (as-activity (map (fn [x] (map-cloc-metric (first x) (second x))) (remove-cloc-header data)) :code :original)]
+          (let [activity (as-activity (map (fn [x] (map-cloc-metric (first x) (second x))) (remove-cloc-header data)) (remove-cloc-header data))]
             (-> activity :collector :name) => :kuona-collector-cloc
             (-> activity :metric :activity :languages count) => 2))))
 
