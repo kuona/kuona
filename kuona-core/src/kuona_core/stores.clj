@@ -35,7 +35,8 @@
 
 (defn store-exists?
   "Test to see if the given elasticsearch index exists. Returns true if
-  the index exists, false if the index does not exist and throws an
+  the index exists
+ false if the index does not exist and throws an
   exception if there is an error or unexpected response"
   [index]
   (log/info "Testing index" index)
@@ -87,11 +88,17 @@
   {:type "text" :fields {:keyword {:type "keyword" :ignore_above 256}}})
 
 (def collector-activity-schema
-  {:activity {:properties {:activity  {:type   "text",
-                                       :fields {:keyword {:type "keyword", :ignore_above 256}}},
-                           :collector {:properties {:name    {:type "text", :fields {:keyword {:type "keyword", :ignore_above 256}}},
-                                                    :version {:type "text", :fields {:keyword {:type "keyword", :ignore_above 256}}}}},
-                           :id        {:type "text", :fields {:keyword {:type "keyword", :ignore_above 256}}},
+  {:activity {:properties {:activity  {:type   "text"
+
+                                       :fields {:keyword {:type         "keyword"
+                                                          :ignore_above 256}}}
+
+                           :collector {:properties {:name    es/indexed-keyword
+
+                                                    :version es/indexed-keyword}}
+
+                           :id        es/indexed-keyword
+
                            :timestamp {:type "date"}}}})
 
 (def collector-config-schema
@@ -141,22 +148,30 @@
 
 ;; Needs to be split into two stores or removed.
 (def metric-mapping-type
-  {:build {:properties {:timestamp es/timestamp,
+  {:build {:properties {:timestamp es/timestamp
+
                         :collector collector-mapping-type
-                        :metric    {:properties {:activity  {:properties {:duration {:type "long"},
+                        :metric    {:properties {:activity  {:properties {:duration {:type "long"}
+
                                                                           :name     es/string-not-analyzed
                                                                           :id       es/string-not-analyzed
-                                                                          :number   {:type "long"},
+                                                                          :number   {:type "long"}
+
                                                                           :result   es/string-not-analyzed
-                                                                          :type     es/string-not-analyzed}},
-                                                 :collected es/timestamp,
-                                                 :source    {:properties {:system es/string-not-analyzed,
-                                                                          :url    es/string-not-analyzed}},
+                                                                          :type     es/string-not-analyzed}}
+
+                                                 :collected es/timestamp
+
+                                                 :source    {:properties {:system es/string-not-analyzed
+
+                                                                          :url    es/string-not-analyzed}}
+
                                                  :type      es/string-not-analyzed}}}}
    :vcs   {:properties {:collector collector-mapping-type
                         :metric    {:properties {:activity  {:properties {:author        es/string
                                                                           :branches      es/string-not-analyzed
-                                                                          :change_count  {:type "long"},
+                                                                          :change_count  {:type "long"}
+
                                                                           :changed_files {:properties {:change es/string-not-analyzed
                                                                                                        :path   es/string-not-analyzed}}
                                                                           :email         es/string-not-analyzed
@@ -174,6 +189,48 @@
                                                  :name        es/string-not-analyzed
                                                  :description es/string}}})
 
+
+(def snapshot-schema
+  {:snapshots {:properties {:build      {:properties {:artifact     {:properties {:artifactId es/indexed-keyword
+                                                                                  :groupId    es/indexed-keyword
+                                                                                  :name       es/indexed-keyword
+                                                                                  :packaging  es/indexed-keyword
+                                                                                  :version    es/indexed-keyword}}
+                                                      :builder      es/indexed-keyword
+                                                      :dependencies {:properties {:dependencies {:properties {:from {:properties {:artifactId es/indexed-keyword
+                                                                                                                                  :groupId    es/indexed-keyword
+                                                                                                                                  :id         es/indexed-keyword
+                                                                                                                                  :packaging  es/indexed-keyword
+                                                                                                                                  :scope      es/indexed-keyword
+                                                                                                                                  :version    es/indexed-keyword}}
+                                                                                                              :to   {:properties {:artifactId es/indexed-keyword
+                                                                                                                                  :groupId    es/indexed-keyword
+                                                                                                                                  :id         es/indexed-keyword
+                                                                                                                                  :packaging  es/indexed-keyword
+                                                                                                                                  :scope      es/indexed-keyword
+                                                                                                                                  :version    es/indexed-keyword}}}}
+                                                                                  :root         {:properties {:artifactId es/indexed-keyword
+                                                                                                              :groupId    es/indexed-keyword
+                                                                                                              :id         es/indexed-keyword
+                                                                                                              :packaging  es/indexed-keyword
+                                                                                                              :version    es/indexed-keyword}}}}
+                                                      :path         es/indexed-keyword}}
+                            :content    {:properties {:blank_line_details   {:properties {:language es/indexed-keyword}}
+                                                      :code_line_details    {:properties {:language es/indexed-keyword}}
+                                                      :comment_line_details {:properties {:language es/indexed-keyword}}
+                                                      :file_details         {:properties {:language es/indexed-keyword}}}}
+                            :repository {:properties {:description       es/indexed-keyword
+                                                      :open_issues_count {:type "long"}
+                                                      :forks_count       {:type "long"}
+                                                      :watchers_count    {:type "long"}
+                                                      :name              es/indexed-keyword
+                                                      :stargazers_count  {:type "long"}
+                                                      :owner_avatar_url  es/indexed-keyword
+                                                      :size              {:type "long"}
+                                                      :updated_at        {:type "date"}
+                                                      :language          es/indexed-keyword
+                                                      :pushed_at         {:type "date"}}}}}}
+  )
 
 (defn create-store-if-missing
   [store schema]
@@ -202,8 +259,8 @@
 
 (defn pagination-param
   [options]
-  (let [page (-> options :page)
-        size (-> options :size)
+  (let [page        (-> options :page)
+        size        (-> options :size)
         page-number (parse-integer page)]
     (cond
       (and size (> page-number 1)) {:size size :from (* (- page-number 1) size)}
@@ -239,13 +296,13 @@
   (mapping-url [this] (string/join "/" [(data-store-index-name this) "_mapping"]))
   (url [this] (mapping (-> this :mapping-name) (data-store-index-name this)))
   (url [this args]
-    (let [m (mapping (-> this :mapping-name) (data-store-index-name this))
+    (let [m        (mapping (-> this :mapping-name) (data-store-index-name this))
           elements (into [m] args)]
       (string/join "/" elements)))
   (url [this args params]
-    (let [m (mapping (-> this :mapping-name) (data-store-index-name this))
+    (let [m        (mapping (-> this :mapping-name) (data-store-index-name this))
           elements (into [m] args)
-          p (string/join "&" params)]
+          p        (string/join "&" params)]
       (str (string/join "/" elements) "?" p))))
 
 (def environments-store (mapping :environments (index :kuona-env default-es-host)))
@@ -253,7 +310,7 @@
 (def metrics-store (index :kuona-metrics default-es-host))
 
 (def repositories-store (DataStore. :repositories :repositories repository-metric-type))
-(def snapshots-store (DataStore. :snapshots :snapshots {}))
+(def snapshots-store (DataStore. :snapshots :snapshots snapshot-schema))
 (def builds-store (DataStore. :builds :builds build-metric-mapping-type))
 (def collector-activity-store (DataStore. :collectors :activity collector-activity-schema))
 (def collector-config-store (DataStore. :collector-config :collector collector-config-schema))

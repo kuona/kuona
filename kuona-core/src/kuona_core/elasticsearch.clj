@@ -10,6 +10,9 @@
 (def string-not-analyzed
   {:type "keyword" :index "false"})
 
+(def indexed-keyword
+  {:type "keyword" :index "true"})
+
 (def timestamp
   {:type "date" :format "strict_date_optional_time||epoch_millis"})
 
