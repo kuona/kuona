@@ -17,6 +17,11 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
       templateUrl: "views/main.html",
       data: {pageTitle: 'Admin'}
     })
+    .state('index.add', {
+      url: "/add",
+      templateUrl: "views/add.html",
+      data: {pageTitle: 'Admin - Add Source'}
+    })
     .state('index.minor', {
       url: "/minor",
       templateUrl: "views/minor.html",

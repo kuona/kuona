@@ -117,6 +117,7 @@
            (GET "/api/query/:source/schema" [source] (query/source-schema source))
 
            (GET "/api/indices" [] (response (store/indices)))
+           (POST "/api/indices/:id/rebuild" [id] (response (stores/rebuild-store-by-name id)))
            (DELETE "/api/indicies/:id" [id] (response (stores/delete-index-by-id id)))
 
            (route/not-found "Not Found"))

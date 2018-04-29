@@ -71,7 +71,7 @@
 
 (defn internal-search
   [^DataStore store query]
-  (log/info "internal-search" store)
+  (log/info "internal-search" (-> store :index-name))
   (let [url      (.url store '("_search"))
         response (http/post url {:headers json-headers :body (generate-string query)})]
     (parse-json-body response)))

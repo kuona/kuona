@@ -24,3 +24,7 @@
              (let [store (DataStore. :foo :bar {})]
                (url store [1] ["q=foo"]) => "http://localhost:9200/kuona-foo/bar/1?q=foo"
                (url store [1] ["q=foo" "r=bar"]) => "http://localhost:9200/kuona-foo/bar/1?q=foo&r=bar")))
+
+(facts "about finding sources"
+       (fact "found by name"
+             (find-store-by-name "kuona-snapshots") => snapshots-store))

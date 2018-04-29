@@ -358,7 +358,7 @@
   (.create code-metric-store)
   (.create dashboards-store))
 
-(defn rebuild-store
+(defn rebuild-source
   [source]
   (let [^DataStore index (-> source :index)]
     (log/info "Rebuilding store index " index)
@@ -366,4 +366,20 @@
     (.create index)))
 
 (defn rebuild []
-  (doall (map rebuild-store (vals sources))))
+  (doall (map rebuild-source (vals sources))))
+
+(defn find-store-by-name [name]
+  (let [source (first (filter (fn [source] (= name
+                                              (index-name (-> source :index :index-name)))) (vals sources)))]
+    (-> source :index)))
+
+(defn rebuild-store-by-name
+  [name]
+  (let [store (find-store-by-name name)]
+    (cond
+      (nil? store) {:error ("Requested index '" name "' not found")}
+      :else (do
+              (.destroy store)
+              (.create store)
+              {:status      :ok
+               :description (str "Store " name " rebuilt (empty)")}))))

@@ -19,20 +19,17 @@
             <li>
               <label>Kuona API:</label>
               <small class="label label-primary">{{ info.kuona_api.version }}</small>
-            </li>
-            <li>
               <label>Clojure:</label>
               <small class="label label-primary">{{ info.clojure.version }}</small>
-            </li>
-            <li>
               <label>Elasticsearch:</label>
               <small class="label label-primary">{{ info.elastic_search.name }}</small>
-              <small class="label label-primary">version {{ info.elastic_search.version.number }}</small>
-              <small class="label label-info">lucene {{ info.elastic_search.version.lucene_version }}</small>
-              <small class="label label-primary">build date {{ info.elastic_search.version.build_date | date:'yyyy-MM-dd' }}
+              <label>version</label>
+              <small class="label label-primary">{{ info.elastic_search.version.number }}</small>
+              <label>lucene</label>
+              <small class="label label-info">{{ info.elastic_search.version.lucene_version }}</small>
+              <label>built</label>
+              <small class="label label-primary">{{ info.elastic_search.version.build_date | date:'yyyy-MM-dd' }}
               </small>
-            </li>
-            <li>
               <label>Cluster UUID:</label>
               <small class="label">{{ info.elastic_search.cluster_uuid }}</small>
             </li>
@@ -66,6 +63,9 @@
               <td style="text-align:right;">{{index.total.docs.deleted}}</td>
               <td>
                 <button class="btn btn-danger btn-circle" type="button" ng-click="rebuildIndex(index.name)">
+                  <i class="fas fa-recycle"></i>
+                </button>
+                <button class="btn btn-danger btn-circle" type="button" ng-click="deleteIndex(index.name)">
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </td>
@@ -75,43 +75,5 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <div class="row">
-
-    <div class="col-lg-4">
-      <div class="jumbotron">
-        <h1><i class="fab fa-github"></i> GitHub</h1>
-        <p>Add a GitHub account for collection.</p>
-        <p><a ui-sref="index.new-github-collector" class="btn btn-primary btn-lg" role="button">Add Github Account</a></p>
-      </div>
-    </div>
-
-    <div class="col-lg-4">
-      <div class="jumbotron">
-        <h1><i class="fab fa-git"></i> TFS</h1>
-        <p>Add a TFS account for collection.</p>
-        <p><a ui-sref="index.new-tfs-collector" class="btn btn-primary btn-lg" role="button">Add TFS Account</a></p>
-      </div>
-    </div>
-
-    <div class="col-lg-4">
-      <div class="jumbotron">
-        <h1><i class="fab fa-jenkins"></i> Jenkins</h1>
-        <p>Add a Jenkins build server for analysis.</p>
-        <p><a ui-sref="index.new-jenkins-server" class="btn btn-primary btn-lg" role="button">Add Jenkins Server</a></p>
-      </div>
-    </div>
-
-
-    <div class="col-lg-4">
-      <div class="jumbotron">
-        <h1><i class="fab fa-github"></i> Repository</h1>
-        <p>Add a github repository for analysis.</p>
-        <p><a ui-sref="index.new-github-repository" class="btn btn-primary btn-lg" role="button">Add Github Repo</a></p>
-      </div>
-    </div>
-
-
   </div>
 </div>

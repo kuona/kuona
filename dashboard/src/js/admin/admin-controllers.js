@@ -7,10 +7,16 @@ function MainCtrl($scope, $http) {
   $scope.indices = [];
 
   $scope.rebuildIndex = function (name) {
-    $http.delete("/api/indicies/" + name).then(function (res) {
+    $http.post("/api/indicies/" + name + "/rebuild").then(function () {
       $scope.refresh();
     });
-  }
+  };
+
+  $scope.deleteIndex = function (name) {
+    $http.delete("/api/indicies/" + name).then(function () {
+      $scope.refresh();
+    });
+  };
 
   $scope.refresh = function () {
 
