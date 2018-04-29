@@ -75,5 +75,5 @@
 
                (each-commit (fn [path sha time]
                               (loc-collector
-                                (fn [a] store/put-document code-metric-store a (uuid-from sha "cloc")) path sha))
+                                (fn [a] store/put-document code-metric-store a (uuid-from sha "cloc")) path))
                             test-repo-path) => nil)))
