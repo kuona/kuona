@@ -107,7 +107,7 @@
 
            (POST "/api/builds" request (build/put-build! (get-in request [:body])))
 
-           (GET "/api/dashboards" [search page] (dashboards/search page))
+           (GET "/api/dashboards" [search page] (dashboards/search search page))
            (POST "/api/dashboards" request (dashboards/put! (get-in request [:body])))
            (GET "/api/dashboards/:id" [id] (dashboards/get-by-id id))
 

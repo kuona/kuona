@@ -9,12 +9,23 @@
             [kuona-core.store :as store]
             [kuona-core.github :as github]
             [kuona-core.collector.tfs :as tfs]
-            [clj-http.client :as http]
             [kuona-core.util :as util]
             [kuona-core.git :as git]
             [kuona-core.collector.snapshot :as snapshot]
             [kuona-core.stores :refer [repositories-store commit-logs-store code-metric-store collector-config-store]]
-            [kuona-core.workspace :refer [get-workspace-path]]))
+            [kuona-core.workspace :refer [get-workspace-path]]
+            [kuona-core.stores :as stores]))
+
+(defn track-activity
+  ([stage status]
+   (track-activity stage status {}))
+  ([stage status params]
+   (store/put-document {:id         (util/uuid)
+                        :collector  {:name    stage
+                                     :version (util/get-project-version 'kuona-api)}
+                        :activity   status
+                        :parameters params
+                        :timestamp  (util/timestamp)} stores/collector-activity-store)))
 
 (defn tfs-org-collector-config? [config]
   (and
@@ -30,7 +41,9 @@
 (defn refresh-github-org
   [org username password]
   (log/info "Refreshing github organisation repositories" org)
-  (github/get-project-repositories org))
+  (track-activity "GitHub org/user collector" :started {:organization org})
+  (github/get-project-repositories org)
+  (track-activity "GitHub org/user collector" :completed {:organization org}))
 
 
 (defn repository-id [repo]
@@ -48,8 +61,10 @@
 (defn refresh-tfs-org
   [org token]
   (log/info "Refreshing TFS repositories" org)
+  (track-activity "TFS org/user collector" :started {:organization org})
   (let [entries (tfs/find-organization-repositories org token)]
-    (doseq [entry entries] (put-repository! entry))))
+    (doseq [entry entries] (put-repository! entry)))
+  (track-activity "TFS org/user collector" :completed {:organization org}))
 
 (defn collect-repository-data [e]
   (log/info "Collecting/refreshing repository date")
@@ -62,16 +77,20 @@
       (tfs-org-collector-config? e) (refresh-tfs-org (-> config :org) (-> config :token))
       :else (log/info "collector type not supported"))))
 
+
 (defn refresh-repositories
   []
   (log/info "Refreshing known repositories")
+  (track-activity "Refreshing repositories" :started)
   (let [url  (.url collector-config-store ["_search"] ["size=100" "q=collector_type:VCS"])
         docs (store/find-documents url)]
-    (doall (map collect-repository-data (-> docs :items)))))
+    (doall (map collect-repository-data (-> docs :items))))
+  (track-activity "Refreshing repositories" :completed))
 
 (defn collect-repository-metrics
   []
   (log/info "Collecting metrics from known repositories")
+  (track-activity "Updating respository metrics" :started)
   (let [repositories (store/all-documents repositories-store)]
     (log/info "Found " (count repositories) " configured repositories for analysis")
 
@@ -80,8 +99,11 @@
         (cond
           (nil? url) (log/error "No URL field found in repository" repo)
           :else (do
+                  (track-activity "Repository collector" :started {:url url})
                   (git/collect-commits commit-logs-store code-metric-store (get-workspace-path) url (-> repo :id))
-                  (snapshot/create-repository-snapshot (git/local-clone-path (get-workspace-path) url) repo)))))))
+                  (snapshot/create-repository-snapshot (git/local-clone-path (get-workspace-path) url) repo)
+                  (track-activity "Repository collector" :started {:url url}))))))
+  (track-activity "Updating respository metrics" :completed))
 
 
 

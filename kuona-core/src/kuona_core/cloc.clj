@@ -145,7 +145,7 @@
     (as-activity (map (fn [x] (map-cloc-metric (first x) (second x))) cleaned-metrics) cleaned-metrics)))
 
 (defn loc-collector
-  [f path sha]
-  (log/info "loc-collector " path sha)
+  [f path]
+  (log/info "loc-collector " path)
   (f (collect-loc path)))
 

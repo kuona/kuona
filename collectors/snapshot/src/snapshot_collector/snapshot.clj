@@ -100,14 +100,14 @@
 (defn create-repository-snapshot
   [api-url workspace repo]
   (try+
-    (let [id (repository-id repo)
-          url (repository-git-url repo)
+    (let [id        (repository-id repo)
+          url       (repository-git-url repo)
           local-dir (util/canonical-path (string/join "/" [workspace id]))
-          name (-> repo :project :name)]
+          name      (-> repo :project :name)]
       (log/info "Creating repository snapshot " id name "from " url "to " local-dir)
       (clone-or-update url local-dir)
-      (let [loc-data (cloc/loc-collector (fn [a] a) local-dir "foo")
-            build-data (builder/collect-builder-metrics local-dir)
+      (let [loc-data      (cloc/loc-collector (fn [a] a) local-dir)
+            build-data    (builder/collect-builder-metrics local-dir)
             snapshot-data (create-snapshot (-> repo :project) (loc-metrics loc-data) build-data)]
         (doall (map #(put-commit! % (snapshot-commits-url api-url id)) (commit-history (git/load-repo local-dir))))
         (log/info "snapshot " (put-snapshot! snapshot-data (snapshot-url api-url id)))))
@@ -125,8 +125,8 @@
    (do
      (log/info "Reading repository page " page)
      (let [result (get-repositories (str api-uri "/api/repositories?page=" page))
-           count (-> result :count)
-           items (-> result :items)]
+           count  (-> result :count)
+           items  (-> result :items)]
        (if (= count 0) items (concat items (all-repositories api-uri (inc page))))))))
 
 (defn- create-snapshots
@@ -137,9 +137,9 @@
 (defn run
   "Main entry point for snapshot collection."
   [options]
-  (let [api-url (:api-url options)
-        workspace (:workspace options)
-        force-update (:force options)
+  (let [api-url         (:api-url options)
+        workspace       (:workspace options)
+        force-update    (:force options)
         requires-update (fn [r] (if force-update true (requires-snapshot? r api-url)))]
     (log/info "Updating " api-url " using " workspace " for repository data")
     (http/post (string/join "/" [api-url "api" "collectors" "activities"]) (util/build-json-request {:id         (util/uuid)

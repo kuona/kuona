@@ -41,14 +41,15 @@
 (defn loc-metrics
   [loc-data]
   (let [content (-> loc-data :metric :activity)]
-    {:file_count           (:file-count content)
-     :comment_lines        (:comment-lines content)
-     :blank_lines          (:blank-lines content)
-     :code_lines           (:code-lines content)
-     :file_details         (into [] (map #(language-x-count % :file-count) (:languages content)))
-     :blank_line_details   (into [] (map #(language-x-count % :blank-lines) (:languages content)))
-     :comment_line_details (into [] (map #(language-x-count % :comment-lines) (:languages content)))
-     :code_line_details    (into [] (map #(language-x-count % :code-lines) (:languages content)))
+    (assert (not (nil? content)) (str "content missing from loc-data " loc-data))
+    {:file_count           (:files content)
+     :comment_lines        (:comments content)
+     :blank_lines          (:blanks content)
+     :code_lines           (:code content)
+     :file_details         (into [] (map #(language-x-count % :files) (:languages content)))
+     :blank_line_details   (into [] (map #(language-x-count % :blanks) (:languages content)))
+     :comment_line_details (into [] (map #(language-x-count % :comments) (:languages content)))
+     :code_line_details    (into [] (map #(language-x-count % :code) (:languages content)))
      }))
 
 
@@ -60,7 +61,7 @@
     (try+
       (log/info "Creating repository snapshot id" id "name" name "from " url "to " local-dir)
       (git-pull url local-dir)
-      (let [loc-data      (cloc/loc-collector (fn [a] a) local-dir "foo")
+      (let [loc-data      (cloc/loc-collector (fn [a] a) local-dir)
             build-data    (builder/collect-builder-metrics local-dir)
             snapshot-data (create-snapshot (-> repo :project) (loc-metrics loc-data) build-data)]
 

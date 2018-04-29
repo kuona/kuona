@@ -1,188 +1,195 @@
 <!DOCTYPE html>
 <html ng-app="kuona.dashboard">
-  <head>
+<head>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Kuona | IT analytics dashboard</title>
+  <title>Kuona | IT analytics dashboard</title>
 
-    <link href="/font-awesome/css/fontawesome-all.css" rel="stylesheet">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="/font-awesome/css/fontawesome-all.css" rel="stylesheet">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
 
-    <link href="css/animate.css" rel="stylesheet">
-    <link id="loadBefore" href="css/style.css" rel="stylesheet">
-    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="favicon-apple-touch-114.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="favicon-apple-touch-114.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="favicon-apple-touch-144.png">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="favicon-apple-touch-144.png">
-    <link rel="icon" type="image/vnd.microsoft.icon" sizes="32x32 48x48" href="favicon.ico">
-    <link rel="icon" sizes="128x128" href="favicon.icns">
-    <link rel="icon" href="favicon.png" type="image/x-icon">
-  </head>
+  <link href="css/animate.css" rel="stylesheet">
+  <link id="loadBefore" href="css/style.css" rel="stylesheet">
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="favicon-apple-touch-114.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="favicon-apple-touch-114.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="favicon-apple-touch-144.png">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="favicon-apple-touch-144.png">
+  <link rel="icon" type="image/vnd.microsoft.icon" sizes="32x32 48x48" href="favicon.ico">
+  <link rel="icon" sizes="128x128" href="favicon.icns">
+  <link rel="icon" href="favicon.png" type="image/x-icon">
+</head>
 
-  <body ng-controller="MainController as main" class="top-navigation pace-done">
-    <div id="wrapper">
-      <div id="page-wrapper" class="gray-bg">
-        <div ng-include="'/views/common/navigation.html'"></div>
-        <div class="wrapper wrapper-content">
-          <div class="container-fluid">
+<body ng-controller="MainController as main" class="top-navigation pace-done">
+<div id="wrapper">
+  <div id="page-wrapper" class="gray-bg">
+    <div ng-include="'/views/common/navigation.html'"></div>
+    <div class="wrapper wrapper-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-12 animated fadeInRight">
             <div class="row">
-              <div class="col-sm-12 animated fadeInRight">
-                <div class="row">
-                  <div class="col-sm-12">
+              <div class="col-sm-12">
+                <div class="text-center">
+                  <h1>Welcome to Kuona</h1>
+                  <p>Please see <a href="http://kuona.io"><i class="fa fa-home text-navy"></i> kuona.io</a> and <a
+                    href="https://github.com/kuona/kuona-project"><i class="fa fa-github text-navy"></i>
+                    https://github.com/kuona/kuona-project</a> for project background and objectives</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="ibox float-e-margins">
+                  <div class="ibox-content text-center">
+                    <ul class="list-unstyled">
+                      <li>
+                        <label>Kuona API:</label>
+                        <small class="label label-primary">{{ info.kuona_api.version }}</small>
+                      </li>
+                      <li>
+                        <label>Clojure:</label>
+                        <small class="label label-primary">{{ info.clojure.version }}</small>
+                      </li>
+                      <li>
+                        <label>Elasticsearch:</label>
+                        <small class="label label-primary">{{ info.elastic_search.name }}</small>
+                        <small class="label label-primary">version {{ info.elastic_search.version.number }}</small>
+                        <small class="label label-info">lucene {{ info.elastic_search.version.lucene_version }}</small>
+                        <small class="label label-primary">build date {{ info.elastic_search.version.build_date |
+                          date:'yyyy-MM-dd' }}
+                        </small>
+                      </li>
+                      <li>
+                        <label>Cluster UUID:</label>
+                        <small class="label">{{ info.elastic_search.cluster_uuid }}</small>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4">
+                <div class="ibox float-e-margins">
+                  <div class="ibox-title">
+                    <h3>Latest Collector Activity</h3>
+                  </div>
+                  <div class="ibox-content inspinia-timeline">
+                    <div class="timeline-item" ng-repeat="a in collector_activity | limitTo:2">
+                      <div class="row">
+                        <div class="col-xs-3 date">
+                          <i class="fas fa-clock-o"></i>
+                          {{ a.timestamp | date: 'yyyy-MM-dd hh:mm:ss' }}
+                          <br>
+                          <small class="text-navy">{{a.timestamp | age}}</small>
+                        </div>
+                        <div class="col-xs-7 content no-top-border">
+                          <p class="m-b-xs"><strong>{{a.collector.name}}</strong> V {{a.collector.version}} <strong>{{a.activity}}</strong>
+                          </p>
+                          <p class="m-b-xs" ng-if="a.parameters.length">Parameters</p>
+                          <p>
+                          <ul class="list-unstyled m-t-m">
+                            <li ng-repeat="(k, v) in a.parameters">
+                              {{k}}:<small class="text-navy">{{v}}</small>
+                            </li>
+                          </ul>
+                          <p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+
+                <div class="widget navy-bg no-padding">
+                  <div class="p-m">
+                    <i class="fab fa-github fa-5x pull-right"></i>
+                    <h1 class="m-xs">{{repository_count | number}}</h1>
+                    <h3 class="font-bold no-margins">Github Git Repositories</h3>
+                    <p class="small">Repositories are cloned and analysed for file types, build tools etc.</p>
+                  </div>
+                </div>
+
+
+                <div class="widget navy-bg no-padding">
+                  <div class="p-m">
+                    <i class="far fa-clock fa-5x pull-right"></i>
+                    <h1 class="m-xs">{{vcs_count | number}}</h1>
+                    <h3 class="font-bold no-margins">Commit History records</h3>
+                    <p class="small">The commit history records from the master branch</p>
+                  </div>
+                </div>
+
+                <div class="widget navy-bg no-padding">
+                  <div class="p-m">
+                    <i class="fas fa-chart-bar fa-4x pull-right"></i>
+                    <h1 class="m-xs">{{code_metric_count | number }}</h1>
+                    <h3 class="font-bold no-margins">Collected metric count</h3>
+                    <p class="small">Count of collected metrics from analysing the repositories</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="widget navy-bg no-padding">
+                  <div class="p-m">
                     <div class="text-center">
-                      <h1>Welcome to Kuona</h1>
-                      <p>Please see <a href="http://kuona.io"><i class="fa fa-home text-navy"></i> kuona.io</a> and <a href="https://github.com/kuona/kuona-project"><i class="fa fa-github text-navy"></i> https://github.com/kuona/kuona-project</a> for project background and objectives</p>
+                      <canvas id="buildToolCanvas"></canvas>
                     </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="ibox float-e-margins">
-                      <div class="ibox-content text-center">
-                        <ul class="list-unstyled">
-                          <li>
-                            <label>Kuona API:</label>
-                            <small class="label label-primary">{{ info.kuona_api.version }}</small>
-                          </li>
-                          <li>
-                            <label>Clojure:</label>
-                            <small class="label label-primary">{{ info.clojure.version }}</small>
-                          </li>
-                          <li>
-                            <label>Elasticsearch:</label>
-                            <small class="label label-primary">{{ info.elastic_search.name }}</small>
-                            <small class="label label-primary">version {{ info.elastic_search.version.number }}</small>
-                            <small class="label label-info">lucene {{ info.elastic_search.version.lucene_version }}</small>
-                            <small class="label label-primary">build date {{ info.elastic_search.version.build_date | date:'yyyy-MM-dd' }}</small>
-                          </li>
-                          <li>
-                            <label>Cluster UUID:</label>
-                            <small class="label">{{ info.elastic_search.cluster_uuid }}</small>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-4">
-                    <div class="ibox float-e-margins">
-                      <div class="ibox-title">
-                        <h3>Latest Collector Activity</h3>
-                      </div>
-                      <div class="ibox-content inspinia-timeline">
-                        <div class="timeline-item" ng-repeat="a in collector_activity | limitTo:2">
-                          <div class="row">
-                            <div class="col-xs-3 date">
-                              <i class="fas fa-clock-o"></i>
-                              {{ a.timestamp | date: 'yyyy-MM-dd hh:mm:ss' }}
-                              <br>
-                              <small class="text-navy">{{a.timestamp | age}}</small>
-                            </div>
-                            <div class="col-xs-7 content no-top-border">
-                              <p class="m-b-xs"><strong>{{a.collector.name}}</strong> {{a.collector.version}} <strong>{{a.activity}}</strong></p>
-                              <p class="m-b-xs">Parameters</p>
-                              <p>
-                                <ul class="list-unstyled m-t-m">
-                                <li ng-repeat="p in a.parameters">
-                                  <p class="m-b-xs" ng-repeat="(k, v) in p">{{k}}: <small class="text-navy">{{v}}</small></p>
-                                </li>
-                              </ul>
-                              <p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-
-                    <div class="widget navy-bg no-padding">
-                      <div class="p-m">
-                        <i class="fab fa-github fa-5x pull-right"></i>
-                        <h1 class="m-xs">{{repository_count | number}}</h1>
-                        <h3 class="font-bold no-margins">Github Git Repositories</h3>
-                        <p class="small">Repositories are cloned and analysed for file types, build tools etc.</p>
-                      </div>
-                    </div>
-
-
-                    <div class="widget navy-bg no-padding">
-                      <div class="p-m">
-                        <i class="far fa-clock fa-5x pull-right"></i>
-                        <h1 class="m-xs">{{vcs_count | number}}</h1>
-                        <h3 class="font-bold no-margins">Commit History records</h3>
-                        <p class="small">The commit history records from the master branch</p>
-                      </div>
-                    </div>
-
-                    <div class="widget navy-bg no-padding">
-                      <div class="p-m">
-                        <i class="fas fa-chart-bar fa-4x pull-right"></i>
-                        <h1 class="m-xs">{{code_metric_count | number }}</h1>
-                        <h3 class="font-bold no-margins">Collected metric count</h3>
-                        <p class="small">Count of collected metrics from analysing the repositories</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-md-4">
-                    <div class="widget navy-bg no-padding">
-                      <div class="p-m">
-                        <div class="text-center">
-                          <canvas id="buildToolCanvas"></canvas>
-                        </div>
-                        <small>Chart built by scanning the files from master/HEAD revision of each repository an matching file names to build tools.</small>
-                      </div>
-                    </div>
+                    <small>Chart built by scanning the files from master/HEAD revision of each repository an matching
+                      file names to build tools.
+                    </small>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div ng-include="'/views/common/footer.html'"></div>
       </div>
     </div>
+    <div ng-include="'/views/common/footer.html'"></div>
+  </div>
+</div>
 
 
-    <!-- jQuery and Bootstrap -->
-    <script src="js/jquery/jquery-2.1.1.min.js"></script>
-    <script src="js/plugins/jquery-ui/jquery-ui.js"></script>
-    <script src="js/bootstrap/bootstrap.min.js"></script>
+<!-- jQuery and Bootstrap -->
+<script src="js/jquery/jquery-2.1.1.min.js"></script>
+<script src="js/plugins/jquery-ui/jquery-ui.js"></script>
+<script src="js/bootstrap/bootstrap.min.js"></script>
 
-    <!-- MetsiMenu -->
-    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<!-- MetsiMenu -->
+<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
 
-    <!-- SlimScroll -->
-    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<!-- SlimScroll -->
+<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
-    <!-- Peace JS -->
-    <!--<script src="js/plugins/pace/pace.min.js"></script>-->
+<!-- Peace JS -->
+<!--<script src="js/plugins/pace/pace.min.js"></script>-->
 
-    <!-- Custom and plugin javascript -->
-    <script src="js/inspinia.js"></script>
+<!-- Custom and plugin javascript -->
+<script src="js/inspinia.js"></script>
 
-    <!-- Main Angular scripts-->
-    <script src="js/angular/angular.js"></script>
-    <script src="js/angular/angular-websocket.js"></script>
-    <script src="js/plugins/oclazyload/dist/ocLazyLoad.min.js"></script>
-    <script src="js/ui-router/angular-ui-router.min.js"></script>
-    <script src="js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
-    <script src="js/angular/angular-resource.min.js"></script>
-    <script src="js/plugins/bootstrap-markdown/bootstrap-markdown.js"></script>
-    <script src="js/plugins/bootstrap-markdown/markdown.js"></script>
+<!-- Main Angular scripts-->
+<script src="js/angular/angular.js"></script>
+<script src="js/angular/angular-websocket.js"></script>
+<script src="js/plugins/oclazyload/dist/ocLazyLoad.min.js"></script>
+<script src="js/ui-router/angular-ui-router.min.js"></script>
+<script src="js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
+<script src="js/angular/angular-resource.min.js"></script>
+<script src="js/plugins/bootstrap-markdown/bootstrap-markdown.js"></script>
+<script src="js/plugins/bootstrap-markdown/markdown.js"></script>
 
-    <script src="/js/d3.js"></script>
-    <script src="/js/d3pie.min.js"></script>
-    <script src="/js/plugins/chartjs/Chart.min.js"></script>
+<script src="/js/d3.js"></script>
+<script src="/js/d3pie.min.js"></script>
+<script src="/js/plugins/chartjs/Chart.min.js"></script>
 
-    <script src="/js/charts.js"></script>
-    <script src="/js/filters.js"></script>
-    <script src="/js/landing.js"></script>
-  </body>
+<script src="/js/charts.js"></script>
+<script src="/js/filters.js"></script>
+<script src="/js/landing.js"></script>
+</body>
 </html>

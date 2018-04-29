@@ -166,7 +166,7 @@
                                                    :activity  (-> a :metric :activity)}
                                    :code          (-> a :code)
                                    :collector     (-> a :collector)}
-                                  code-mapping (uuid-from sha "cloc"))) path sha))
+                                  code-mapping (uuid-from sha "cloc"))) path))
         local-dir)
       )
     (catch Object _
