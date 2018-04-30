@@ -57,13 +57,13 @@
 
                         <label>Version</label>
                         <small class="label label-primary">{{ info.elastic_search.version.number }}</small>
+
                         <label>Lucene</label>
                         <small class="label label-info">
                           {{ info.elastic_search.version.lucene_version }}
                           ({{ info.elastic_search.version.build_date | date:'yyyy-MM-dd' }})
                         </small>
-                      </li>
-                      <li>
+
                         <label>Cluster UUID:</label>
                         <small class="label">{{ info.elastic_search.cluster_uuid }}</small>
                       </li>
@@ -80,7 +80,7 @@
                     <h3>Latest Collector Activity</h3>
                   </div>
                   <div class="ibox-content inspinia-timeline">
-                    <div class="timeline-item" ng-repeat="a in collector_activity | limitTo:2">
+                    <div class="timeline-item" ng-repeat="a in collector_activity | limitTo:5">
                       <div class="row">
                         <div class="col-xs-3 date">
                           <i class="fas fa-clock-o"></i>
@@ -131,9 +131,19 @@
                   <div class="p-m">
                     <i class="fas fa-chart-bar fa-4x pull-right"></i>
                     <h1 class="m-xs">{{code_metric_count | number }}</h1>
-                    <h3 class="font-bold no-margins">Collected metric count</h3>
-                    <p class="small">Count of collected metrics from analysing the repositories</p>
+                    <h3 class="font-bold no-margins">Lines of code metrics</h3>
+                    <p class="small">Count of collected metrics from analysing the repository history</p>
                   </div>
+                </div>
+
+                <div class="widget navy-bg no-padding">
+                  <div class="p-m">
+                    <i class="far fa-file fa-4x pull-right"></i>
+                    <h1 class="m-xs">{{code_snapshot_count | number }}</h1>
+                    <h3 class="font-bold no-margins">Repository Snapshots</h3>
+                    <p class="small">Snapshots are point in time (HEAD) measurements of repository content.</p>
+                  </div>
+
                 </div>
               </div>
 
