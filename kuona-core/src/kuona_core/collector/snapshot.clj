@@ -7,7 +7,8 @@
     [kuona-core.stores :as stores]
     [kuona-core.git :refer :all]
     [kuona-core.cloc :as cloc]
-    [kuona-core.builder :as builder])
+    [kuona-core.builder :as builder]
+    [kuona-core.util :as util])
   (:gen-class))
 
 
@@ -60,7 +61,7 @@
         name (-> repo :name)]
     (try+
       (log/info "Creating repository snapshot id" id "name" name "from " url "to " local-dir)
-      (if (directory? local-dir)
+      (if (util/directory? local-dir)
         (git-pull url local-dir)
         (git-clone url local-dir))
       (let [loc-data      (cloc/loc-collector (fn [a] a) local-dir)
