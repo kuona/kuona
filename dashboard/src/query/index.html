@@ -83,11 +83,11 @@
         <div class="ibox-header">
           <h2>Results</h2>
         </div>
-        <div class="ibox-content">
-          <pre ng-repeat="r in response_data.results"><code class="json">{{ r | json }}</code></pre>
+        <div class="ibox-content" ng-repeat="r in response_data.results">
+          <a ng-show="source.id == 'snapshots'" href="/snapshot/index.html?id={{r.id}}">Snapshot /snapshot/index.html?id={{r.id}}</a>
+          <pre><code class="json">{{ r | json }}</code></pre>
         </div>
       </div>
-
 
     </div>
   </div>
