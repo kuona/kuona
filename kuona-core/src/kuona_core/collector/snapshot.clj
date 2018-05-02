@@ -60,6 +60,9 @@
         name (-> repo :name)]
     (try+
       (log/info "Creating repository snapshot id" id "name" name "from " url "to " local-dir)
+      (if (directory? local-dir)
+        (git-pull url local-dir)
+        (git-clone url local-dir))
       (git-pull url local-dir)
       (let [loc-data      (cloc/loc-collector (fn [a] a) local-dir)
             build-data    (builder/collect-builder-metrics local-dir)
