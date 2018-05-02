@@ -99,10 +99,18 @@
         (cond
           (nil? url) (log/error "No URL field found in repository" repo)
           :else (do
-                  (track-activity "Repository collector" :started {:url url})
-                  (git/collect-commits commit-logs-store code-metric-store (get-workspace-path) url (-> repo :id))
+                  (track-activity "Repository snapshot collector" :started {:url url})
                   (snapshot/create-repository-snapshot (git/local-clone-path (get-workspace-path) url) repo)
-                  (track-activity "Repository collector" :started {:url url}))))))
+                  (track-activity "Repository snapshot collector" :comppleted {:url url})))))
+
+    (doseq [repo repositories]
+      (let [url (-> repo :url)]
+        (cond
+          (nil? url) (log/error "No URL field found in repository" repo)
+          :else (do
+                  (track-activity "Historical code metric collector" :started {:url url})
+                  (git/collect-commits commit-logs-store code-metric-store (get-workspace-path) url (-> repo :id))
+                  (track-activity "Historical code metric collector" :completed {:url url}))))))
   (track-activity "Updating respository metrics" :completed))
 
 
