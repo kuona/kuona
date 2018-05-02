@@ -76,6 +76,10 @@
         response (http/post url {:headers json-headers :body (generate-string query)})]
     (parse-json-body response)))
 
+(defn source-with-id
+  "Mergese the _id field with the contents of the _source object in results"
+  [r] (merge {:id (:_id r)} (:_source r)))
+
 (defn search
   [^DataStore store search-term size page page-fn]
   (log/info "document-search" search-term size page)
@@ -86,7 +90,7 @@
     (log/info "Reading document count for " url)
     (let [json-response (parse-json-body (http/get url {:headers json-headers}))
           result-count  (-> json-response :hits :total)
-          documents     (map #(merge {:id (:_id %)} (:_source %)) (-> json-response :hits :hits))
+          documents     (map source-with-id (-> json-response :hits :hits))
           ]
       {:count (count documents)
        :items documents
@@ -164,7 +168,7 @@
           url      (.url store '("_search"))
           response (http/get url {:headers json-headers :body (generate-string q)})
           body     (parse-json-body response)
-          results  (map :_source (-> body :hits :hits))
+          results  (map source-with-id (-> body :hits :hits))
           schema   (read-schema source)]
       {:count   (-> body :hits :total)
        :results results
@@ -181,7 +185,7 @@
   (log/info "find-documents" url)
   (let [json-response (parse-json-body (http/get url {:headers json-headers}))
         result-count  (-> json-response :hits :total)
-        documents     (map #(merge {:id (:_id %)} (:_source %)) (-> json-response :hits :hits))]
+        documents     (map source-with-id (-> json-response :hits :hits))]
     {:count (count documents)
      :items documents
      :links []}))
@@ -207,7 +211,7 @@
         query-string (generate-string {:query {:from 0 :size 10000}})
         query        {:form-params query-string}
         response     (http/get url)]
-    (map #(:_source %)
+    (map source-with-id
          (-> response
              parse-json-body
              :hits
