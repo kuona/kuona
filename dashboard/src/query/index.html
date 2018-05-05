@@ -68,6 +68,16 @@
         </div>
       </div>
 
+      <div class="ibox float-e-margins">
+        <div class="ibox-header">
+          <h2>Aggregations</h2>
+        </div>
+        <div class="ibox-content" ng-if="!hasError">
+          <pre>
+            {{ response_data.aggregations }}
+          </pre>
+        </div>
+      </div>
 
       <div class="ibox float-e-margins" ng-if="result_format == 'table'">
         <div class="ibox-header">

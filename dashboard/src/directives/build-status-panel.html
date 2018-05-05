@@ -1,46 +1,44 @@
-<div class="col-lg-3">
-  <div class="widget dashboard" ng-if="build.status.build == 'passed'">
-    <div class="row">
-      <div class="col-xs-4 text-center">
-        <i class="fa fa-thumbs-up fa-3x text-green"></i>
-      </div>
-      <div class="col-xs-8 text-right">
-        <span>{{build.name}}</span>
-        <p>
-          <small ng-if="build.status.run == 'running'">Build started {{build.status.started | age}}</small>
-          <small ng-if="build.status.run == 'paused'">Build paused {{build.status.started | age}}</small>
-        </p>
-      </div>
+<div class="widget dashboard" ng-if="build.status.build == 'passed'">
+  <div class="row">
+    <div class="col-xs-4 text-center">
+      <i class="fa fa-thumbs-up fa-3x text-green"></i>
+    </div>
+    <div class="col-xs-8 text-right">
+      <span>{{build.name}}</span>
+      <p>
+        <small ng-if="build.status.run == 'running'">Build started {{build.status.started | age}}</small>
+        <small ng-if="build.status.run == 'paused'">Build paused {{build.status.started | age}}</small>
+      </p>
     </div>
   </div>
+</div>
 
-  <div class="widget dashboard" ng-if="build.status.build == 'failed'">
-    <div class="row">
-      <div class="col-xs-4  text-center">
-        <i class="fa fa-thumbs-down fa-3x text-danger"></i>
-      </div>
-      <div class="col-xs-8 text-right">
-        <span>{{build.name}}</span>
-        <p>
-          <small ng-if="build.status.run == 'running'">Build started {{build.status.started | age}}</small>
-          <small ng-if="build.status.run == 'paused'">Build paused {{build.status.started | age}}</small>
-        </p>
-      </div>
+<div class="widget dashboard" ng-if="build.status.build == 'failed'">
+  <div class="row">
+    <div class="col-xs-4  text-center">
+      <i class="fa fa-thumbs-down fa-3x text-danger"></i>
+    </div>
+    <div class="col-xs-8 text-right">
+      <span>{{build.name}}</span>
+      <p>
+        <small ng-if="build.status.run == 'running'">Build started {{build.status.started | age}}</small>
+        <small ng-if="build.status.run == 'paused'">Build paused {{build.status.started | age}}</small>
+      </p>
     </div>
   </div>
+</div>
 
-  <div class="widget dashboard" ng-if="build.status.build == 'aborted'">
-    <div class="row">
-      <div class="col-xs-4  text-center">
-        <i class="fa fa-exclamation fa-3x text-warning"></i>
-      </div>
-      <div class="col-xs-8 text-right">
-        <span>{{build.name}}</span>
-        <p>
-          <small ng-if="build.status.run == 'running'">Build started {{build.status.started | age}}</small>
-          <small ng-if="build.status.run == 'paused'">Build paused {{build.status.started | age}}</small>
-        </p>
-      </div>
+<div class="widget dashboard" ng-if="build.status.build == 'aborted'">
+  <div class="row">
+    <div class="col-xs-4  text-center">
+      <i class="fa fa-exclamation fa-3x text-warning"></i>
+    </div>
+    <div class="col-xs-8 text-right">
+      <span>{{build.name}}</span>
+      <p>
+        <small ng-if="build.status.run == 'running'">Build started {{build.status.started | age}}</small>
+        <small ng-if="build.status.run == 'paused'">Build paused {{build.status.started | age}}</small>
+      </p>
     </div>
   </div>
 </div>

@@ -68,7 +68,7 @@ class QueryController {
   }
 
   resetResults() {
-    this.$scope.response_data = {count: 0, results: [], schema: {}};
+    this.$scope.response_data = {count: 0, results: [], schema: {}, aggregations: {}};
     this.$scope.hasError = false;
     this.$scope.result = "Results appear here";
   }

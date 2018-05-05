@@ -34,7 +34,7 @@
           </div>
         </div>
         <div class="row">
-          <div ng-repeat="panel in dashboard.panels">
+          <div class="col-md-3" ng-repeat="panel in dashboard.panels">
             <build-status-panel ng-if="panel.type == 'build-status'" data="panel.data"></build-status-panel>
             <count-metric-panel ng-if="panel.type == 'count-metric'" data="panel.data"></count-metric-panel>
           </div>

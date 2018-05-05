@@ -184,9 +184,32 @@ dashboardApp.controller('DashboardViewController', ['$scope', '$http', function 
           }
         },
         data: {}
+      },
+      {
+        type: 'count-metric',
+        source: 'query',
+        query: {
+          title: 'Lines of code',
+          source: 'snapshots',
+          format: 'elastic-json',
+          type: 'count',
+          json: {
+            "aggs": {
+              "value": {"sum": {"field": "content.code_lines"}}
+            }
+          },
+        },
+        transform: {
+          type: 'sum',
+          params: {
+            icon: 'far fa-code'
+          }
+        },
+        data: {}
       }
+
     ]
-  }
+  };
 
   for (var i = 0; i < $scope.dashboard.panels.length; i++) {
     let panel = $scope.dashboard.panels[i];
