@@ -170,9 +170,10 @@
           body     (parse-json-body response)
           results  (map source-with-id (-> body :hits :hits))
           schema   (read-schema source)]
-      {:count   (-> body :hits :total)
-       :results results
-       :schema  schema})
+      {:count        (-> body :hits :total)
+       :results      results
+       :aggregations (-> body :aggregations)
+       :schema       schema})
     (catch [:status 400] {:keys [request-time headers body]}
       (let [error (parse-json body)]
         (log/info "Bad request" error)

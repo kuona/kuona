@@ -3,6 +3,40 @@ var dashboardApp = angular.module('dashboard-app', [
 ]);
 
 
+var resultTransformers = {
+  count: (data, panel, params) => {
+    panel.data.title = panel.query.title;
+    panel.data.value = data.count;
+
+    for (var attr in params) {
+      panel.data[attr] = params[attr];
+    }
+  },
+  sum: (data, panel, params) => {
+    console.log(data);
+
+    panel.data.value = data.aggregations.value.value;
+    panel.data.title = panel.query.title;
+
+    for (var attr in params) {
+      panel.data[attr] = params[attr];
+    }
+  }
+};
+
+
+var widgetProcessors = {
+  "count-metric": function (panel, $http) {
+    $http.post("/api/query/" + panel.query.source, panel.query.json).then(res => {
+
+      if (resultTransformers[panel.transform.type]) {
+        resultTransformers[panel.transform.type](res.data, panel, panel.transform.params);
+      }
+    });
+  }
+};
+
+
 dashboardApp.controller('DashboardViewController', ['$scope', '$http', function ($scope, $http) {
   $scope.helloText = 'Kuona Dashboards';
 
@@ -89,29 +123,80 @@ dashboardApp.controller('DashboardViewController', ['$scope', '$http', function 
         type: 'count-metric',
         source: 'query',
         query: {
-          title: 'Builders (gradle/maven/make etc)',
-          source: 'builds',
-          type: 'json',
+          title: 'Maven Repositories',
+          source: 'snapshots',
+          format: 'elastic-json',
+          type: 'count',
           json: {
             "query": {
-              "match_all": {}
+              "term": {"build.builder": "Maven"}
             }
           },
-
-
         },
         transform: {
-          type: 'count'
+          type: 'count',
+          params: {
+            icon: 'far fa-cogs'
+          }
         },
-        data: {
-          title: 'Count metric - e.g. Number of Gradle Builds',
-          value: 100,
-          icon: 'far fa-hand-paper'
-        }
+        data: {}
+      },
+      {
+        type: 'count-metric',
+        source: 'query',
+        query: {
+          title: 'Clojure Repositories',
+          source: 'snapshots',
+          format: 'elastic-json',
+          type: 'count',
+          json: {
+            "query": {
+              "term": {"build.builder": "Leiningen"}
+            }
+          },
+        },
+        transform: {
+          type: 'count',
+          params: {
+            icon: 'far fa-cog fa-spin'
+          }
+        },
+        data: {}
+      },
+      {
+        type: 'count-metric',
+        source: 'query',
+        query: {
+          title: 'Number of file processed',
+          source: 'snapshots',
+          format: 'elastic-json',
+          type: 'count',
+          json: {
+            "aggs": {
+              "value": {"sum": {"field": "content.file_count"}}
+            }
+          },
+        },
+        transform: {
+          type: 'sum',
+          params: {
+            icon: 'far fa-file'
+          }
+        },
+        data: {}
       }
     ]
   }
 
+  for (var i = 0; i < $scope.dashboard.panels.length; i++) {
+    let panel = $scope.dashboard.panels[i];
+
+    if (widgetProcessors[panel.type]) {
+      widgetProcessors[panel.type](panel, $http);
+    } else {
+      console.log("No processor found for " + panel.type);
+    }
+  }
 }]);
 
 dashboardApp.directive('pietyChart', function () {
@@ -130,7 +215,6 @@ dashboardApp.directive('dashboardPanel', function () {
   return {
     restrict: 'E',
     link: function (scope, element, attrs) {
-      console.log(attrs.type);
       scope.contentUrl = '/directives/' + attrs.type + '-panel.html';
       scope.build = attrs.data;
       attrs.$observe("ver", function (v) {
@@ -140,7 +224,7 @@ dashboardApp.directive('dashboardPanel', function () {
     },
     template: '<div ng-include="contentUrl"></div>'
   };
-})
+});
 
 dashboardApp.directive('buildStatusPanel', function () {
   return {

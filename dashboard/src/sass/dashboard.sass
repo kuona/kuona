@@ -38,7 +38,12 @@ $nav-bg: #2F4050
 $nav-profil-pattern: url("patterns/header-profile.png")
 $nav-text-color: #a7b1c2
 
+$dash-background: rgb(37,40,48)
+$dash-text-color: white
+
 @import "mixins"
+
+
 
 // INSPINIA Theme Elements
 @import "typography"
@@ -57,22 +62,13 @@ $nav-text-color: #a7b1c2
 // Landing page styles
 @import "landing"
 
-// RTL Support
-@import "rtl"
+// Stick main content higher to the top
+.top-navigation .wrapper.wrapper-content
+  padding: 0 0 40px
 
-// For demo only - config box style
-@import "theme-config"
-
-// INSPINIA Skins
-@import "skins"
-@import "md-skin"
-
-// Media query style
-@import "media"
-
-// Custom style
-// Your custom style to override base style
-@import "custom"
+// Removes dirty border from tabs navigation
+.top-navigation .nav > li.active
+  background: transparent
 
 @import "chart"
 
@@ -87,3 +83,67 @@ $nav-text-color: #a7b1c2
 
   #page-wrapper
     margin: 0
+
+
+
+
+.dashboard
+  background-color: $dash-background
+
+
+.dashboard-title
+  border-top: 0
+  padding: 15px 20px
+  border-bottom: 1px solid darken($dash-text-color, 10%)
+
+  h1
+    color: yellow
+  p
+    color: yellow
+
+
+.widget.dashboard
+  border-radius: 5px
+  padding: 15px 20px
+  margin-bottom: 10px
+  margin-top: 10px
+  background-color: lighten($dash-background, 7%)
+  color: $dash-text-color
+  border: 1px solid lighten($dash-background, 15%)
+
+
+.widget.style1 h2
+  font-size: 30px
+
+
+.widget h2, .widget h3
+  margin-top: 5px
+  margin-bottom: 0
+
+
+.widget-text-box
+  padding: 20px
+  border: 1px solid $border-color
+  background: #ffffff
+
+
+.widget-head-color-box
+  border-radius: 5px 5px 0 0
+  margin-top: 10px
+
+.widget .flot-chart
+  height: 100px
+
+.text-green
+  color: #00ca92
+
+$danger-color: #ea4059
+
+.text-danger
+  color: $danger-color
+
+$warning-color: #e8d74f
+
+.text-warning
+  color: $warning-color
+

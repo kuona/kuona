@@ -21,14 +21,17 @@
   <link rel="icon" href="favicon.png" type="image/x-icon">
 </head>
 
-<body ng-controller="DashboardViewController" class="top-navigation pace-done">
+<body ng-controller="DashboardViewController" class="top-navigation">
 <div id="wrapper">
-  <div id="page-wrapper" class="gray-bg">
+  <div id="page-wrapper" class="dashboard">
     <div ng-include="'/views/common/minimal-top-navigation.html'"></div>
     <div class="wrapper wrapper-content">
       <div class="container-fluid">
         <div class="row">
-          <p>{{ dashboard.title }}</p>
+          <div class="col-lg-12 dashboard-title">
+            <h1>{{ dashboard.title }}</h1>
+            <p>{{dashboard.description}}</p>
+          </div>
         </div>
         <div class="row">
           <div ng-repeat="panel in dashboard.panels">
@@ -54,11 +57,6 @@
 <!-- SlimScroll -->
 <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
-<!-- Peace JS -->
-<!--<script src="js/plugins/pace/pace.min.js"></script>-->
-
-<!-- Custom and plugin javascript -->
-<script src="js/inspinia.js"></script>
 
 <!-- Main Angular scripts-->
 <script src="js/angular/angular.js"></script>
