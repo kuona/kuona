@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html ng-app="dashboard-app">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Kuona | IT analytics dashboard</title>
+
+  <link href="/font-awesome/css/fontawesome-all.css" rel="stylesheet">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+
+  <link href="css/animate.css" rel="stylesheet">
+  <link id="loadBefore" href="css/style.css" rel="stylesheet">
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="favicon-apple-touch-114.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="favicon-apple-touch-114.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="favicon-apple-touch-144.png">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="favicon-apple-touch-144.png">
+  <link rel="icon" type="image/vnd.microsoft.icon" sizes="32x32 48x48" href="favicon.ico">
+  <link rel="icon" sizes="128x128" href="favicon.icns">
+  <link rel="icon" href="favicon.png" type="image/x-icon">
+</head>
+
+<body ng-controller="DashboardViewController" class="top-navigation pace-done">
+<div id="wrapper">
+  <div id="page-wrapper" class="gray-bg">
+    <div ng-include="'/views/common/minimal-top-navigation.html'"></div>
+    <div class="wrapper wrapper-content">
+      <div class="container-fluid">
+        <div class="row">
+          <p>{{ dashboard.title }}</p>
+        </div>
+        <div class="row">
+          <div ng-repeat="panel in dashboard.panels">
+            <build-status-panel ng-if="panel.type == 'build-status'" data="panel.data"></build-status-panel>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div ng-include="'/views/common/footer.html'"></div>
+  </div>
+</div>
+
+
+<!-- jQuery and Bootstrap -->
+<script src="js/jquery/jquery-2.1.1.min.js"></script>
+<script src="js/plugins/jquery-ui/jquery-ui.js"></script>
+<script src="js/bootstrap/bootstrap.min.js"></script>
+
+<!-- MetsiMenu -->
+<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+
+<!-- SlimScroll -->
+<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+<!-- Peace JS -->
+<!--<script src="js/plugins/pace/pace.min.js"></script>-->
+
+<!-- Custom and plugin javascript -->
+<script src="js/inspinia.js"></script>
+
+<!-- Main Angular scripts-->
+<script src="js/angular/angular.js"></script>
+<script src="js/angular/angular-websocket.js"></script>
+<script src="js/plugins/oclazyload/dist/ocLazyLoad.min.js"></script>
+<script src="js/ui-router/angular-ui-router.min.js"></script>
+<script src="js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
+<script src="js/angular/angular-resource.min.js"></script>
+<script src="js/plugins/bootstrap-markdown/bootstrap-markdown.js"></script>
+<script src="js/plugins/bootstrap-markdown/markdown.js"></script>
+
+<script src="/js/d3.js"></script>
+<script src="/js/d3pie.min.js"></script>
+<script src="/js/plugins/chartjs/Chart.min.js"></script>
+
+<script src="/js/charts.js"></script>
+<script src="/js/filters.js"></script>
+<script src="js/plugins/peity/jquery.peity.min.js"></script>
+<script src="/js/dashboard/dashboard-view.js"></script>
+</body>
+</html>

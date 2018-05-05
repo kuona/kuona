@@ -1,0 +1,111 @@
+<div class="col-lg-3">
+
+  <div ng-if="build.passed" class="widget style1 navy-bg">
+    <div class="row">
+      <div class="col-xs-4">
+        <i class="fa fa-thumbs-up fa-5x"></i>
+        <p> <span piety-chart="pie">0.52/1.561</span></p>
+      </div>
+      <div class="col-xs-8 text-right">
+        <h2>{{build.name}}</h2>
+        <p>Passed X hours ago</p>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="build.failed" class="widget style1 red-bg">
+    <div class="row">
+      <div class="col-xs-4">
+        <i class="fa fa-thumbs-down fa-5x"></i>
+        <p> <span piety-chart="pie">0.52/1.561</span></p>
+      </div>
+      <div class="col-xs-8 text-right">
+        <h2>{{build.name}}</h2>
+        <p>Failed X hours ago</p>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="build.disabled" class="widget style1 gray-bg">
+    <div class="row">
+      <div class="col-xs-4">
+        <i class="far fa-hand-paper fa-5x"></i>
+        <p> <span piety-chart="pie">0.52/1.561</span></p>
+      </div>
+      <div class="col-xs-8 text-right">
+        <h2>{{build.name}}</h2>
+        <p>Paused X hours ago</p>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="build.running" class="widget style1 yellow-bg">
+    <div class="row">
+      <div class="col-xs-4">
+        <i class="fas fa-cog fa-spin fa-5x"></i>
+        <p> <span piety-chart="pie">0.52/1.561</span></p>
+      </div>
+      <div class="col-xs-8 text-right">
+        <h2>{{build.name}}</h2>
+        <p>Started X hours ago</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-lg-2">
+  <div ng-if="build.passed" class="widget navy-bg p-lg text-center">
+    <div class="m-b-md">
+      <h3 class="font-bold no-margins">
+        {{ build.name }}
+      </h3>
+      <p>
+        <i class="fa fa-thumbs-up fa-4x"></i>
+      </p>
+      <p>
+        <small>Passed X hours ago</small>
+      </p>
+      <p>
+        <span piety-chart="pie">0.52/1.561</span>
+      </p>
+    </div>
+  </div>
+
+
+  <div ng-if="build.failed" class="widget red-bg p-lg text-center">
+    <div class="m-b-md">
+      <i class="fa fa-thumbs-down fa-4x"></i>
+      <h3 class="font-bold no-margins">
+        {{ build.name }}
+      </h3>
+      <small>Failed X time ago</small>
+      <span piety-chart="pie">1/2</span>
+    </div>
+  </div>
+
+  <div ng-if="build.disabled" class="widget gray-bg p-lg text-center">
+    <div class="m-b-md">
+      <i class="fa fa-stop-circle fa-4x"></i>
+      <h3 class="font-bold no-margins">
+        {{ build.name }}
+      </h3>
+      <small>Disabled X days ago</small>
+      <span piety-chart="pie">1/2</span>
+    </div>
+  </div>
+
+  <div ng-if="build.running" class="widget yellow-bg p-lg text-center">
+    <div class="m-b-md">
+      <i class="fa fa-spinner fa-4x"></i>
+      <h1 class="m-xs">
+        <span piety-chart="bar">10,100,100</span>
+      </h1>
+      <h3 class="font-bold no-margins">
+        {{ title }}
+      </h3>
+      <small>Started X minutes ago</small>
+    </div>
+  </div>
+
+
+</div>
