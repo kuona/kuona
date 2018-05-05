@@ -11,7 +11,7 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
 
   <link href="css/animate.css" rel="stylesheet">
-  <link id="loadBefore" href="css/style.css" rel="stylesheet">
+  <link id="loadBefore" href="css/dashboard.css" rel="stylesheet">
   <link rel="apple-touch-icon-precomposed" sizes="57x57" href="favicon-apple-touch-114.png">
   <link rel="apple-touch-icon-precomposed" sizes="114x114" href="favicon-apple-touch-114.png">
   <link rel="apple-touch-icon-precomposed" sizes="72x72" href="favicon-apple-touch-144.png">
@@ -33,6 +33,7 @@
         <div class="row">
           <div ng-repeat="panel in dashboard.panels">
             <build-status-panel ng-if="panel.type == 'build-status'" data="panel.data"></build-status-panel>
+            <count-metric-panel ng-if="panel.type == 'count-metric'" data="panel.data"></count-metric-panel>
           </div>
         </div>
       </div>

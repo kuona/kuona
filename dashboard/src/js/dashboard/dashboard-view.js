@@ -19,13 +19,95 @@ dashboardApp.controller('DashboardViewController', ['$scope', '$http', function 
     title: 'Some title that someone chose',
     description: 'Some lame description',
     panels: [
-      // {
-      //   type: 'build-status',
-      //   data: $scope.buildStatus
-      // },
       {
         type: 'build-status',
-        data: $scope.buildStatus
+        data: {
+          name: 'The build name 1',
+          status: {
+            build: 'passed',
+            run: 'running',
+            started: Date.now()
+          }
+        }
+      },
+      {
+        type: 'build-status',
+        data: {
+          name: 'The failed build name 2',
+          status: {
+            build: 'failed',
+            run: 'paused',
+            started: Date.now()
+          }
+        }
+      },
+      {
+        type: 'build-status',
+        data: {
+          name: 'The aborted build name 3',
+          status: {
+            build: 'aborted',
+            run: 'running',
+            started: Date.now()
+          }
+        }
+      },
+      {
+        type: 'build-status',
+        data: {
+          name: 'build 4',
+          status: {
+            build: 'passed',
+            run: 'running',
+            started: Date.now()
+          }
+        }
+      },
+      {
+        type: 'build-status',
+        data: {
+          name: 'build 5',
+          status: {
+            build: 'passed',
+            run: 'sleeping',
+            started: Date.now()
+          }
+        }
+      },
+      {
+        type: 'build-status',
+        data: {
+          name: 'build 6',
+          status: {
+            build: 'aborted',
+            run: 'running',
+            started: Date.now()
+          }
+        }
+      },
+      {
+        type: 'count-metric',
+        source: 'query',
+        query: {
+          title: 'Builders (gradle/maven/make etc)',
+          source: 'builds',
+          type: 'json',
+          json: {
+            "query": {
+              "match_all": {}
+            }
+          },
+
+
+        },
+        transform: {
+          type: 'count'
+        },
+        data: {
+          title: 'Count metric - e.g. Number of Gradle Builds',
+          value: 100,
+          icon: 'far fa-hand-paper'
+        }
       }
     ]
   }
@@ -69,3 +151,15 @@ dashboardApp.directive('buildStatusPanel', function () {
     templateUrl: '/directives/build-status-panel.html'
   };
 });
+
+dashboardApp.directive('countMetricPanel', function () {
+  return {
+    restrict: 'E',
+    scope: {
+      metric: "=data"
+    },
+    templateUrl: '/directives/count-metric-panel.html'
+  };
+});
+
+dashboardApp.filter('age', ageFilter);
