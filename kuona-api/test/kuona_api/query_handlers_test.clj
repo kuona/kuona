@@ -29,6 +29,7 @@
          (fact "returns content"
                (let [expected-response          {:body    {:count   0
                                                            :results []
+                                                           :aggregations {}
                                                            :schema  {:snapshots {}}}
                                                  :headers {"Content-Type" "application/json; charset=utf-8"}
                                                  :status  200}
@@ -37,4 +38,3 @@
                  (provided (http/get "http://localhost:9200/kuona-snapshots/snapshots/_search" es-stubbed-search-response) => (util/json-encode-body {:status 200,
                                                                                                                                                       :body   {:hits {:total 0 :hits []}}}),
                            (http/get "http://localhost:9200/kuona-snapshots/_mapping" {:headers std-headers}) => empty-mapping-response)))))
-       

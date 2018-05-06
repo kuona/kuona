@@ -172,7 +172,7 @@
           schema   (read-schema source)]
       {:count        (-> body :hits :total)
        :results      results
-       :aggregations (-> body :aggregations)
+       :aggregations (merge {} (-> body :aggregations))
        :schema       schema})
     (catch [:status 400] {:keys [request-time headers body]}
       (let [error (parse-json body)]
