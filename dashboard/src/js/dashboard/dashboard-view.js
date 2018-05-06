@@ -36,6 +36,13 @@ var resultTransformers = {
 
 
     mergeParams(panel.data, params);
+  },
+  results: (data, panel, params) => {
+    console.log(data);
+    panel.data.values = data.results;
+    panel.data.title = panel.query.title;
+
+    mergeParams(panel.data, params);
   }
 };
 
@@ -65,7 +72,12 @@ var widgetProcessors = {
       transformResult(panel.transform.type, res.data, panel, panel.transform.params)
     });
   },
-  'build-status': (data, panel, params) => {
+  'build-status': (panel, $http) => {
+  },
+  'activity-feed': (panel, $http) => {
+    $http.post("/api/query/" + panel.query.source, panel.query.json).then(res => {
+      transformResult(panel.transform.type, res.data, panel, panel.transform.params)
+    });
   }
 };
 
@@ -301,7 +313,30 @@ dashboardApp.controller('DashboardViewController', ['$scope', '$http', function 
           }
         },
         data: {}
+      },
+      {
+        type: 'activity-feed',
+        source: 'query',
+        query: {
+          title: 'Commit History',
+          source: 'commits',
+          format: 'elastic-json',
+          type: 'results',
+          json: {
+            size: 5,
+            sort: [{timestamp: {order: "desc"}}]//,
+            //query: {term: {repository_id: "5060d887-29ae-38a1-810e-a0b4f9694104"}}
+          }
+        },
+        transform: {
+          type: 'results',
+          params: {
+            icon: 'fab fa-git'
+          }
+        },
+        data: {}
       }
+
 
     ]
   };
@@ -381,6 +416,16 @@ dashboardApp.directive('barChartPanel', function () {
       data: "=data"
     },
     templateUrl: '/directives/bar-chart-panel.html'
+  };
+});
+
+dashboardApp.directive('activityFeedPanel', function () {
+  return {
+    restrict: 'E',
+    scope: {
+      data: "=data"
+    },
+    templateUrl: '/directives/activity-feed-panel.html'
   };
 });
 

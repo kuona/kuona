@@ -1,0 +1,26 @@
+<div class="ibox dashboard">
+  <div class="ibox-title">
+    <h5>{{data.title}}</h5>
+  </div>
+
+  <div class="ibox-content">
+
+    <div class="activity-stream">
+
+      <div class="stream" ng-repeat="value in data.values">
+        <div class="stream-badge">
+          <i class="{{data.icon}} bg-primary"></i>
+        </div>
+        <div class="stream-panel">
+          <div class="stream-info">
+            <a href="#">
+              <span>{{value.commit.email}}</span>
+              <span class="date">{{value.commit.time}}</span>
+            </a>
+          </div>
+          {{value.commit.message}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

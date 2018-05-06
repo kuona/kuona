@@ -1,15 +1,24 @@
 // Basic Colors
-$navy: #1ab394       // Primary color
-$dark-gray: #c2c2c2  // Default color
-$blue: #1c84c6       // Success color
-$lazur: #23c6c8      // Info color
-$yellow: #f8ac59     // Warrning color
-$red: #ED5565        // Danger color
+$navy: #1ab394
+// Primary color
+$dark-gray: #c2c2c2
+// Default color
+$blue: #1c84c6
+// Success color
+$lazur: #23c6c8
+// Info color
+$yellow: #f8ac59
+// Warrning color
+$red: #ED5565
+// Danger color
 
 // Various colors
-$text-color: #676a6c   // Body text
-$gray: #f3f3f4         // Background wrapper color
-$light-gray: #D1DADE   // Default label, badget
+$text-color: #676a6c
+// Body text
+$gray: #f3f3f4
+// Background wrapper color
+$light-gray: #D1DADE
+// Default label, badget
 $label-badget-color: #5E5E5E
 $light-blue: #f3f6fb
 
@@ -17,11 +26,13 @@ $light-blue: #f3f6fb
 $spin-color: $navy
 $spin-margin: 0 auto
 
-
 // IBOX colors ( default panel colors)
-$border-color: #e7eaec     // IBox border
-$ibox-title-bg: #ffffff     // IBox Background header
-$ibox-content-bg: #ffffff   // IBox Background content
+$border-color: #e7eaec
+// IBox border
+$ibox-title-bg: #ffffff
+// IBox Background header
+$ibox-content-bg: #ffffff
+// IBox Background content
 
 //Sidebar width
 $sidebar-width: 220px
@@ -38,12 +49,26 @@ $nav-bg: #2F4050
 $nav-profil-pattern: url("patterns/header-profile.png")
 $nav-text-color: #a7b1c2
 
-$dash-background: rgb(37,40,48)
+$dash-background: rgb(37, 40, 48)
 $dash-text-color: white
 
+
+//Sidebar width
+$sidebar-width: 220px
+
+// Boxed layout width
+$boxed-width: 1200px
+$boxed-background: url('patterns/shattered.png')
+
+//Border radius for buttons
+$btn-border-radius: 3px
+
+//Navigation
+$nav-bg: #2F4050
+$nav-profile-pattern: url("patterns/header-profile.png")
+$nav-text-color: #a7b1c2
+
 @import "mixins"
-
-
 
 // INSPINIA Theme Elements
 @import "typography"
@@ -72,7 +97,6 @@ $dash-text-color: white
 
 @import "chart"
 
-
 // Clear layout on print mode
 @media print
   nav.navbar-static-side
@@ -84,12 +108,8 @@ $dash-text-color: white
   #page-wrapper
     margin: 0
 
-
-
-
 .dashboard
   background-color: $dash-background
-
 
 .dashboard-title
   border-top: 0
@@ -101,8 +121,7 @@ $dash-text-color: white
   p
     color: yellow
 
-
-.widget.dashboard
+@mixin widget
   border-radius: 5px
   padding: 15px 20px
   margin-bottom: 10px
@@ -112,20 +131,20 @@ $dash-text-color: white
   border: 1px solid lighten($dash-background, 15%)
 
 
+.widget.dashboard
+  @include widget
+
 .widget.style1 h2
   font-size: 30px
-
 
 .widget h2, .widget h3
   margin-top: 5px
   margin-bottom: 0
 
-
 .widget-text-box
   padding: 20px
   border: 1px solid $border-color
   background: #ffffff
-
 
 .widget-head-color-box
   border-radius: 5px 5px 0 0
@@ -139,6 +158,8 @@ $dash-text-color: white
 
 $danger-color: #ea4059
 
+$dashboard-title-color: yellow
+
 .text-danger
   color: $danger-color
 
@@ -146,6 +167,8 @@ $warning-color: #e8d74f
 
 .text-warning
   color: $warning-color
+
+
 
 .chart-legend
   list-style-type: none
@@ -169,3 +192,152 @@ $warning-color: #e8d74f
     height: 20px
     border-radius: 5px
 
+
+
+.ibox
+  clear: both
+  margin-bottom: 25px
+  margin-top: 0
+  padding: 0
+
+
+.ibox.collapsed .ibox-content
+  display: none
+
+
+.ibox.collapsed .fa.fa-chevron-up:before
+  content: "\f078"
+
+
+.ibox.collapsed .fa.fa-chevron-down:before
+  content: "\f077"
+
+
+.ibox:after, .ibox:before
+  display: table
+
+
+.ibox-title
+  -moz-border-bottom-colors: none
+  -moz-border-left-colors: none
+  -moz-border-right-colors: none
+  -moz-border-top-colors: none
+  background-color: lighten($dash-background, 7%)
+  border-color: lighten($dash-background, 15%)
+  border-image: none
+  border-style: solid solid none
+  border-width: 2px 0 0
+  color: $dashboard-title-color
+  margin-bottom: 0
+  padding: 15px 15px 7px
+  min-height: 48px
+
+
+.ibox-content
+  background-color: lighten($dash-background, 10%)
+  color: inherit
+  padding: 15px 20px 20px 20px
+
+  border-color: $border-color
+  border-image: none
+  border-style: solid solid none
+  border-width: 1px 0
+
+
+.ibox-footer
+  color: inherit
+  border-top: 1px solid $border-color
+  font-size: 90%
+  background: #ffffff
+  padding: 10px 15px
+
+
+.activity-stream
+  @include widget
+  .ibox
+    .ibox-title
+      color: $dashboard-title-color
+
+.stream
+  position: relative
+  padding: 10px 0
+
+  &:first-child .stream-badge:before
+    top: 10px
+
+  &:last-child .stream-badge:before
+    height: 30px
+
+  .stream-badge
+    width: 50px
+
+    i
+      border: 1px solid $border-color
+      border-radius: 50%
+      padding: 6px
+      color: lighten($text-color, 10%)
+      position: absolute
+      background-color: #ffffff
+      left: 8px
+
+      &.fa-circle
+        color: lighten($text-color, 40%)
+
+      &.bg-success
+        color: #ffffff
+        background-color: $blue
+        border-color: $blue
+
+      &.bg-primary
+        color: #ffffff
+        background-color: $navy
+        border-color: $navy
+
+      &.bg-warning
+        color: #ffffff
+        background-color: $yellow
+        border-color: $yellow
+
+      &.bg-info
+        color: #ffffff
+        background-color: $lazur
+        border-color: $lazur
+
+      &.bg-danger
+        color: #ffffff
+        background-color: $red
+        border-color: $red
+
+    &:before
+      content: ''
+      width: 1px
+      background-color: $border-color
+      position: absolute
+      top: 0
+      bottom: 0
+      left: 20px
+
+  .stream-info
+    font-size: 12px
+    margin-bottom: 5px
+
+    img
+      border-radius: 50%
+      width: 18px
+      height: 18px
+      margin-right: 2px
+      margin-top: -4px
+
+    .date
+      color: lighten($text-color, 20%)
+      font-size: 80%
+
+  .stream-panel
+    margin-left: 55px
+
+.stream-small
+  margin: 10px 0
+
+  .label
+    padding: 2px 6px
+    margin-right: 2px

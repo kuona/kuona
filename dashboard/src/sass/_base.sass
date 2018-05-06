@@ -1,7 +1,7 @@
 body
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif
+  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif
   background-color: #2f4050
-  font-size: 14px
+  font-size: 13px
   color: $text-color
   overflow-x: hidden
 
@@ -22,7 +22,7 @@ body.full-height-layout #page-wrapper
 
 
 body.boxed-layout
-  background: $boxed-backgound
+  background: $boxed-background
 
 
 body.boxed-layout #wrapper
@@ -64,7 +64,7 @@ a:hover, a:focus
   font-weight: 600
 
 
-.font-noraml
+.font-normal
   font-weight: 400
 
 
@@ -120,6 +120,10 @@ video
 
 .note-editor.note-frame.fullscreen
   z-index: 2020
+
+.note-editor.note-frame .note-editing-area .note-editable
+  color: $text-color
+  padding: 15px
 
 .note-editor.note-frame
   border: none
@@ -643,6 +647,7 @@ table.table-mail tr td
   left: auto
   right: 0
 
+
 /* BACKGROUNDS */
 
 .gray-bg, .bg-muted
@@ -653,13 +658,13 @@ table.table-mail tr td
   background-color: #ffffff
 
 
-.navy-bg, .bg-success
-  background-color: $navy
+.blue-bg, .bg-success
+  background-color: $blue
   color: #ffffff
 
 
-.blue-bg, .bg-primary
-  background-color: $blue
+.navy-bg, .bg-primary
+  background-color: $navy
   color: #ffffff
 
 
@@ -814,8 +819,6 @@ table.table-mail tr td
 .text-white
   color: #ffffff
 
-.text-green
-  color: limegreen
 
 .simple_tag
   background-color: #f3f3f4
@@ -1141,6 +1144,9 @@ a.close-canvas-menu:hover
 .m-r-xxs
   margin-right: 1px
 
+.m
+  margin: 15px
+
 
 .m-r-xs
   margin-right: 5px
@@ -1357,6 +1363,7 @@ body.modal-open .wrapper-content.animated
 // Fix for modal backdrop with animate.css
 body.modal-open .animated
   animation-fill-mode: initial
+  -ms-animation-nam: none
   z-index: inherit
 
 
