@@ -37,6 +37,8 @@
           <div class="col-md-3" ng-repeat="panel in dashboard.panels">
             <build-status-panel ng-if="panel.type == 'build-status'" data="panel.data"></build-status-panel>
             <count-metric-panel ng-if="panel.type == 'count-metric'" data="panel.data"></count-metric-panel>
+            <pie-chart-panel ng-if="panel.type == 'pie-chart'" data="panel.data"></pie-chart-panel>
+            <bar-chart-panel ng-if="panel.type == 'bar-chart'" data="panel.data"></bar-chart-panel>
           </div>
         </div>
       </div>
@@ -75,6 +77,7 @@
 <script src="/js/charts.js"></script>
 <script src="/js/filters.js"></script>
 <script src="js/plugins/peity/jquery.peity.min.js"></script>
+<script src="/js/angular-chart.min.js"></script>
 <script src="/js/dashboard/dashboard-view.js"></script>
 </body>
 </html>

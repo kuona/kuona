@@ -1,41 +1,87 @@
 var dashboardApp = angular.module('dashboard-app', [
-  'ui.bootstrap'                 // Ui Bootstrap
+  'ui.bootstrap',                 // Ui Bootstrap
+  'chart.js'
 ]);
 
+function mergeParams(obj, params) {
+  for (var attr in params) {
+    obj[attr] = params[attr];
+  }
+}
 
 var resultTransformers = {
   count: (data, panel, params) => {
     panel.data.title = panel.query.title;
     panel.data.value = data.count;
 
-    for (var attr in params) {
-      panel.data[attr] = params[attr];
-    }
+    mergeParams(panel.data, params);
   },
   sum: (data, panel, params) => {
-    console.log(data);
-
     panel.data.value = data.aggregations.value.value;
     panel.data.title = panel.query.title;
 
-    for (var attr in params) {
-      panel.data[attr] = params[attr];
+    mergeParams(panel.data, params);
+  },
+  'aggregate-buckets': (data, panel, params) => {
+    panel.data.title = panel.query.title;
+
+    panel.data.orginal = data.aggregations;
+    panel.data.labels = [];
+    panel.data.values = [];
+
+    for (var i = 0; i < data.aggregations.values.buckets.length; i++) {
+      panel.data.labels.push(data.aggregations.values.buckets[i].key);
+      panel.data.values.push(data.aggregations.values.buckets[i].doc_count);
     }
+
+
+    mergeParams(panel.data, params);
   }
 };
 
+
+function transformResult(type, data, panel, params) {
+  if (resultTransformers[type]) {
+    resultTransformers[type](data, panel, params);
+  } else {
+    console.log('No transform function for "' + type + '"');
+  }
+}
 
 var widgetProcessors = {
   "count-metric": function (panel, $http) {
     $http.post("/api/query/" + panel.query.source, panel.query.json).then(res => {
 
-      if (resultTransformers[panel.transform.type]) {
-        resultTransformers[panel.transform.type](res.data, panel, panel.transform.params);
-      }
+      transformResult(panel.transform.type, res.data, panel, panel.transform.params)
     });
+  },
+  'pie-chart': (panel, $http) => {
+    $http.post("/api/query/" + panel.query.source, panel.query.json).then(res => {
+      transformResult(panel.transform.type, res.data, panel, panel.transform.params)
+    });
+  },
+  'bar-chart': (panel, $http) => {
+    $http.post("/api/query/" + panel.query.source, panel.query.json).then(res => {
+      transformResult(panel.transform.type, res.data, panel, panel.transform.params)
+    });
+  },
+  'build-status': (data, panel, params) => {
   }
 };
 
+
+(function (ChartJsProvider) {
+  ChartJsProvider.setOptions({
+    colors: [
+      '#00ADF9',
+      '#803690',
+      '#46BFBD',
+      '#FDB45C',
+      '#949FB1',
+      '#DCDCDC',
+      '#4D5360']
+  });
+});
 
 dashboardApp.controller('DashboardViewController', ['$scope', '$http', function ($scope, $http) {
   $scope.helloText = 'Kuona Dashboards';
@@ -206,6 +252,55 @@ dashboardApp.controller('DashboardViewController', ['$scope', '$http', function 
           }
         },
         data: {}
+      },
+      {
+        type: 'pie-chart',
+        source: 'query',
+        query: {
+          title: 'Module builds',
+          source: 'snapshots',
+          format: 'elastic-json',
+          type: 'aggregate',
+          json: {
+            size: 0,
+            aggregations: {values: {terms: {field: "build.builder"}}}
+          }
+        },
+        transform: {
+          type: 'aggregate-buckets',
+          params: {
+            'chart-options': {responsive: true},
+            icon: 'far fa-code'
+          }
+        },
+        data: {}
+      },
+      {
+        type: 'bar-chart',
+        source: 'query',
+        query: {
+          title: 'Module builds',
+          source: 'snapshots',
+          format: 'elastic-json',
+          type: 'aggregate',
+          json: {
+            size: 0,
+            aggregations: {values: {terms: {field: "build.builder"}}}
+          }
+        },
+        transform: {
+          type: 'aggregate-buckets',
+          params: {
+            'chart-options': {responsive: true},
+            'chart-colors': [
+              '#b33f00',
+              '#a2d703',
+              '#fff33a'],
+
+            icon: 'far fa-code'
+          }
+        },
+        data: {}
       }
 
     ]
@@ -266,6 +361,26 @@ dashboardApp.directive('countMetricPanel', function () {
       metric: "=data"
     },
     templateUrl: '/directives/count-metric-panel.html'
+  };
+})
+
+dashboardApp.directive('pieChartPanel', function () {
+  return {
+    restrict: 'E',
+    scope: {
+      data: "=data"
+    },
+    templateUrl: '/directives/pie-chart-panel.html'
+  };
+});
+
+dashboardApp.directive('barChartPanel', function () {
+  return {
+    restrict: 'E',
+    scope: {
+      data: "=data"
+    },
+    templateUrl: '/directives/bar-chart-panel.html'
   };
 });
 
