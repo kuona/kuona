@@ -56,20 +56,9 @@
                                      :author        (:author commit-info)
                                      :message       (:message commit-info)
                                      :id            (:id commit-info)}
-                     :metric        {:type      :commit
-                                     :name      "TBD"
-                                     :source    {:system :git
-                                                 :url    url}
-                                     :activity  {:type          :commit
-                                                 :email         (:email commit-info)
-                                                 :branches      (:branches commit-info)
-                                                 :change_count  (count (changes-to-map (:changed_files commit-info)))
-                                                 :changed_files (changes-to-map (:changed_files commit-info))
-                                                 :merge         (:merge commit-info)
-                                                 :author        (:author commit-info)
-                                                 :message       (:message commit-info)
-                                                 :id            (:id commit-info)}
-                                     :collected (timestamp)}
+                     :source        {:system :git
+                                     :url    url}
+                     :collected     (timestamp)
                      :collector     {:name    :kuona-git-collector
                                      :version "0.1"}}]
     (let [result (store/put-document metric commit-store id)]
@@ -80,7 +69,7 @@
   [metric]
   (= (-> metric :result) "updated"))
 
-(defn log-metrics
+(defn collect-repo-commit-logs
   [store url path repository-id]
   (log/info "Collecting commit metrics for " url " master branch ")
   (let [repo (git/load-repo path)]
@@ -151,7 +140,7 @@
     (let [local-dir (local-clone-path workspace url)]
       (log/info "Collecting " url " to " local-dir)
       (if (directory? local-dir) (git-pull url local-dir) (git-clone url local-dir))
-      (log-metrics vcs-mapping url local-dir repository-id)
+      (collect-repo-commit-logs vcs-mapping url local-dir repository-id)
       (each-commit-by-day
         (fn [path sha timestamp]
           (cloc/loc-collector

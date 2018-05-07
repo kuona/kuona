@@ -39,7 +39,7 @@
  false if the index does not exist and throws an
   exception if there is an error or unexpected response"
   [index]
-  (log/info "Testing index" index)
+  (log/info "Testing store exists" index)
   (try+
     (let [response (http/head index)]
       (= (-> response :status) 200))
@@ -70,6 +70,7 @@
 (defn delete-index
   [index]
   (try+
+    (log/info "Deleting store " index)
     (util/parse-json-body (http/delete index))
     (catch Object _
       false)))
@@ -232,6 +233,29 @@
                                                       :pushed_at         {:type "date"}}}}}}
   )
 
+(def commit-log-schema
+  {:commit-log {:properties {:timestamp     es/timestamp
+                             :repository_id es/indexed-keyword
+                             :commit        {:properties {:author        es/indexed-keyword,
+                                                          :branches      es/indexed-keyword,
+                                                          :change_count  es/long-integer
+                                                          :changed_files {:properties {:change es/indexed-keyword
+                                                                                       :path   es/indexed-keyword}}
+                                                          :email         es/indexed-keyword,
+                                                          :id            es/indexed-keyword,
+                                                          :merge         es/boolean-type
+                                                          :message       es/string
+                                                          :time          es/timestamp}}
+                             :source        {:properties {:system es/indexed-keyword,
+                                                          :url    es/indexed-keyword}}
+                             :collected     es/timestamp
+                             :collector     {:properties {:name    es/indexed-keyword
+                                                          :version es/indexed-keyword}}
+                             }
+                }
+
+   })
+
 (defn create-store-if-missing
   [store schema]
   (cond
@@ -314,7 +338,7 @@
 (def builds-store (DataStore. :builds :builds build-metric-mapping-type))
 (def collector-activity-store (DataStore. :collectors :activity collector-activity-schema))
 (def collector-config-store (DataStore. :collector-config :collector collector-config-schema))
-(def commit-logs-store (DataStore. :vcs-commit :commit-log {}))
+(def commit-logs-store (DataStore. :vcs-commit :commit-log commit-log-schema))
 (def code-metric-store (DataStore. :vcs-content :content {}))
 (def dashboards-store (DataStore. :dashboards :dashboard dashboards-schema))
 
@@ -377,8 +401,11 @@
   [name]
   (let [store (find-store-by-name name)]
     (cond
-      (nil? store) {:error ("Requested index '" name "' not found")}
+      (nil? store) (do
+                     (log/warn "Requested index rebuld for " name "nor found")
+                     {:error ("Requested index '" name "' not found")})
       :else (do
+              (log/info "Rebuilding  " name)
               (.destroy store)
               (.create store)
               {:status      :ok

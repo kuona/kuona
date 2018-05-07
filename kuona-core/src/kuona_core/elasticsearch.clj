@@ -13,6 +13,9 @@
 (def indexed-keyword
   {:type "keyword" :index "true"})
 
+(def boolean-type
+  {:type "boolean"})
+
 (def timestamp
   {:type "date" :format "strict_date_optional_time||epoch_millis"})
 

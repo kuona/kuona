@@ -4,18 +4,18 @@
   </div>
 
   <div class="ibox-content">
-
     <div class="activity-stream">
-
       <div class="stream" ng-repeat="value in data.values">
         <div class="stream-badge">
           <i class="{{data.icon}} bg-primary"></i>
         </div>
         <div class="stream-panel">
           <div class="stream-info">
-            <a href="#">
-              <span>{{value.commit.email}}</span>
-              <span class="date">{{value.commit.time}}</span>
+            <p>
+              <span class="date">{{value.commit.time | age}}</span>
+            </p>
+            <a href="mailto:{{value.commit.email}}">
+              <span>{{value.commit.author}}</span>
             </a>
           </div>
           {{value.commit.message}}

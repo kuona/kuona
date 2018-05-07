@@ -7,7 +7,7 @@ function MainCtrl($scope, $http) {
   $scope.indices = [];
 
   $scope.rebuildIndex = function (name) {
-    $http.post("/api/indicies/" + name + "/rebuild").then(function () {
+    $http.post('/api/indices/' + name + "/rebuild").then(function () {
       $scope.refresh();
     });
   };

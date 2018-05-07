@@ -112,6 +112,77 @@ dashboardApp.controller('DashboardViewController', ['$scope', '$http', function 
     description: 'Some lame description',
     panels: [
       {
+        type: 'activity-feed',
+        source: 'query',
+        query: {
+          title: 'Commit History',
+          source: 'commits',
+          format: 'elastic-json',
+          type: 'results',
+          json: {
+            size: 3,
+            sort: [{timestamp: {order: "desc"}}],
+            query: {term: {repository_id: "5060d887-29ae-38a1-810e-a0b4f9694104"}}
+          }
+        },
+        transform: {
+          type: 'results',
+          params: {
+            icon: 'fab fa-git'
+          }
+        },
+        data: {}
+      },
+      {
+        type: 'pie-chart',
+        source: 'query',
+        query: {
+          title: 'Module builds',
+          source: 'snapshots',
+          format: 'elastic-json',
+          type: 'aggregate',
+          json: {
+            size: 0,
+            aggregations: {values: {terms: {field: "build.builder"}}}
+          }
+        },
+        transform: {
+          type: 'aggregate-buckets',
+          params: {
+            'chart-options': {responsive: true},
+            icon: 'far fa-code'
+          }
+        },
+        data: {}
+      },
+      {
+        type: 'bar-chart',
+        source: 'query',
+        query: {
+          title: 'Module builds',
+          source: 'snapshots',
+          format: 'elastic-json',
+          type: 'aggregate',
+          json: {
+            size: 0,
+            aggregations: {values: {terms: {field: "build.builder"}}}
+          }
+        },
+        transform: {
+          type: 'aggregate-buckets',
+          params: {
+            'chart-options': {responsive: true},
+            'chart-colors': [
+              '#b33f00',
+              '#a2d703',
+              '#fff33a'],
+
+            icon: 'far fa-code'
+          }
+        },
+        data: {}
+      },
+      {
         type: 'build-status',
         data: {
           name: 'The build name 1',
@@ -264,79 +335,7 @@ dashboardApp.controller('DashboardViewController', ['$scope', '$http', function 
           }
         },
         data: {}
-      },
-      {
-        type: 'pie-chart',
-        source: 'query',
-        query: {
-          title: 'Module builds',
-          source: 'snapshots',
-          format: 'elastic-json',
-          type: 'aggregate',
-          json: {
-            size: 0,
-            aggregations: {values: {terms: {field: "build.builder"}}}
-          }
-        },
-        transform: {
-          type: 'aggregate-buckets',
-          params: {
-            'chart-options': {responsive: true},
-            icon: 'far fa-code'
-          }
-        },
-        data: {}
-      },
-      {
-        type: 'bar-chart',
-        source: 'query',
-        query: {
-          title: 'Module builds',
-          source: 'snapshots',
-          format: 'elastic-json',
-          type: 'aggregate',
-          json: {
-            size: 0,
-            aggregations: {values: {terms: {field: "build.builder"}}}
-          }
-        },
-        transform: {
-          type: 'aggregate-buckets',
-          params: {
-            'chart-options': {responsive: true},
-            'chart-colors': [
-              '#b33f00',
-              '#a2d703',
-              '#fff33a'],
-
-            icon: 'far fa-code'
-          }
-        },
-        data: {}
-      },
-      {
-        type: 'activity-feed',
-        source: 'query',
-        query: {
-          title: 'Commit History',
-          source: 'commits',
-          format: 'elastic-json',
-          type: 'results',
-          json: {
-            size: 5,
-            sort: [{timestamp: {order: "desc"}}]//,
-            //query: {term: {repository_id: "5060d887-29ae-38a1-810e-a0b4f9694104"}}
-          }
-        },
-        transform: {
-          type: 'results',
-          params: {
-            icon: 'fab fa-git'
-          }
-        },
-        data: {}
       }
-
 
     ]
   };
@@ -430,3 +429,4 @@ dashboardApp.directive('activityFeedPanel', function () {
 });
 
 dashboardApp.filter('age', ageFilter);
+dashboardApp.filter('elapsed', elapsedFilter);
