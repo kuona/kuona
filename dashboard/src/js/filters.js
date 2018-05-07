@@ -21,13 +21,22 @@ function ageFilter() {
   return function (date) {
     if (!date) return;
 
-    var time = Date.parse(date),
-        timeNow = new Date().getTime(),
-        difference = timeNow - time,
-        seconds = Math.floor(difference / 1000),
-        minutes = Math.floor(seconds / 60),
-        hours = Math.floor(minutes / 60),
-        days = Math.floor(hours / 24);
+    var time = date;
+
+    if (typeof date === 'string') {
+      console.log('date '+ date + ' is a string')
+      time = Date.parse(date);
+    } else {
+      time = new Date(date);
+       console.log('date is a ' + typeof date + ' ' + date + ' interpreted as ' + time);
+    }
+
+    var timeNow = new Date().getTime(),
+      difference = timeNow - time,
+      seconds = Math.floor(difference / 1000),
+      minutes = Math.floor(seconds / 60),
+      hours = Math.floor(minutes / 60),
+      days = Math.floor(hours / 24);
     var years = Math.floor(days / 365);
     if (years > 0) {
       return years + " years ago";

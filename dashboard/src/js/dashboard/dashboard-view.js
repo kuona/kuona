@@ -38,7 +38,6 @@ var resultTransformers = {
     mergeParams(panel.data, params);
   },
   results: (data, panel, params) => {
-    console.log(data);
     panel.data.values = data.results;
     panel.data.title = panel.query.title;
 
@@ -233,7 +232,7 @@ dashboardApp.controller('DashboardViewController', ['$scope', '$http', function 
           status: {
             build: 'passed',
             run: 'sleeping',
-            started: Date.now()
+            started: Date.now() - 2000000
           }
         }
       },

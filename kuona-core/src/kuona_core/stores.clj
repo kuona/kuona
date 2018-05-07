@@ -256,6 +256,9 @@
 
    })
 
+(def code-metric-schema
+  )
+
 (defn create-store-if-missing
   [store schema]
   (cond
