@@ -133,14 +133,16 @@
             (f repo-path (.getName c) (:time (git-query/commit-info repo c))))
           (git/git-checkout repo "master")))))
 
-(defn collect-commits
+(defn clone-or-update [url local-dir]
+  (if (directory? local-dir) (git-pull url local-dir) (git-clone url local-dir)))
+
+(defn collect-repository-historical-code-metrics
   [vcs-mapping code-mapping workspace url repository-id]
   (log/info "Collect commits workspace" workspace "url" url)
   (try+
     (let [local-dir (local-clone-path workspace url)]
       (log/info "Collecting " url " to " local-dir)
-      (if (directory? local-dir) (git-pull url local-dir) (git-clone url local-dir))
-      (collect-repo-commit-logs vcs-mapping url local-dir repository-id)
+      (clone-or-update url local-dir)
       (each-commit-by-day
         (fn [path sha timestamp]
           (cloc/loc-collector
@@ -158,5 +160,16 @@
                                   code-mapping (uuid-from sha "cloc"))) path))
         local-dir)
       )
+    (catch Object _
+      (log/error (:throwable &throw-context) "unexpected error collecting metrics for " url workspace))))
+
+
+(defn collect-commit-logs
+  [vcs-mapping code-mapping workspace url repository-id]
+  (try+
+    (let [local-dir (local-clone-path workspace url)]
+      (log/info "Collecting commit logs from " local-dir "(" url ")")
+      (clone-or-update url local-dir)
+      (collect-repo-commit-logs vcs-mapping url local-dir repository-id))
     (catch Object _
       (log/error (:throwable &throw-context) "unexpected error collecting metrics for " url workspace))))

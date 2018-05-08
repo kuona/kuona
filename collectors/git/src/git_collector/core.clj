@@ -42,4 +42,4 @@
     (log/info "Found " (count repositories) " configured repositories for analysis")
     (stores/create-stores)
 
-    (doseq [repo repositories] (collect-commits stores/commit-logs-store stores/code-metric-store "/Volumes/data-drive/workspace" (-> repo :url) (-> repo :id)))))
+    (doseq [repo repositories] (collect-repository-historical-code-metrics stores/commit-logs-store stores/code-metric-store "/Volumes/data-drive/workspace" (-> repo :url) (-> repo :id)))))

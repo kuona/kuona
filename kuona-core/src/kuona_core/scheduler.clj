@@ -27,6 +27,12 @@
                         :parameters params
                         :timestamp  (util/timestamp)} stores/collector-activity-store)))
 
+(defmacro record-activity
+  [message options f]
+  `(do (track-activity ~message :started ~options)
+       ~f
+       (track-activity ~message :completed ~options)))
+
 (defn tfs-org-collector-config? [config]
   (and
     (= (-> config :collector_type) "VCS")
@@ -41,9 +47,8 @@
 (defn refresh-github-org
   [org username password]
   (log/info "Refreshing github organisation repositories" org)
-  (track-activity "GitHub org/user collector" :started {:organization org})
-  (github/get-project-repositories org)
-  (track-activity "GitHub org/user collector" :completed {:organization org}))
+  (record-activity "GitHub org/user collector" {:organization org}
+                   (github/get-project-repositories org)))
 
 
 (defn repository-id [repo]
@@ -61,10 +66,12 @@
 (defn refresh-tfs-org
   [org token]
   (log/info "Refreshing TFS repositories" org)
-  (track-activity "TFS org/user collector" :started {:organization org})
-  (let [entries (tfs/find-organization-repositories org token)]
-    (doseq [entry entries] (put-repository! entry)))
-  (track-activity "TFS org/user collector" :completed {:organization org}))
+
+  (record-activity
+    "TFS org/user collector"
+    {:organization org}
+    (let [entries (tfs/find-organization-repositories org token)]
+      (doseq [entry entries] (put-repository! entry)))))
 
 (defn collect-repository-data [e]
   (log/info "Collecting/refreshing repository date")
@@ -81,11 +88,12 @@
 (defn refresh-repositories
   []
   (log/info "Refreshing known repositories")
-  (track-activity "Refreshing repositories" :started)
-  (let [url  (.url collector-config-store ["_search"] ["size=100" "q=collector_type:VCS"])
-        docs (store/find-documents url)]
-    (doall (map collect-repository-data (-> docs :items))))
-  (track-activity "Refreshing repositories" :completed))
+  (record-activity "Refreshing repositories" {}
+                   (let [url  (.url collector-config-store ["_search"] ["size=100" "q=collector_type:VCS"])
+                         docs (store/find-documents url)]
+                     (doall (map collect-repository-data (-> docs :items))))))
+
+
 
 (defn collect-repository-metrics
   []
@@ -98,22 +106,26 @@
       (let [url (-> repo :url)]
         (cond
           (nil? url) (log/error "No URL field found in repository" repo)
-          :else (do
-                  (track-activity "Repository snapshot collector" :started {:url url})
-                  (snapshot/create-repository-snapshot (git/local-clone-path (get-workspace-path) url) repo)
-                  (track-activity "Repository snapshot collector" :comppleted {:url url})))))
+          :else (record-activity "Repository snapshot collector"
+                                 {:url url}
+                                 (snapshot/create-repository-snapshot (git/local-clone-path (get-workspace-path) url) repo)))))
 
     (doseq [repo repositories]
       (let [url (-> repo :url)]
         (cond
           (nil? url) (log/error "No URL field found in repository" repo)
-          :else (do
-                  (track-activity "Historical code metric collector" :started {:url url})
-                  (git/collect-commits commit-logs-store code-metric-store (get-workspace-path) url (-> repo :id))
-                  (track-activity "Historical code metric collector" :completed {:url url}))))))
+          :else (record-activity "Repository Commit history"
+                                 {:url url}
+                                 (git/collect-commit-logs commit-logs-store code-metric-store (get-workspace-path) url (-> repo :id))))))
+
+    (doseq [repo repositories]
+      (let [url (-> repo :url)]
+        (cond
+          (nil? url) (log/error "No URL field found in repository" repo)
+          :else (record-activity "Historical code metric collector"
+                                 {:url url}
+                                 (git/collect-repository-historical-code-metrics commit-logs-store code-metric-store (get-workspace-path) url (-> repo :id)))))))
   (track-activity "Updating respository metrics" :completed))
-
-
 
 (defn refresh-build-metrics []
   (log/info "Collecting build information from build servers"))
