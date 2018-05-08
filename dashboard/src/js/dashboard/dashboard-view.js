@@ -395,7 +395,7 @@ dashboardApp.directive('countMetricPanel', function () {
     },
     templateUrl: '/directives/count-metric-panel.html'
   };
-})
+});
 
 dashboardApp.directive('pieChartPanel', function () {
   return {
