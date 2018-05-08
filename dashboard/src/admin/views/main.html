@@ -17,21 +17,21 @@
         <div class="ibox-content text-center">
           <ul class="list-unstyled">
             <li>
-              <label>Kuona API:</label>
-              <small class="label label-primary">{{ info.kuona_api.version }}</small>
-              <label>Clojure:</label>
-              <small class="label label-primary">{{ info.clojure.version }}</small>
-              <label>Elasticsearch:</label>
-              <small class="label label-primary">{{ info.elastic_search.name }}</small>
-              <label>version</label>
-              <small class="label label-primary">{{ info.elastic_search.version.number }}</small>
-              <label>lucene</label>
-              <small class="label label-info">{{ info.elastic_search.version.lucene_version }}</small>
-              <label>built</label>
-              <small class="label label-primary">{{ info.elastic_search.version.build_date | date:'yyyy-MM-dd' }}
+              <label class="muted">Kuona API:</label>
+              <small>{{ info.kuona_api.version }}</small>
+              <label class="muted">Clojure:</label>
+              <small>{{ info.clojure.version }}</small>
+              <label class="muted">Elasticsearch:</label>
+              <small>{{ info.elastic_search.name }}</small>
+              <label class="muted">version</label>
+              <small>{{ info.elastic_search.version.number }}</small>
+              <label class="muted">lucene</label>
+              <small>{{ info.elastic_search.version.lucene_version }}</small>
+              <label class="muted">built</label>
+              <small>{{ info.elastic_search.version.build_date | date:'yyyy-MM-dd' }}
               </small>
-              <label>Cluster UUID:</label>
-              <small class="label">{{ info.elastic_search.cluster_uuid }}</small>
+              <label class="muted">Cluster UUID:</label>
+              <small>{{ info.elastic_search.cluster_uuid }}</small>
             </li>
           </ul>
         </div>

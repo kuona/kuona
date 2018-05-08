@@ -286,7 +286,7 @@ dashboardApp.controller('DashboardViewController', ['$scope', '$http', function 
         transform: {
           type: 'count',
           params: {
-            icon: 'far fa-cog fa-spin'
+            icon: 'far fa-code'
           }
         },
         data: {}
