@@ -74,6 +74,6 @@
              (let [test-repo-path (clojure.string/join "/" [(canonical-path "..") "test" "test-repo"])]
 
                (each-commit (fn [path sha time]
-                              (loc-collector
-                                (fn [a] store/put-document code-metric-store a (uuid-from sha "cloc")) path))
+                              (loc-collector path
+                                (fn [a] store/put-document code-metric-store a (uuid-from sha "cloc")) ))
                             test-repo-path) => nil)))

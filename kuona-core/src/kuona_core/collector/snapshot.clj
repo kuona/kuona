@@ -64,7 +64,7 @@
       (if (util/directory? local-dir)
         (git-pull url local-dir)
         (git-clone url local-dir))
-      (let [loc-data      (cloc/loc-collector (fn [a] a) local-dir)
+      (let [loc-data      (cloc/loc-collector local-dir)
             build-data    (builder/collect-builder-metrics local-dir)
             snapshot-data (create-snapshot (-> repo :project) (loc-metrics loc-data) build-data)]
 

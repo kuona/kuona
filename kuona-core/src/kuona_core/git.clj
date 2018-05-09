@@ -120,6 +120,25 @@
         history (git/git-log repo)]
     (group-by #(t/with-time-at-start-of-day (tc/from-date (:time (git-query/commit-info repo %)))) history)))
 
+(defn first-commit-by-day
+  [repo-path]
+  (let [repo            (git/load-repo repo-path)
+        history         (git/git-log repo)
+        grouped-commits (group-by #(t/with-time-at-start-of-day (tc/from-date (:time (git-query/commit-info repo %)))) history)]
+    (log/info "Found " (count history) " commits on " (count grouped-commits) " distinct days")
+    (map #(-> % second first) grouped-commits)))
+
+(defn commit-document-id
+  [commit]
+  (uuid-from (.getName commit) "cloc"))
+
+(defn requires-collection [code-mapping commit]
+  (store/document-missing? code-mapping (commit-document-id commit)))
+
+(defn commits-not-collected
+  [commits code-mapping]
+  (filter #(store/document-missing? code-mapping (uuid-from (.getName %) "cloc")) commits))
+
 (defn each-commit-by-day
   "Apply the function f to each version of the repository - based on the log"
   [f repo-path]
@@ -136,6 +155,45 @@
 (defn clone-or-update [url local-dir]
   (if (directory? local-dir) (git-pull url local-dir) (git-clone url local-dir)))
 
+
+(defn loc-to-code-doc [loc url repository-id timestamp]
+  {:timestamp     timestamp
+   :repository_id repository-id
+   :metric        {:source    {:system :git :url url}
+                   :type      :loc
+                   :name      "TBD"
+                   :collected (-> loc :metric :collected)
+                   :activity  (-> loc :metric :activity)}
+   :code          (-> loc :code)
+   :collector     (-> loc :collector)})
+
+(defn collect-repository-historical-code-metrics1
+  [vcs-mapping code-mapping workspace url repository-id]
+  (log/info "Collect commits from workspace" workspace "url" url)
+  (try+
+    (let [repo-path (local-clone-path workspace url)]
+      (clone-or-update url repo-path)
+      (let [repo     (git/load-repo repo-path)
+            commits  (first-commit-by-day repo-path)
+            filtered (filter #(requires-collection code-mapping %) commits)]
+        (log/info (count filtered) "days commits need collection")
+        (clojure.pprint/pprint filtered)
+        (doseq [commit filtered]
+          (let [sha       (.getName commit)
+                id        (commit-document-id commit)
+                timestamp (:time (git-query/commit-info repo commit))]
+            (git/git-checkout repo sha)
+            (->
+              repo-path
+              (cloc/loc-collector)
+              (loc-to-code-doc url repository-id timestamp)
+              (store/put-document code-mapping id))))
+        (git/git-checkout repo "master")))
+    (catch Object _
+      (log/error (:throwable &throw-context) "unexpected error collecting metrics for " url workspace))))
+
+
+
 (defn collect-repository-historical-code-metrics
   [vcs-mapping code-mapping workspace url repository-id]
   (log/info "Collect commits workspace" workspace "url" url)
@@ -145,21 +203,26 @@
       (clone-or-update url local-dir)
       (each-commit-by-day
         (fn [path sha timestamp]
-          (cloc/loc-collector
-            (fn [a]
-              (log/info url " @ " timestamp)
-              (store/put-document {:timestamp     timestamp
-                                   :repository_id repository-id
-                                   :metric        {:source    {:system :git :url url}
-                                                   :type      :loc
-                                                   :name      "TBD"
-                                                   :collected (-> a :metric :collected)
-                                                   :activity  (-> a :metric :activity)}
-                                   :code          (-> a :code)
-                                   :collector     (-> a :collector)}
-                                  code-mapping (uuid-from sha "cloc"))) path))
-        local-dir)
-      )
+          (let [id (uuid-from sha "cloc")]
+            (if (store/document-missing? code-mapping id)
+              (cloc/loc-collector
+                path
+                (fn [a]
+                  (log/info "code metrics " url " @ " timestamp)
+                  (store/put-document {:timestamp     timestamp
+                                       :repository_id repository-id
+                                       :metric        {:source    {:system :git :url url}
+                                                       :type      :loc
+                                                       :name      "TBD"
+                                                       :collected (-> a :metric :collected)
+                                                       :activity  (-> a :metric :activity)}
+                                       :code          (-> a :code)
+                                       :collector     (-> a :collector)}
+                                      code-mapping id))
+                )
+              (log/info "code metrics exist for " url " @ " timestamp)))
+
+          ) local-dir))
     (catch Object _
       (log/error (:throwable &throw-context) "unexpected error collecting metrics for " url workspace))))
 

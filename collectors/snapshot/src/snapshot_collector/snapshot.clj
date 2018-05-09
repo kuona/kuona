@@ -93,10 +93,6 @@
      :code_line_details    (into [] (map #(language-x-count % :code-lines) (:languages content)))
      }))
 
-(defn- clone-or-update
-  [url local-dir]
-  (if (util/directory? local-dir) (git-pull url local-dir) (git-clone url local-dir)))
-
 (defn create-repository-snapshot
   [api-url workspace repo]
   (try+
@@ -106,7 +102,7 @@
           name      (-> repo :project :name)]
       (log/info "Creating repository snapshot " id name "from " url "to " local-dir)
       (clone-or-update url local-dir)
-      (let [loc-data      (cloc/loc-collector (fn [a] a) local-dir)
+      (let [loc-data      (cloc/loc-collector local-dir)
             build-data    (builder/collect-builder-metrics local-dir)
             snapshot-data (create-snapshot (-> repo :project) (loc-metrics loc-data) build-data)]
         (doall (map #(put-commit! % (snapshot-commits-url api-url id)) (commit-history (git/load-repo local-dir))))

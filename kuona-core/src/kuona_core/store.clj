@@ -201,6 +201,18 @@
         (es-error error))
       )))
 
+(defn document-exists?
+  [^DataStore store id]
+  (try+
+    (http/head (.url store [id]))
+    true
+    (catch [:status 404] {:keys [request-time headers body]}
+      false)))
+
+(defn document-missing?
+  [^DataStore store id]
+  (not (document-exists? store id)))
+
 (defn has-document?
   [^DataStore store id]
   (:found (get-document store id)))
