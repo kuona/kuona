@@ -69,12 +69,27 @@
   [metric]
   (= (-> metric :result) "updated"))
 
+(defn commit-entry-not-captured
+  [store repo commit]
+  (let [commit-info (git-query/commit-info repo commit)
+        id          (:id commit-info)]
+    (store/document-missing? store id)))
+
 (defn collect-repo-commit-logs
   [store url path repository-id]
   (log/info "Collecting commit metrics for " url " master branch ")
   (let [repo (git/load-repo path)]
     (git/git-checkout repo "master")
-    (first (filter #(updated-metric? %) (map #(commit-and-diff store url repo % repository-id) (git/git-log repo))))))
+    (let [commit-log  (git/git-log repo)
+          new-commits (filter #(commit-entry-not-captured store repo %) commit-log)]
+      (log/info "Found " (count new-commits) " New commits from " (count commit-log))
+      (doseq [commit new-commits]
+        (commit-and-diff store url repo commit repository-id))
+
+      )
+    ;(first (filter #(updated-metric? %) (map #(commit-and-diff store url repo % repository-id) (git/git-log repo))))
+
+    ))
 
 (defn each-commit
   "Apply the function f to each version of the repository - based on the log"
@@ -113,6 +128,7 @@
     (git/git-log repo)))
 
 (defn commit-by-day
+  "Returns a list of repository commits grouped by day."
   [repo-path]
   (let [repo    (git/load-repo repo-path)
         master  (git/git-checkout repo "master")
@@ -121,6 +137,7 @@
     (group-by #(t/with-time-at-start-of-day (tc/from-date (:time (git-query/commit-info repo %)))) history)))
 
 (defn first-commit-by-day
+  "Takes a list of commits grouped by day (as a list) and returns a single list containing the first commit from each day"
   [repo-path]
   (let [repo            (git/load-repo repo-path)
         history         (git/git-log repo)
@@ -129,15 +146,14 @@
     (map #(-> % second first) grouped-commits)))
 
 (defn commit-document-id
+  "Computes a repeatable unique id based on the commit sha (name) with a postfix for a primary store key"
   [commit]
   (uuid-from (.getName commit) "cloc"))
 
-(defn requires-collection [code-mapping commit]
+(defn requires-collection
+  "Checks to see if the given commit exists as a record in the given store. Avoids collecting code metrics multiple times."
+  [code-mapping commit]
   (store/document-missing? code-mapping (commit-document-id commit)))
-
-(defn commits-not-collected
-  [commits code-mapping]
-  (filter #(store/document-missing? code-mapping (uuid-from (.getName %) "cloc")) commits))
 
 (defn each-commit-by-day
   "Apply the function f to each version of the repository - based on the log"
@@ -168,14 +184,14 @@
    :collector     (-> loc :collector)})
 
 (defn collect-repository-historical-code-metrics1
-  [vcs-mapping code-mapping workspace url repository-id]
-  (log/info "Collect commits from workspace" workspace "url" url)
+  [code-store workspace-path url repository-id]
+  (log/info "Collect commits from workspace" workspace-path "url" url)
   (try+
-    (let [repo-path (local-clone-path workspace url)]
+    (let [repo-path (local-clone-path workspace-path url)]
       (clone-or-update url repo-path)
       (let [repo     (git/load-repo repo-path)
             commits  (first-commit-by-day repo-path)
-            filtered (filter #(requires-collection code-mapping %) commits)]
+            filtered (filter #(requires-collection code-store %) commits)]
         (log/info (count filtered) "days commits need collection")
         (doseq [commit filtered]
           (let [sha       (.getName commit)
@@ -186,10 +202,10 @@
               repo-path
               (cloc/loc-collector)
               (loc-to-code-doc url repository-id timestamp)
-              (store/put-document code-mapping id))))
+              (store/put-document code-store id))))
         (git/git-checkout repo "master")))
     (catch Object _
-      (log/error (:throwable &throw-context) "unexpected error collecting metrics for " url workspace))))
+      (log/error (:throwable &throw-context) "unexpected error collecting metrics for " url workspace-path))))
 
 
 
