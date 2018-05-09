@@ -177,7 +177,6 @@
             commits  (first-commit-by-day repo-path)
             filtered (filter #(requires-collection code-mapping %) commits)]
         (log/info (count filtered) "days commits need collection")
-        (clojure.pprint/pprint filtered)
         (doseq [commit filtered]
           (let [sha       (.getName commit)
                 id        (commit-document-id commit)
