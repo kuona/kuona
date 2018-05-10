@@ -7,13 +7,13 @@
   :license {:name "Apache License 2.0"
             :url  "http://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [[org.clojure/clojure "1.9.0"]
-                 [org.clojure/tools.cli "0.3.5"]
-                 [org.clojure/tools.logging "0.4.0"]
+                 [org.clojure/tools.cli "0.3.7"]
+                 [org.clojure/tools.logging "0.4.1"]
                  [log4j/log4j "1.2.17" :exclusions [javax.mail/mail
                                                     javax.jms/jms
                                                     com.sun.jdmk/jmxtools
                                                     com.sun.jmx/jmxri]]
-                 [compojure "1.6.0"]
+                 [compojure "1.6.1"]
                  [ring/ring-jetty-adapter "1.6.3"]
                  [ring/ring-defaults "0.3.1"]
                  [ring/ring-json "0.4.0"]
@@ -23,7 +23,8 @@
                  [kuona-core "0.0.2"]]
   :plugins [[lein-ring "0.9.7"]
             [lein-midje "3.0.0"]
-            [lein-ancient "0.6.14"]]
+            [lein-ancient "0.6.14"]
+            [lein-pprint "1.2.0"]]
   :ring {:handler      kuona-api.handler/app
          :auto-reload? true
          :auto-refresh true}

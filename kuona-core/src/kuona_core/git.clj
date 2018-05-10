@@ -65,10 +65,6 @@
       (log/info "Processing commit " url " " id " @ " (:time commit-info))
       result)))
 
-(defn updated-metric?
-  [metric]
-  (= (-> metric :result) "updated"))
-
 (defn commit-entry-not-captured
   [store repo commit]
   (let [commit-info (git-query/commit-info repo commit)
@@ -84,12 +80,7 @@
           new-commits (filter #(commit-entry-not-captured store repo %) commit-log)]
       (log/info "Found " (count new-commits) " New commits from " (count commit-log))
       (doseq [commit new-commits]
-        (commit-and-diff store url repo commit repository-id))
-
-      )
-    ;(first (filter #(updated-metric? %) (map #(commit-and-diff store url repo % repository-id) (git/git-log repo))))
-
-    ))
+        (commit-and-diff store url repo commit repository-id)))))
 
 (defn each-commit
   "Apply the function f to each version of the repository - based on the log"
