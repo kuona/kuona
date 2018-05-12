@@ -1,0 +1,17 @@
+manifect:
+  version: 0.1
+  description:
+  components: Kuona manifest for kuona-project
+    - component:
+      id: dashboard
+      description: Angular Kuona UI
+      path: /dashboard
+      dependencies:
+        - name: kuona-api
+    - component:
+      id: kuona-api
+      path: /kuona-api
+      description: Web service for captured data
+      dependencies:
+        - name: elasticsearch
+          kind: database
