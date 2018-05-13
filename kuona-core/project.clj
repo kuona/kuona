@@ -19,7 +19,9 @@
                  [org.clojure/tools.cli "0.3.7"]
                  [clojurewerkz/quartzite "2.1.0"]
                  [kuona/maven-dot-parser "0.1"]
-                 [kuona/query-parser "0.0.1"]]
+                 [kuona/query-parser "0.0.1"]
+                 [io.forward/yaml "1.0.8"]
+                 [net.sourceforge.plantuml/plantuml "8059"]]
   :plugins [[lein-midje "3.0.0"]
             [lein-ancient "0.6.14"]]
   :profiles
