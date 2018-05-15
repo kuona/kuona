@@ -7,11 +7,11 @@ manifest:
       description: Angular Kuona UI
       path: /dashboard
       dependencies:
-        - name: kuona-api
+        - id: kuona-api
     - component:
       id: kuona-api
       path: /kuona-api
       description: Web service for captured data
       dependencies:
-        - name: elasticsearch
+        - id: elasticsearch
           kind: database
