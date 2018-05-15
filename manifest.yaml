@@ -1,4 +1,4 @@
-manifect:
+manifest:
   version: 0.1
   description: Kuona manifest for kuona-project
   components:

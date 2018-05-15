@@ -14,7 +14,8 @@
             [kuona-core.collector.snapshot :as snapshot]
             [kuona-core.stores :refer [repositories-store commit-logs-store code-metric-store collector-config-store]]
             [kuona-core.workspace :refer [get-workspace-path]]
-            [kuona-core.stores :as stores]))
+            [kuona-core.stores :as stores]
+            [kuona-core.collector.manifest :as manifest]))
 
 (defn track-activity
   ([stage status]
@@ -108,7 +109,9 @@
           (nil? url) (log/error "No URL field found in repository" repo)
           :else (record-activity "Repository snapshot collector"
                                  {:url url}
-                                 (snapshot/create-repository-snapshot (git/local-clone-path (get-workspace-path) url) repo)))))
+                                 (do
+                                   (snapshot/create-repository-snapshot (git/local-clone-path (get-workspace-path) url) repo)
+                                   (manifest/collect (-> repo :id) (git/local-clone-path (get-workspace-path) url) (get-workspace-path)))))))
 
     (doseq [repo repositories]
       (let [url (-> repo :url)]

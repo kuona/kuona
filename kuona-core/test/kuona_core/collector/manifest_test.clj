@@ -1,7 +1,10 @@
 (ns kuona-core.collector.manifest-test
   (:require [clojure.test :refer :all]
             [midje.sweet :refer :all]
-            [kuona-core.collector.manifest :as manifest]))
+            [kuona-core.collector.manifest :as manifest]
+            [kuona-core.util :as util]
+            [clojure.java.io :as io])
+  (:import (java.io File)))
 
 (facts "about manifests"
        (let [m (manifest/from-file "test/test-manifest.yaml")]
@@ -47,3 +50,25 @@ kuona-api --> db
                                                                           :kind "database"}
                                                                          {:id "ext"}]}]}}) => [{:from "kuona-api" :to "db"} {:from "kuona-api" :to "ext"}]))
 
+(facts "about manifest file finding"
+       (fact
+         (manifest/manifest-file "test/no-manifest")) => true)
+
+(defn remove-existing-file
+  "Tests for the file existing. Deletes the file and returns true if the file exists or false otherwise"
+  [& args]
+  (let [^File f (apply io/file args)]
+    (.delete f)))
+
+(facts "about manifest collection"
+
+       (fact "generates default diagram if manifest missing"
+             (let [repository-id (util/uuid)]
+               (manifest/collect repository-id "src" "test") => nil
+               (remove-existing-file "test" (str repository-id ".svg"))))
+
+       (fact "generates diagram for manifest missing"
+             (let [repository-id (util/uuid)]
+               (manifest/collect repository-id ".." "test") => nil
+
+               (remove-existing-file "test" (str repository-id ".svg")))))
