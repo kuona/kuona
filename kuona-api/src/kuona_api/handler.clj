@@ -10,6 +10,7 @@
             [kuona-core.store :as store]
             [kuona-core.stores :as stores]
             [kuona-core.util :as util]
+            [kuona-core.workspace :as workspace]
             [kuona-api.valuestream-handlers :as valuestream]
             [kuona-api.repository-handlers :as repository]
             [kuona-api.metric-handlers :as metric-handlers]
@@ -19,7 +20,7 @@
             [kuona-api.query-handlers :as query]
             [kuona-api.dashboard-handlers :as dashboards]
             [ring.middleware.json :as middleware]
-            [ring.util.response :refer [resource-response response status redirect]]
+            [ring.util.response :refer [file-response resource-response response status redirect]]
             [clojure.java.io :as io])
   (:gen-class))
 
@@ -78,6 +79,7 @@
            (GET "/api/repositories/:id/commits" request (repository/get-commits (get-in request [:params :id]) 1))
            (PUT "/api/repositories/:id/commits" request (repository/put-commit! (get-in request [:params :id]) (get-in request [:body])))
            (POST "/api/repositories/test" request (repository/test-project-url (get-in request [:body])))
+           (GET "/api/repositories/manifest/:id" [id] (file-response id {:root (workspace/get-workspace-path)}))
 
            (GET "/api/build/tools" [] (snap-handlers/build-tool-buckets))
 

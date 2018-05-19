@@ -2,154 +2,172 @@
 <html ng-app="kuona.snapshot">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Page title set in pageTitle directive -->
-    <title>Kuona | Snapshot</title>
+  <!-- Page title set in pageTitle directive -->
+  <title>Kuona | Snapshot</title>
 
-    <!-- Font awesome -->
+  <!-- Font awesome -->
   <link href="/font-awesome/css/fontawesome-all.css" rel="stylesheet">
 
-    <!-- Bootstrap and Fonts -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap and Fonts -->
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Main Inspinia CSS files -->
-    <link href="/css/animate.css" rel="stylesheet">
-    <link id="loadBefore" href="/css/style.css" rel="stylesheet">
-    <base href="/snapshot/index.html">
+  <!-- Main Inspinia CSS files -->
+  <link href="/css/animate.css" rel="stylesheet">
+  <link id="loadBefore" href="/css/style.css" rel="stylesheet">
+  <base href="/snapshot/index.html">
 </head>
 
 <body ng-controller="SnapshotController as controller" class="top-navigation pace-done">
-  <div id="wrapper">
-    <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
-      <div ng-include="'/views/common/navigation.html'"></div>
-        <div class="wrapper wrapper-content">
-          <div class="container-fluid">
+<div id="wrapper">
+  <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
+    <div ng-include="'/views/common/navigation.html'"></div>
+    <div class="wrapper wrapper-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-12 animated fadeIn">
             <div class="row">
-              <div class="col-sm-12 animated fadeIn">
-                <div class="row">
-                  <div class="col-sm-6">
-                    <h1><img alt="image" class="img-circle img-sm" ng-src="{{ avatar_url }}"> {{snapshot.repository.name}} Snapshot</h1>
-                  </div>
-                  <div class="col-sm-6 m-t-md">
-                    <p class="small text-muted">{{snapshot.repository.description}}<br>
-                      <a href="{{repository.project.html_url}}">{{repository.project.html_url}} <i class="fa fa-github"></i></a>
-                    </p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="tabs-container">
-                      <ul class="nav nav-tabs">
-                        <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true">Repository Info</a></li>
-                        <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">Recent History</a></li>
-                        <li class=""><a data-toggle="tab" href="#tab-3" aria-expanded="false">Modules</a></li>
-                      </ul>
-                      <div class="tab-content ibox float-e-margins">
+              <div class="col-sm-6">
+                <h1><img alt="image" class="img-circle img-sm" ng-src="{{ avatar_url }}"> {{snapshot.repository.name}}
+                  Snapshot</h1>
+              </div>
+              <div class="col-sm-6 m-t-md">
+                <p class="small text-muted">{{snapshot.repository.description}}<br>
+                  <a href="{{repository.project.html_url}}">{{repository.project.html_url}} <i class="fa fa-github"></i></a>
+                </p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="tabs-container">
+                  <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true">Repository Info</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">Recent History</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-3" aria-expanded="false">Modules</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-4" aria-expanded="false">Manifest</a></li>
+                  </ul>
+                  <div class="tab-content ibox float-e-margins">
 
-                        <div id="tab-1" class="tab-pane active ibox-content">
-                          <div class="row">
-                            <div class="col-lg-4">
-                              <div>
-                                  <repository-panel repository="snapshot.repository"/>
-                              </div>
-                              <div>
-                                  <content-panel content="snapshot.content"/>
-                              </div>
-                              <div>
-                                  <build-panel build="snapshot.build"/>
-                              </div>
+                    <div id="tab-1" class="tab-pane active ibox-content">
+                      <div class="row">
+                        <div class="col-lg-4">
+                          <div>
+                            <repository-panel repository="snapshot.repository"/>
+                          </div>
+                          <div>
+                            <content-panel content="snapshot.content"/>
+                          </div>
+                          <div>
+                            <build-panel build="snapshot.build"/>
+                          </div>
+                        </div>
+                        <div class="col-lg-4">
+                          <div class="panel panel-primary">
+                            <div class="panel-heading">
+                              <h5><i class="fa fa-file"></i>&nbsp;File Counts</h5>
                             </div>
-                            <div class="col-lg-4">
-                              <div class="panel panel-primary">
-                                <div class="panel-heading">
-                                  <h5><i class="fa fa-file"></i>&nbsp;File Counts</h5>
-                                </div>
-                                <div class="panel-content">
-                                  <canvas id="filesBarCanvas"></canvas>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="col-lg-4">
-                              <div class="panel panel-info">
-                                <div class="panel-heading">
-                                  <h5><i class="fa fa-file"></i> Lines of code</h5>
-                                </div>
-                                <div class="panel-content">
-                                  <canvas id="codeBarCanvas"></canvas>
-                                </div>
-                              </div>
+                            <div class="panel-content">
+                              <canvas id="filesBarCanvas"></canvas>
                             </div>
                           </div>
                         </div>
-
-                        <div id="tab-2" class="tab-pane ibox-content">
-                          <div class="row">
-                            <div class="col-lg-12">
-                              <commits-panel commits="commits" count='7'/>
+                        <div class="col-lg-4">
+                          <div class="panel panel-info">
+                            <div class="panel-heading">
+                              <h5><i class="fa fa-file"></i> Lines of code</h5>
+                            </div>
+                            <div class="panel-content">
+                              <canvas id="codeBarCanvas"></canvas>
                             </div>
                           </div>
                         </div>
-
-                        <div id="tab-3" class="tab-pane ibox-content">
-                          <div class="row">
-                            <div ng-repeat="build in snapshot.build | orderBy: 'artifact.name'" class="col-lg-4">
-                              <artifact-panel path="build.path" artifact="build.artifact" dependency-tree="build.dependencyTree"></artifact-panel>
-                            </div>
-                          </div>
-                        </div>
-
                       </div>
                     </div>
+
+                    <div id="tab-2" class="tab-pane ibox-content">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <commits-panel commits="commits" count='7'/>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div id="tab-3" class="tab-pane ibox-content">
+                      <div class="row">
+                        <div ng-repeat="build in snapshot.build | orderBy: 'artifact.name'" class="col-lg-4">
+                          <artifact-panel path="build.path" artifact="build.artifact"
+                                          dependency-tree="build.dependencyTree"></artifact-panel>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div id="tab-4" class="tab-pane ibox-content">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <img alt="Repository manifest" ng-src="/api/repositories/manifest/{{repository.id}}.svg">
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div ng-include="'/views/common/footer.html'"></div>
       </div>
     </div>
+    <div ng-include="'/views/common/footer.html'"></div>
   </div>
+</div>
 
-  <!-- jQuery and Bootstrap -->
-  <script src="/js/jquery/jquery-2.1.1.min.js"></script>
-  <script src="/js/plugins/jquery-ui/jquery-ui.js"></script>
-  <script src="/js/bootstrap/bootstrap.min.js"></script>
 
-  <!-- MetsiMenu -->
-  <script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<!-- jQuery and Bootstrap -->
+<script src="/js/jquery/jquery-2.1.1.min.js"></script>
+<script src="/js/plugins/jquery-ui/jquery-ui.js"></script>
+<script src="/js/bootstrap/bootstrap.min.js"></script>
 
-  <!-- SlimScroll -->
-  <script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<!-- MetsiMenu -->
+<script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 
-  <!-- Custom and plugin javascript -->
-  <script src="/js/inspinia.js"></script>
+<!-- SlimScroll -->
+<script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
-  <!-- Main Angular scripts-->
-  <script src="/js/angular/angular.js"></script>
-  <script src="/js/angular/angular-websocket.js"></script>
-  <script src="/js/plugins/oclazyload/dist/ocLazyLoad.min.js"></script>
-  <script src="/js/ui-router/angular-ui-router.min.js"></script>
-  <script src="/js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
-  <script src="/js/angular/angular-resource.min.js"></script>
+<!-- Custom and plugin javascript -->
+<script src="/js/inspinia.js"></script>
 
-  <script src="/js/d3.js"></script>
-  <script src="/js/d3pie.min.js"></script>
-  <script src="/js/plugins/chartjs/Chart.min.js"></script>
+<!-- Main Angular scripts-->
+<script src="/js/angular/angular.js"></script>
+<script src="/js/angular/angular-websocket.js"></script>
+<script src="/js/plugins/oclazyload/dist/ocLazyLoad.min.js"></script>
+<script src="/js/ui-router/angular-ui-router.min.js"></script>
+<script src="/js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
+<script src="/js/angular/angular-resource.min.js"></script>
 
-  <script src="/js/charts.js"></script>
-  <script src="/js/snapshot.js"></script>
-  <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+<script src="/js/d3.js"></script>
+<script src="/js/d3pie.min.js"></script>
+<script src="/js/plugins/chartjs/Chart.min.js"></script>
 
-    ga('create', 'UA-103593330-2', 'auto');
-    ga('send', 'pageview');
+<script src="/js/charts.js"></script>
+<script src="/js/snapshot.js"></script>
+<script>
+  (function (i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function () {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date();
+    a = s.createElement(o),
+      m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-  </script>
+  ga('create', 'UA-103593330-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
 </body>
 </html>

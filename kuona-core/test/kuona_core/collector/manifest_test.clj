@@ -26,7 +26,7 @@
              (manifest/manifest-uml {}) => "@startuml\n@enduml")
        (fact "single component manifest"
              (manifest/manifest-uml {:manifest {:components [{:kind "component" :id "kuona-api"}]}}) => "@startuml
-component kuona-api
+component [kuona-api]
 @enduml")
 
        (fact "single component with dependency manifest"
@@ -34,13 +34,13 @@ component kuona-api
                                                               :dependencies [{:id   "db"
                                                                               :kind "database"
                                                                               }]}]}}) => "@startuml
-database db
-component kuona-api
-kuona-api --> db
+database [db]
+component [kuona-api]
+[kuona-api] --> [db]
 @enduml")
 
        (fact "plantuml dependencies"
-             (manifest/plantuml-dependencies [{:from "from" :to "to"}]) => ["from --> to"]))
+             (manifest/plantuml-dependencies [{:from "from" :to "to"}]) => ["[from] --> [to]"]))
 
 
 (facts "about dependency extractions"
@@ -61,14 +61,53 @@ kuona-api --> db
     (.delete f)))
 
 (facts "about manifest collection"
-
        (fact "generates default diagram if manifest missing"
              (let [repository-id (util/uuid)]
-               (manifest/collect repository-id "src" "test") => nil
+               (manifest/collect repository-id "src" "test") => anything
                (remove-existing-file "test" (str repository-id ".svg"))))
 
        (fact "generates diagram for manifest missing"
              (let [repository-id (util/uuid)]
-               (manifest/collect repository-id ".." "test") => nil
+               (manifest/collect repository-id ".." "test") => anything
 
                (remove-existing-file "test" (str repository-id ".svg")))))
+
+(facts "About cleaned manifest"
+       (let [original {:manifest {
+                                  :version     "0.1"
+                                  :description "Kuona manifest for kuona-project"
+                                  :components  [{:component    nil
+                                                 :id           "dashboard"
+                                                 :description  "Angular Kuona UI"
+                                                 :path         "/dashboard"
+                                                 :dependencies [{:id "kuona-api"
+                                                                 }]
+                                                 }
+                                                {
+                                                 :component    nil
+                                                 :id           "kuona-api"
+                                                 :path         "/kuona-api"
+                                                 :description  "Web service for captured data"
+                                                 :dependencies [{
+                                                                 :id   "elasticsearch"
+                                                                 :kind "database"
+
+                                                                 }]
+
+                                                 }]
+
+                                  }}]
+         (fact (manifest/clean-manifest original) => {:manifest {
+                                                                 :description "Kuona manifest for kuona-project"
+                                                                 :components  [{:id           "dashboard"
+                                                                                :description  "Angular Kuona UI"
+                                                                                :path         "/dashboard"
+                                                                                :dependencies [{:id   "kuona-api"
+                                                                                                :kind "component"}]
+                                                                                }
+                                                                               {:id           "kuona-api"
+                                                                                :path         "/kuona-api"
+                                                                                :description  "Web service for captured data"
+                                                                                :dependencies [{:id   "elasticsearch"
+                                                                                                :kind "database"}]
+                                                                                }]}})))

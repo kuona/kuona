@@ -1,7 +1,8 @@
 (ns kuona-core.collector.manifest
   (:require [kuona-core.plantuml :as plantuml])
   (:require [clojure.java.io :as io])
-  (:require [yaml.core :as yaml]))
+  (:require [yaml.core :as yaml]
+            [clojure.tools.logging :as log]))
 
 (defn from-file [filename]
   (yaml/from-file filename))
@@ -23,7 +24,7 @@
   )
 
 (defn participant-string [component]
-  (str (-> component :kind) " " (-> component :name)))
+  (str (-> component :kind) " [" (-> component :name) "]"))
 
 (defn dependencies [manifest]
   (flatten (map (fn [c]
@@ -35,7 +36,7 @@
 
 (defn plantuml-dependencies
   [pairs]
-  (map (fn [p] (str (:from p) " --> " (:to p))) pairs))
+  (map (fn [p] (str "[" (:from p) "] --> [" (:to p) "]")) pairs))
 
 (defn manifest-uml [manifest]
   (let [participants          (components manifest)
@@ -55,6 +56,17 @@
     (.exists (io/file path ".manifest.yaml")) (io/file path ".manifest.yaml")
     :else nil))
 
+(defn clean-manifest [m]
+  {:manifest {
+              :description (-> m :manifest :description)
+              :components  (into [] (map (fn [c]
+                                           {:id           (-> c :id)
+                                            :description  (-> c :description)
+                                            :path         (-> c :path)
+                                            :dependencies (into [] (map (fn [d]
+                                                                          (merge {:id nil :kind "component"} d)) (-> c :dependencies)))
+                                            }) (-> m :manifest :components)))}})
+
 (def default-diagram
   "@startuml
 [No Manifest Found]
@@ -71,5 +83,10 @@
       manifest-file (let [text (slurp manifest-file)
                           y    (yaml/parse-string text)
                           uml  (manifest-uml y)]
-                      (plantuml/generate-image uml image-path))
-      :else (plantuml/generate-image default-diagram image-path))))
+                      (log/info "Writing component diagram " image-path)
+                      (plantuml/generate-image uml image-path)
+                      y)
+      :else (do
+              (plantuml/generate-image default-diagram image-path)
+              {})
+      )))

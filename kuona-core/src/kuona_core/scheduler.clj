@@ -110,8 +110,7 @@
           :else (record-activity "Repository snapshot collector"
                                  {:url url}
                                  (do
-                                   (snapshot/create-repository-snapshot (git/local-clone-path (get-workspace-path) url) repo)
-                                   (manifest/collect (-> repo :id) (git/local-clone-path (get-workspace-path) url) (get-workspace-path)))))))
+                                   (snapshot/create-repository-snapshot (git/local-clone-path (get-workspace-path) url) repo))))))
 
     (doseq [repo repositories]
       (let [url (-> repo :url)]

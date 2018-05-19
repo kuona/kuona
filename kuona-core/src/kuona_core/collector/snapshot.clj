@@ -8,7 +8,9 @@
     [kuona-core.git :refer :all]
     [kuona-core.cloc :as cloc]
     [kuona-core.builder :as builder]
-    [kuona-core.util :as util])
+    [kuona-core.workspace :refer [get-workspace-path]]
+    [kuona-core.util :as util]
+    [kuona-core.collector.manifest :as manifest])
   (:gen-class))
 
 
@@ -66,16 +68,9 @@
         (git-clone url local-dir))
       (let [loc-data      (cloc/loc-collector local-dir)
             build-data    (builder/collect-builder-metrics local-dir)
-            snapshot-data (create-snapshot (-> repo :project) (loc-metrics loc-data) build-data)]
+            snapshot-data (create-snapshot (-> repo :project) (loc-metrics loc-data) build-data)
+            manifest      (manifest/clean-manifest (manifest/collect id local-dir (get-workspace-path)))]
 
-        (store/put-document snapshot-data stores/snapshots-store id))
+        (store/put-document (merge snapshot-data manifest) stores/snapshots-store id))
       (catch Object _
         (log/error (:throwable &throw-context) "Unexpected error creating snapshot for" name "id" id "url" url)))))
-
-
-
-
-
-
-
-
