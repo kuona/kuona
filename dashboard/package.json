@@ -6,6 +6,7 @@
   "repository": "https://github.com/kuona/dashboard",
   "private": true,
   "dependencies": {
+    "dagre-d3": "^0.6.1",
     "grunt": "^1.0.1",
     "grunt-cli": "^1.2.0",
     "grunt-contrib-clean": "^1.0.0",
