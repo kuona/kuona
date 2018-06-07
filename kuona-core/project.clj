@@ -21,11 +21,10 @@
                  [kuona/maven-dot-parser "0.1"]
                  [kuona/query-parser "0.0.1"]
                  [io.forward/yaml "1.0.8"]
-                 [net.sourceforge.plantuml/plantuml "8059"]]
+                 [com.jcabi/jcabi-log "0.18"]]
   :plugins [[lein-midje "3.0.0"]
             [lein-ancient "0.6.14"]]
   :profiles
-  {:dev {:dependencies [[midje "1.9.1"]
-                        [com.jcabi/jcabi-log "0.18"]]}})
+  {:dev {:dependencies [[midje "1.9.1"]]}})
 
 

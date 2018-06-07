@@ -54,12 +54,10 @@ function manifestNodeShape(t) {
 }
 
 function manifestGraph(data) {
-  console.log(data);
   var result = {nodes: [], edges: []};
   var seen = {};
   for (var i in data.components) {
     var c = data.components[i]
-    console.log(c.id);
     if (!(c.id in seen)) {
       result.nodes.push({id: c.id, label: c.description, shape: manifestNodeShape(c.kind)});
       seen[c.id] = true;
@@ -204,7 +202,6 @@ kuonaSnapshot.directive('manifestPanel', function () {
       scope.$watch('data', function (newValue, oldValue) {
         if (scope.data) {
           var graphData = manifestGraph(scope.data);
-          console.log(scope.data);
           new vis.Network(element[0],
             {
               nodes: new vis.DataSet(graphData.nodes),
@@ -226,4 +223,26 @@ kuonaSnapshot.directive('manifestPanel', function () {
     }
   };
 
+});
+
+kuonaSnapshot.directive('jsonView', function () {
+  return {
+    restrict: 'E',
+    transclude: true,
+    scope: {
+      data: '='
+    },
+    templateUrl: '/directives/json-view.html',
+    link: function (scope, element, attrs) {
+      var codeElement = element[0].children[0].children[0];
+      scope.$watch('data', function (newValue, oldValue) {
+        if (scope.data) {
+          scope.$evalAsync(function () {
+            console.log(scope.data);
+            hljs.highlightBlock(codeElement);
+          });
+        }
+      });
+    }
+  };
 });

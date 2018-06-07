@@ -69,7 +69,7 @@
       (let [loc-data      (cloc/loc-collector local-dir)
             build-data    (builder/collect-builder-metrics local-dir)
             snapshot-data (create-snapshot (-> repo :project) (loc-metrics loc-data) build-data)
-            manifest      (manifest/clean-manifest (manifest/collect id local-dir (get-workspace-path)))]
+            manifest      (manifest/collect local-dir)]
 
         (store/put-document (merge snapshot-data manifest) stores/snapshots-store id))
       (catch Object _
