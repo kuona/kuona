@@ -33,7 +33,7 @@ fi
 (cd dashboard; grunt build)
 
 (cd ./collectors/maven; ${MAVEN_BUILD})
-(cd ./collectors/lib/maven-dot-parser; ${MAVEN_BUILD})
+(cd ./collectors/lib/parsers; ${MAVEN_BUILD})
 (cd ./lib/query-parser; ${MAVEN_BUILD})
 
 

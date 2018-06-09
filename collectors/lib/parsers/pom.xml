@@ -5,8 +5,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>kuona</groupId>
-  <artifactId>maven-dot-parser</artifactId>
-  <version>0.1</version>
+  <artifactId>parsers</artifactId>
+  <version>0.2</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>

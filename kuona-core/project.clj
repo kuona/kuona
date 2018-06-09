@@ -18,7 +18,7 @@
                  [org.clojure/data.xml "0.0.8"]
                  [org.clojure/tools.cli "0.3.7"]
                  [clojurewerkz/quartzite "2.1.0"]
-                 [kuona/maven-dot-parser "0.1"]
+                 [kuona/parsers "0.2"]
                  [kuona/query-parser "0.0.1"]
                  [io.forward/yaml "1.0.8"]
                  [com.jcabi/jcabi-log "0.18"]]
