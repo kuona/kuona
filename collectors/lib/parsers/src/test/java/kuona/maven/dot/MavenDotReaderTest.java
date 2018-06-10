@@ -32,12 +32,12 @@ public class MavenDotReaderTest {
   }
 
   @Test
-  public void readsDependencies(){
+  public void readsDependencies() {
     final String input = "digraph \"com.grahambrooks:nio-socket-server:jar:1.0-SNAPSHOT\" { \n" +
-            "\t\"com.grahambrooks:nio-socket-server:jar:1.0-SNAPSHOT\" -> \"junit:junit:jar:4.12:test\" ; \n" +
-            "\t\"com.grahambrooks:nio-socket-server:jar:1.0-SNAPSHOT\" -> \"org.assertj:assertj-core:jar:3.6.2:test\" ; \n" +
-            "\t\"junit:junit:jar:4.12:test\" -> \"org.hamcrest:hamcrest-core:jar:1.3:test\" ; \n" +
-            "}";
+      "\t\"com.grahambrooks:nio-socket-server:jar:1.0-SNAPSHOT\" -> \"junit:junit:jar:4.12:test\" ; \n" +
+      "\t\"com.grahambrooks:nio-socket-server:jar:1.0-SNAPSHOT\" -> \"org.assertj:assertj-core:jar:3.6.2:test\" ; \n" +
+      "\t\"junit:junit:jar:4.12:test\" -> \"org.hamcrest:hamcrest-core:jar:1.3:test\" ; \n" +
+      "}";
 
     InputStream stream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
     Map<String, Object> result = MavenDotReader.readDependencies(stream);
@@ -46,5 +46,4 @@ public class MavenDotReaderTest {
     assertThat(dependencies.size(), equalTo(3));
 
   }
-
 }
