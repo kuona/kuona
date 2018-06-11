@@ -20,6 +20,9 @@
                  [cheshire "5.8.0"]
                  [slingshot "0.12.2"]
                  [clojurewerkz/quartzite "2.1.0"]
+                 [io.forward/yaml "1.0.8"]
+                 [com.jcabi/jcabi-log "0.18"]
+
                  [kuona-core "0.0.2"]]
   :plugins [[lein-ring "0.9.7"]
             [lein-midje "3.0.0"]
@@ -30,6 +33,5 @@
          :auto-refresh true}
   :profiles {:dev     {:dependencies [[javax.servlet/servlet-api "2.5"]
                                       [ring/ring-mock "0.3.2"]
-                                      [midje "1.9.1"]
-                                      [com.jcabi/jcabi-log "0.18"]]}
+                                      [midje "1.9.1"]]}
              :uberjar {:aot :all}})
