@@ -56,7 +56,7 @@
 (defn parse-integer
   [n]
   (cond
-    (= (type n) java.lang.Long) n
+    (= (type n) Long) n
     :else (try+ (. Integer parseInt n)
                 (catch Object _ nil))))
 
@@ -137,19 +137,19 @@
   [source]
   (log/info "read-schema" (:id source))
   (try+
-    (let [id       (-> source :id)
-          index    (-> source :index)
-          url      (.mapping-url index)
-          response (http/get url {:headers json-headers})
-          body     (parse-json-body response)
-          mappings (-> body hash-child hash-child hash-child hash-child)]
+    (let [id               (-> source :id)
+          ^DataStore index (-> source :index)
+          url              (.mapping-url index)
+          response         (http/get url {:headers json-headers})
+          body             (parse-json-body response)
+          mappings         (-> body hash-child hash-child hash-child hash-child)]
       {id (es-mapping-to-ktypes mappings)})
-    (catch [:status 400] {:keys [request-time headers body]}
+    (catch [:status 400] {:keys [body]}
       (let [error (parse-json body)]
         (log/info "Bad request" error)
         {:error {:type        (-> error :error :type)
                  :description (str (-> error :error :reason) " : " (-> error :error :resource.id))}}))
-    (catch [:status 404] {:keys [request-time headers body]}
+    (catch [:status 404] {:keys [body]}
       (let [error (parse-json body)]
         (log/info "Bad request" error)
         {:error {:type        (-> error :error :type)
@@ -161,10 +161,9 @@
 
 
 (defn query
-  [source q]
+  [^DataStore source q]
   (try+
-    (let [id       (-> source :id)
-          store    (-> source :index)
+    (let [store    (-> source :index)
           url      (.url store '("_search"))
           response (http/get url {:headers json-headers :body (generate-string q)})
           body     (parse-json-body response)
@@ -174,7 +173,7 @@
        :results      results
        :aggregations (merge {} (-> body :aggregations))
        :schema       schema})
-    (catch [:status 400] {:keys [request-time headers body]}
+    (catch [:status 400] {:keys [body]}
       (let [error (parse-json body)]
         (log/info "Bad request" error)
         (es-error error)))
@@ -185,7 +184,6 @@
   [url]
   (log/info "find-documents" url)
   (let [json-response (parse-json-body (http/get url {:headers json-headers}))
-        result-count  (-> json-response :hits :total)
         documents     (map source-with-id (-> json-response :hits :hits))]
     {:count (count documents)
      :items documents
@@ -196,7 +194,7 @@
   (try+
     (log/debug "getting" mapping id)
     (parse-json-body (http/get (.url mapping [id])))
-    (catch [:status 404] {:keys [request-time headers body]}
+    (catch [:status 404] {:keys [body]}
       (let [error (parse-json body)]
         (es-error error))
       )))
@@ -206,8 +204,7 @@
   (try+
     (http/head (.url store [id]))
     true
-    (catch [:status 404] {:keys [request-time headers body]}
-      false)))
+    (catch [:status 404] {:keys []} false)))
 
 (defn document-missing?
   [^DataStore store id]
@@ -220,10 +217,8 @@
 (defn all-documents
   "Retrieves all the activity based on the supplied key from the index."
   [^DataStore store]
-  (let [url          (.url store ["_search"] ["size=10000"])
-        query-string (generate-string {:query {:from 0 :size 10000}})
-        query        {:form-params query-string}
-        response     (http/get url)]
+  (let [url      (.url store ["_search"] ["size=10000"])
+        response (http/get url)]
     (map source-with-id
          (-> response
              parse-json-body

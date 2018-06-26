@@ -10,8 +10,9 @@
 (defn build-tool-buckets
   []
   (log/info "build-tool-buckets")
-  (let [result (store/internal-search stores/snapshots-store {:size         0
-                                                              :aggregations {:builder {:terms {:field "build.builder"}}}})
+  (let [result  (store/internal-search stores/snapshots-store {:size         0
+                                                               :aggregations {:builder
+                                                                              {:terms {:field "build.builder"}}}})
         buckets (-> result :aggregations :builder :buckets)]
     (log/info "build-tool-buckets" result)
     (log/info "buckets" buckets)

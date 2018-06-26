@@ -26,5 +26,5 @@
       (throw+ {:type ::missing-parameter :parameter ::port}))
     (if (missing-search? params)
       (throw+ {:type ::missing-parameter :parameter ::port}))
-    {:port (port-selector params)
+    {:port    (port-selector params)
      :es-host (es-selector params)}))

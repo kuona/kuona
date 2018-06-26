@@ -18,12 +18,16 @@
                  [org.clojure/data.xml "0.0.8"]
                  [org.clojure/tools.cli "0.3.7"]
                  [clojurewerkz/quartzite "2.1.0"]
-                 [kuona/parsers "0.2"]
-                 [kuona/query-parser "0.0.1"]
                  [io.forward/yaml "1.0.8"]
-                 [com.jcabi/jcabi-log "0.18"]]
+                 [com.jcabi/jcabi-log "0.18"]
+                 [kuona/parsers "0.2"]
+                 [kuona/query-parser "0.0.1"]]
   :plugins [[lein-midje "3.0.0"]
-            [lein-ancient "0.6.14"]]
+            [lein-ancient "0.6.14"]
+            [lein-asciidoctor "0.1.16"]]
+  :asciidoctor {:sources          "doc/*.adoc"
+                :source-highlight true
+                :to-dir           "target/doc"}
   :profiles
   {:dev {:dependencies [[midje "1.9.1"]]}})
 
