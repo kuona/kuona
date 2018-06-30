@@ -1,16 +1,31 @@
-<table class="table table-striped small m-t-md">
-  <tbody>
-    <tr ng-repeat="commit in commits | orderBy : '-timestamp' | limitTo: count">
-      <td class="no-borders"><i class="fa fa-github text-navy"></i></td>
-      <td class="no-borders">{{ commit.commit.time  | date:'yyyy-MM-dd HH:mm:ss' }}</td>
-      <td class="no-borders">{{ commit.commit.branches }}</td>
-      <td class="no-borders">{{ commit.commit.author }}</td>
-      <td class="no-borders">Affected {{ commit.commit.changed_files.length | number }} files
-        <ul class="list-unstyled file-list">
-          <li ng-repeat="f in commit.commit.changed_files">{{f.path}}</li>
-        </ul>
-      </td>
-      <td class="no-borders"><p style="white-space: pre;">{{ commit.commit.message }}</p></td>
-    </tr>
-  </tbody>
-</table>
+<div class="ibox dashboard">
+  <div class="ibox-title">
+    <h5>Most resent {{count}} commits</h5>
+  </div>
+
+  <div class="ibox-content">
+    <div class="activity-stream">
+      <div class="stream" ng-repeat="value in commits | orderBy : '-timestamp' | limitTo: count">
+        <div class="stream-badge">
+          <i class="fab fab-git bg-primary"></i>
+        </div>
+        <div class="stream-panel">
+          <div class="stream-info">
+            <p>
+              <span class="date">{{value.commit.time | age}}</span>
+            </p>
+            <a href="mailto:{{value.commit.email}}">
+              <span>{{value.commit.author}}</span>
+            </a>
+          </div>
+          {{value.commit.message}}<br/>
+          Affected {{ value.commit.changed_files.length | number }} files
+          <ul class="list-unstyled file-change-list">
+            <li ng-repeat="f in value.commit.changed_files">{{f.path}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

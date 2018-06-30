@@ -246,3 +246,6 @@ kuonaSnapshot.directive('jsonView', function () {
     }
   };
 });
+
+kuonaSnapshot.filter('elapsed', elapsedFilter);
+kuonaSnapshot.filter('age', ageFilter);
