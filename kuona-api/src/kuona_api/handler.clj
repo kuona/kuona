@@ -45,7 +45,7 @@
 
 (defn api-info
   []
-  (let [es (util/parse-json-body (http/get "http://localhost:9200"))]
+  (let [es (util/parse-json-body (http/get (stores/es-url)))]
     {:kuona_api      {:version (util/get-project-version 'kuona-api)}
      :clojure        {:version (util/get-project-version 'org.clojure/clojure)}
      :elastic_search es}))

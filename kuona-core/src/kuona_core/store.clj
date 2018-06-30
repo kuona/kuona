@@ -4,21 +4,15 @@
             [clojure.tools.logging :as log]
             [kuona-core.util :refer :all]
             [slingshot.slingshot :refer :all]
-            [kuona-core.stores :refer []])
+            [kuona-core.stores :refer []]
+            [kuona-core.stores :as stores])
   (:gen-class)
   (:import (kuona_core.stores DataStore)))
 
 (defn health
   []
-  (let [response (http/get "http://localhost:9200/_cluster/health")]
+  (let [response (http/get (stores/es-url "_cluster" "health"))]
     (parse-json-body response)))
-
-
-(defn http-path
-  [& elements]
-  (clojure.string/join "/" elements))
-
-
 
 (defn put-document
   ([document ^DataStore store] (put-document document store (uuid)))
@@ -131,7 +125,7 @@
   []
   {:indices (into []
                   (map (fn [[k v]] (merge v {:name k}))
-                       (:indices (parse-json-body (http/get "http://localhost:9200/_stats")))))})
+                       (:indices (parse-json-body (http/get (stores/es-url "_stats"))))))})
 
 (defn read-schema
   [source]

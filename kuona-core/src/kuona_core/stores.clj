@@ -25,6 +25,10 @@
    :url  (string/join "/" [(deref es-host) (name index-name)])
    :type type})
 
+(defn es-url
+  [& elements]
+  (string/join "/" (map name (concat [(deref es-host)] elements))))
+
 (defn- index
   [index-name host]
   (clojure.string/join "/" [host (name index-name)]))

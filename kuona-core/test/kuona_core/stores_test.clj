@@ -28,3 +28,11 @@
 (facts "about finding sources"
        (fact "found by name"
              (find-store-by-name "kuona-snapshots") => snapshots-store))
+
+(facts "about elastic search urls"
+       (fact
+         (es-url) => "http://localhost:9200")
+       (fact "elastic search with path"
+             (es-url "foo") => "http://localhost:9200/foo")
+       (fact "paths with sumbols"
+             (es-url "1" :2 :3 :symbol) => "http://localhost:9200/1/2/3/symbol"))
