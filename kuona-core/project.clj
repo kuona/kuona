@@ -3,7 +3,7 @@
   :url "https://github.com/kuona/kuona-project"
   :license {:name "Apache License 2.0"
             :url  "http://www.apache.org/licenses/LICENSE-2.0"}
-  :repositories [["gradle" "https://repo.gradle.org"]]
+  :repositories [["gradle" "https://repo.gradle.org/gradle/libs-releases-local/"]]
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/tools.logging "0.4.1"]
                  [log4j/log4j "1.2.17" :exclusions [javax.mail/mail
