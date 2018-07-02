@@ -1,4 +1,5 @@
-(ns kuona-core.elasticsearch)
+(ns kuona-core.elasticsearch
+  (:gen-class))
 
 (def string
   {:type "text"})
