@@ -18,7 +18,7 @@
      :dependencies (into [] (map gradle-dependency dependencies))}))
 
 
-(defn gradle-project
+(defn analyse-gradle-project
   [path]
   (let [g            (GradleConnector/newConnector)
         connector    (.forProjectDirectory g (clojure.java.io/as-file path))

@@ -7,9 +7,9 @@
 (facts "about gradle builds"
        (let [test-project-path "../test/gradle-dependencies"]
          (fact
-           (:project (gradle/gradle-project test-project-path)) => (contains {:description nil}))
+           (:project (gradle/analyse-gradle-project test-project-path)) => (contains {:description nil}))
          (fact
-           (gradle/gradle-project test-project-path)
+           (gradle/analyse-gradle-project test-project-path)
            => {:project {:description nil
                          :jdk         "1.8"
                          :modules     [{:dependencies [{:exported false

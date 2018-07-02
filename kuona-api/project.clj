@@ -22,7 +22,6 @@
                  [clojurewerkz/quartzite "2.1.0"]
                  [io.forward/yaml "1.0.8"]
                  [com.jcabi/jcabi-log "0.18"]
-
                  [kuona-core "0.0.2"]]
   :plugins [[lein-ring "0.9.7"]
             [lein-midje "3.0.0"]
