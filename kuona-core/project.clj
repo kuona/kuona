@@ -3,6 +3,7 @@
   :url "https://github.com/kuona/kuona-project"
   :license {:name "Apache License 2.0"
             :url  "http://www.apache.org/licenses/LICENSE-2.0"}
+  :repositories [["gradle" "https://repo.gradle.org"]]
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/tools.logging "0.4.1"]
                  [log4j/log4j "1.2.17" :exclusions [javax.mail/mail
@@ -21,7 +22,8 @@
                  [io.forward/yaml "1.0.8"]
                  [com.jcabi/jcabi-log "0.18"]
                  [kuona/parsers "0.2"]
-                 [kuona/query-parser "0.0.1"]]
+                 [org.gradle/gradle-core "4.8.1"]
+                 [org.gradle/gradle-tooling-api "4.8.1"]]
   :plugins [[lein-midje "3.0.0"]
             [lein-ancient "0.6.14"]
             [lein-asciidoctor "0.1.16"]]

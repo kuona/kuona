@@ -1,5 +1,6 @@
 package kuona.query;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,6 @@ import java.util.Iterator;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ParserTest {
@@ -34,14 +34,14 @@ class ParserTest {
     @DisplayName("Accepts a single term")
     void acceptsASingleTerm() {
       Query query = Parser.parse(stringToStream("term"));
-      assertIterableEquals(asList("term"), query.getTerms());
+      Assertions.assertIterableEquals(asList("term"), query.getTerms());
     }
 
     @Test
     @DisplayName("Accepts multiple terms")
     void acceptsMultipleTerms() {
       Query query = Parser.parse(stringToStream("termA termB"));
-      assertIterableEquals(asList("termA", "termB"), query.getTerms());
+      Assertions.assertIterableEquals(asList("termA", "termB"), query.getTerms());
     }
 
   }
@@ -53,7 +53,7 @@ class ParserTest {
     @DisplayName("Accepts a filter")
     void acceptsAFilter() {
       Query query = Parser.parse(stringToStream("key1:value1"));
-      assertIterableEquals(asList(), query.getTerms());
+      Assertions.assertIterableEquals(asList(), query.getTerms());
       assertEquals(new QueryFilter("key1", "value1"), query.getFilters().iterator().next());
     }
 
@@ -61,7 +61,7 @@ class ParserTest {
     @DisplayName("Accepts multiple filters")
     void acceptsMultipleFilters() {
       Query query = Parser.parse(stringToStream("key1:value1 key2:value2"));
-      assertIterableEquals(asList(), query.getTerms());
+      Assertions.assertIterableEquals(asList(), query.getTerms());
       Iterator<QueryFilter> filters = query.getFilters().iterator();
       assertEquals(new QueryFilter("key1", "value1"), filters.next());
       assertEquals(new QueryFilter("key2", "value2"), filters.next());
@@ -70,12 +70,12 @@ class ParserTest {
 
   @Nested
   @DisplayName("Complex queries")
-  class ComplexQueries{
+  class ComplexQueries {
     @Test
     @DisplayName("Term and filter")
     void termsAndFilters() {
       Query query = Parser.parse(stringToStream("term key1:value1"));
-      assertIterableEquals(asList("term"), query.getTerms());
+      Assertions.assertIterableEquals(asList("term"), query.getTerms());
       Iterator<QueryFilter> filters = query.getFilters().iterator();
       assertEquals(new QueryFilter("key1", "value1"), filters.next());
 
