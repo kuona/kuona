@@ -34,7 +34,7 @@
           <div class="col-sm-12">
             <div class="row">
               <div class="col-sm-6">
-                <h1><img alt="image" class="img-circle img-sm" ng-src="{{ avatar_url }}"> {{snapshot.repository.name}}
+                <h1><img alt="image" class="img-circle img-sm" ng-src="{{ avatar_url }}" ng-if="avatar_url"> {{snapshot.repository.name}}
                   Snapshot</h1>
               </div>
               <div class="col-sm-6 m-t-md">
