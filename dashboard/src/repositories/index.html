@@ -1,144 +1,130 @@
 <!DOCTYPE html>
 <html ng-app="kuona.repositories">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Page title set in pageTitle directive -->
-    <title page-title>Repositories</title>
+  <!-- Page title set in pageTitle directive -->
+  <title page-title>Repositories</title>
 
-    <!-- Font awesome -->
-    <link href="/font-awesome/css/fontawesome-all.css" rel="stylesheet">
+  <!-- Font awesome -->
+  <link href="/font-awesome/css/fontawesome-all.css" rel="stylesheet">
 
-    <!-- Bootstrap and Fonts -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap and Fonts -->
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Main Inspinia CSS files -->
-    <link href="/css/animate.css" rel="stylesheet">
-    <link id="loadBefore" href="/css/style.css" rel="stylesheet">
-    <base href="/repositories/index.html">
-  </head>
+  <!-- Main Inspinia CSS files -->
+  <link href="/css/animate.css" rel="stylesheet">
+  <link id="loadBefore" href="/css/style.css" rel="stylesheet">
+  <base href="/repositories/index.html">
+</head>
 
-  <body ng-controller="RepositoriesController as controller" class="top-navigation pace-done">
-    <div id="wrapper">
-      <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
-        <div ng-include="'/views/common/navigation.html'"></div>
-        <div class="wrapper wrapper-content">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-sm-12">
-                <div class="row">
-                  <div class="col-sm-12">
-                    <h1>Source Repositories</h1>
-                    <p class="small">
-                        This initial list of source repositories was
-                        obtained by querying the GitHub API for started
-                        projects. The repository count represents
-                        repositries returned from those queries. Version
-                        control entries refer to historical data points
-                        captured for revisions from a very small repository
-                        set. Capturing this data takes a very long time
-                        (see <a href="http://www.grahambrooks.com/2017/07/07/path-to-a-million.html">path
-                        to a million.</a>). Code metrics is similar but
-                        refers to code line counts. Each repsitory head
-                        revision is scanned for files that indicate modules
-                        e.g. pom.xml implies a maven module. Each of these
-                        module files is examined to understand the module's
-                        dependencies. (currently only maven is supported)
-                    </p>
+<body ng-controller="RepositoriesController as controller" class="top-navigation pace-done">
+<div id="wrapper">
+  <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
+    <div ng-include="'/views/common/navigation.html'"></div>
+    <div class="wrapper wrapper-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+              <div class="ibox-content">
+                <h2>Search the repository store</h2>
+                <form class="form">
+                  <div class="form-group">
+                    <input placeholder="search text" class="form-control" ng-model="repoterm"
+                           ng-change="repoSearch(repoterm)">
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-sm-12">
-                    <div class="ibox float-e-margins">
-                      <div class="ibox-content">
-                        <h2>Search the repository store</h2>
-                        <form class="form">
-                          <div class="form-group">
-                            <input placeholder="search text" class="form-control" ng-model="repoterm" ng-change="repoSearch(repoterm)">
-                          </div>
-                        </form>
-                        <div class="table-responsive">
-                          <table class="table">
-                            <thead>
-                            <tr>
-                              <th>Owner</th>
-                              <th>Created</th>
-                              <th>Project</th>
-                              <th align="right">Stats</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="i in repositoriesFound.items" class="search-result">
-                              <td>
-                                <img alt="image" class="img-circle img-sm" ng-src="{{i.project.owner.avatar_url}}">
-                              </td>
-                              <td class="created-at small">{{ i.project.created_at  | age }}</td>
-                              <td>
-                                <h4>{{i.project.name}}</h4>
-                                <a href="/snapshot/index.html?id={{i.id}}"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;Snapshot</a>&nbsp;&vert;&nbsp;<a href="{{i.project.html_url}}"><i class="fa fa-github" aria-hidden="true"></i>&nbsp;Github</a>
-                                <p class="text-muted">{{i.project.description}}</p>
-                                <p>Last update {{ i.project.updated_at | age }} | Last Analysed {{ i.last_analysed | age }}</p>
-                              </td>
-                              <td align="right" class="stats">{{i.project.watchers | number}}&nbsp;watchers<br/>
-                                {{i.project.open_issues_count | number}} open issues<br/>
-                                {{i.project.forks | number}} forks<br/>
-                                {{i.project.size | number}} kb
-                              </td>
-                            </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
+                </form>
 
-                  </div>
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th>Project</th>
+                      <th align="right">Stats</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="i in repositoriesFound.items" class="search-result">
+
+                      <td>
+                        <h4>{{i.project.name}}</h4>
+                        <p ng-if="i.project.created_at">{{ i.project.created_at | age }}</p>
+                        <img alt="image" class="img-circle img-sm" ng-src="{{i.project.owner.avatar_url}}"
+                             ng-if="i.project.owner.avatar_url">
+                        <a href="/snapshot/index.html?id={{i.id}}"><i class="fa fa-bar-chart"
+                                                                      aria-hidden="true"></i>&nbsp;Snapshot&nbsp;</a>
+                        <a href="{{i.project.html_url}}" ng-if="i.project.html_url">&vert;&nbsp;<i
+                          class="fas fa-link" aria-hidden="true"></i>&nbsp;Project</a>
+                        <p class="text-muted">{{i.project.description}}</p>
+                        <p ng-if="i.project.updated_at">Last update {{ i.project.updated_at | age }} | Last Analysed
+                          {{ i.last_analysed | age }}</p>
+                      </td>
+                      <td align="right" class="stats">{{i.project.watchers | number}}&nbsp;watchers<br/>
+                        {{i.project.open_issues_count | number}} open issues<br/>
+                        {{i.project.forks | number}} forks<br/>
+                        {{i.project.size | number}} kb
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
-        <div ng-include="'/views/common/footer.html'"></div>
       </div>
     </div>
+    <div ng-include="'/views/common/footer.html'"></div>
+  </div>
+</div>
 <!-- jQuery and Bootstrap -->
-    <script src="/js/jquery/jquery-2.1.1.min.js"></script>
-    <script src="/js/plugins/jquery-ui/jquery-ui.js"></script>
-    <script src="/js/bootstrap/bootstrap.min.js"></script>
+<script src="/js/jquery/jquery-2.1.1.min.js"></script>
+<script src="/js/plugins/jquery-ui/jquery-ui.js"></script>
+<script src="/js/bootstrap/bootstrap.min.js"></script>
 
-    <!-- MetsiMenu -->
-    <script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<!-- MetsiMenu -->
+<script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 
-    <!-- SlimScroll -->
-    <script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<!-- SlimScroll -->
+<script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
-    <!-- Custom and plugin javascript -->
-    <script src="/js/inspinia.js"></script>
+<!-- Custom and plugin javascript -->
+<script src="/js/inspinia.js"></script>
 
-    <!-- Main Angular scripts-->
-    <script src="/js/angular/angular.js"></script>
-    <script src="/js/angular/angular-websocket.js"></script>
-    <script src="/js/plugins/oclazyload/dist/ocLazyLoad.min.js"></script>
-    <script src="/js/ui-router/angular-ui-router.min.js"></script>
-    <script src="/js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
-    <script src="/js/angular/angular-resource.min.js"></script>
+<!-- Main Angular scripts-->
+<script src="/js/angular/angular.js"></script>
+<script src="/js/angular/angular-websocket.js"></script>
+<script src="/js/plugins/oclazyload/dist/ocLazyLoad.min.js"></script>
+<script src="/js/ui-router/angular-ui-router.min.js"></script>
+<script src="/js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
+<script src="/js/angular/angular-resource.min.js"></script>
 
-    <script src="/js/d3.js"></script>
-    <script src="/js/d3pie.min.js"></script>
-    <script src="/js/plugins/chartjs/Chart.min.js"></script>
+<script src="/js/d3.js"></script>
+<script src="/js/d3pie.min.js"></script>
+<script src="/js/plugins/chartjs/Chart.min.js"></script>
 
-    <script src="/js/charts.js"></script>
-    <script src="/js/filters.js"></script>
-    <script src="/js/repositories.js"></script>
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+<script src="/js/charts.js"></script>
+<script src="/js/filters.js"></script>
+<script src="/js/repositories.js"></script>
+<script>
+  (function (i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function () {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date();
+    a = s.createElement(o),
+      m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-      ga('create', 'UA-103593330-2', 'auto');
-      ga('send', 'pageview');
+  ga('create', 'UA-103593330-2', 'auto');
+  ga('send', 'pageview');
 
-    </script>
-  </body>
+</script>
+</body>
 </html>
