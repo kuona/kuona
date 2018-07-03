@@ -34,12 +34,16 @@
           <div class="col-sm-12">
             <div class="row">
               <div class="col-sm-6">
-                <h1><img alt="image" class="img-circle img-sm" ng-src="{{ avatar_url }}" ng-if="avatar_url"> {{snapshot.repository.name}}
+                <h1><img alt="image" class="img-circle img-sm" ng-src="{{ avatar_url }}" ng-if="avatar_url">
+                  {{snapshot.repository.name}}
                   Snapshot</h1>
               </div>
               <div class="col-sm-6 m-t-md">
-                <p class="small text-muted">{{snapshot.repository.description}}<br>
-                  <a href="{{repository.project.html_url}}">{{repository.project.html_url}} <i class="fa fa-github"></i></a>
+                <p class="small text-muted" ng-if="snapshot.repository.description">
+                  {{snapshot.repository.description}}</p>
+                <p class="small text-muted" ng-if="!snapshot.repository.description">No description found </p>
+                <p class="small text-muted" ng-if="repository.project.html_url">
+                  <a href="{{repository.project.html_url}}"> <i class="fas fa-link"></i> {{repository.project.html_url}}</a>
                 </p>
               </div>
             </div>
@@ -48,7 +52,8 @@
                 <json-view data="snapshot.manifest"></json-view>
               </div>
               <div class="col-lg-8">
-                <manifest-panel data="snapshot.manifest" class="manifest-panel" ng-if="snapshot.manifest"></manifest-panel>
+                <manifest-panel data="snapshot.manifest" class="manifest-panel"
+                                ng-if="snapshot.manifest"></manifest-panel>
               </div>
             </div>
             <div class="row">
