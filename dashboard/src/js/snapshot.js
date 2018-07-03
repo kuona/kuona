@@ -79,7 +79,7 @@ function SnapshotController($scope, $http, $location) {
   $scope.id = $location.search().id;
   $scope.repository = {}
   $scope.snapshot = {};
-  $scope.avatar_url = "";
+  $scope.avatar_url = null;
   $scope.commits = [];
 
   $http.get("/api/snapshots/" + $scope.id).then(function (res) {
