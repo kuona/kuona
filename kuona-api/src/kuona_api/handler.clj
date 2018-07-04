@@ -61,7 +61,6 @@
 (defroutes app-routes
            (GET "/" [] (io/resource "public/index.html"))
            (GET "/valuestreams" [] (io/resource "public/valuestreams/index.html"))
-           (GET "/query" [] (io/resource "public/query/index.html"))
            (route/resources "/")
            (GET "/api" [] (get-service-data))
            (GET "/api/info" [] (get-api-info))
