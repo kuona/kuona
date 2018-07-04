@@ -34,10 +34,7 @@
            {:href "/api/metrics" :rel "metrics"}
            {:href "/api/valuestreams" :rel "valuestreams"}
            {:href "/api/info" :rel "info"}
-           {:href "/api/query" :rel "query"}
-           {:href        "/api/indices"
-            :rel         "indices"
-            :description "API for managing ElasticSearch indexes. Support GET and DELETE and POST /id/rebuild. Rebuild deletes and then creates the index with the appropriate schema"}]})
+           {:href "/api/query" :rel "query"}]})
 
 (defn get-service-data
   []

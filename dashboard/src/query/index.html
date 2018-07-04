@@ -94,7 +94,7 @@
           <h2>Results</h2>
         </div>
         <div class="ibox-content" ng-repeat="r in response_data.results">
-          <a ng-show="source.id == 'snapshots'" href="/snapshot/index.html?id={{r.id}}">Snapshot /snapshot/index.html?id={{r.id}}</a>
+          <a ng-show="source.id == 'snapshots'" href="/snapshot.html?id={{r.id}}">Snapshot /snapshot.html?id={{r.id}}</a>
           <pre><code class="json">{{ r | json }}</code></pre>
         </div>
       </div>
