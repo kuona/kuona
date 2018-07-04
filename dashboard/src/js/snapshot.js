@@ -185,7 +185,8 @@ kuonaSnapshot.directive('artifactPanel', function () {
     scope: {
       path: '=',
       artifact: '=',
-      dependencyTree: '='
+      dependencyTree: '=',
+      build: '='
     },
     templateUrl: '/directives/build-artifact-panel.html'
   };
