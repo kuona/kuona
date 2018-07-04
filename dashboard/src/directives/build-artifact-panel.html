@@ -2,9 +2,7 @@
   <div class="panel-heading">
     <span ng-if="build.builder" class="label label-success pull-right ng-binding">{{build.builder}}</span>
     <span ng-if="artifact.packaging" class="label label-success pull-right ng-binding">{{artifact.packaging}}</span>
-    <h5>Module: {{ artifact.name }}
-      <small ng-if="artifact.inceptionYear">{{ artifact.inceptionYear }}</small>
-    </h5>
+    <h5>Module: {{ artifact.artifactId }}  <small ng-if="artifact.inceptionYear">{{ artifact.inceptionYear }}</small></h5>
   </div>
   <div class="panel-body">
     <h5><i class="far fa-file"></i> <code>{{ path }}</code></h5>
