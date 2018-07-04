@@ -1,5 +1,6 @@
 <div class="panel panel-default" ng-if="build.builder == 'Maven'">
   <div class="panel-heading">
+    <span ng-if="build.builder" class="label label-success pull-right ng-binding">{{build.builder}}</span>
     <span ng-if="artifact.packaging" class="label label-success pull-right ng-binding">{{artifact.packaging}}</span>
     <h5>Module: {{ artifact.name }}
       <small ng-if="artifact.inceptionYear">{{ artifact.inceptionYear }}</small>
@@ -15,23 +16,24 @@
       <p ng-if="artifact.description"> {{ artifact.description || '' }} <a ng-if="artifact.url" href="{{artifact.url}}">{{artifact.url}}</a>
       </p>
     </div>
+    <h5>Dependencies</h5>
     <div ng-if="dependencyTree">
       <dependency-chart data="dependencyTree"/>
-    </div>
-    <div ng-if="!dependencyTree">
-      <small>Dependency data gathering is still under development. Maven modules (pom.xml files) is supported.</small>
     </div>
   </div>
 </div>
 
 <div class="panel panel-default" ng-if="build.builder == 'Gradle'">
   <div class="panel-heading">
+    <span class="label label-success pull-right ng-binding">{{build.builder}}</span>
     <h5>Project: {{ build.project.name }}</h5>
   </div>
 
   <div class="panel-body" ng-repeat="module in build.project.modules">
+    <h5><i class="far fa-file"></i> <code>{{ path }}</code></h5>
     <h5><i class="far fa-folder"></i> <code>{{ module.name }}</code></h5>
     <p ng-if="module.description">{{module.description}}</p>
+    <h5>Dependencies</h5>
 
     <ul class="list-unstyled">
       <li ng-repeat="d in module.dependencies">{{d.scope}}: {{d.group}}:{{d.name}}:{{d.version}}
@@ -42,7 +44,25 @@
   </div>
 </div>
 
-<div class="panel panel-default" ng-if="build.builder != 'Gradle' && build.builder != 'Maven'">
+<div class="panel panel-default" ng-if="build.builder == 'Leiningen'">
+  <div class="panel-heading">
+    <span class="label label-success pull-right ng-binding">{{build.builder}}</span>
+    <h5>{{build.project.name}} project</h5>
+  </div>
+  <div class="panel-body">
+    <h5><i class="far fa-file"></i> <code>{{ path }}</code></h5>
+    <h5><i class="far fa-folder"></i> <code>{{ build.project.name }} {{build.project.version}}</code></h5>
+    <p ng-if="build.project.description">{{build.project.description}}</p>
+
+    <h5>Dependencies</h5>
+    <ul class="list-unstyled">
+      <li ng-repeat="d in build.project.dependencies"><span ng-if="d.group">{{d.group}}:</span>{{d.name}}<span ng-if="d.version">:{{d.version}}</span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="panel panel-default"
+     ng-if="(build.builder != 'Gradle') and (build.builder != 'Maven') and (build.builder != 'Leiningen')">
   <div class="panel-heading">
     <h5>{{build.builder}} project</h5>
   </div>
@@ -50,5 +70,6 @@
     <h5><i class="far fa-file"></i> <code>{{ path }}</code></h5>
     <small>Dependency data gathering is still under development. {{build.builder}} projects are not yet supported.
     </small>
+    <pre>{{build}}</pre>
   </div>
 </div>

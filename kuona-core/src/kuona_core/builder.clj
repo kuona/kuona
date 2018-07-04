@@ -1,6 +1,7 @@
 (ns kuona-core.builder
   (:require [kuona-core.maven :as maven]
             [kuona-core.gradle :as gradle]
+            [kuona-core.leiningen :as lein]
             [kuona-core.util :refer :all])
   (:gen-class))
 
@@ -12,10 +13,16 @@
     (nil? file-path) (fn [p] nil)
     (re-matches #"(makefile|Makefile)|(.*/(makefile|Makefile))" file-path) (fn [p] {:builder "Make" :path project-relative-path})
     (re-matches #"Rakefile|.*/Rakefile" file-path) (fn [p] {:builder "Rake" :path project-relative-path})
-    (re-matches #"project.clj|.*/project.clj" file-path) (fn [p] {:builder "Leiningen" :path project-relative-path})
-    (re-matches #"build.gradle|.*/build.gradle" file-path) (fn [p] (merge {:builder "Gradle" :path project-relative-path} (gradle/analyse-gradle-project (.getParent (clojure.java.io/as-file p)))))
+    (re-matches #"project.clj|.*/project.clj" file-path) (fn [p]
+                                                           (merge {:builder "Leiningen" :path project-relative-path}
+                                                                  (lein/read-leiningen-project p)))
+    (re-matches #"build.gradle|.*/build.gradle" file-path) (fn [p]
+                                                             (merge {:builder "Gradle" :path project-relative-path}
+                                                                    (gradle/analyse-gradle-project (.getParent (clojure.java.io/as-file p)))))
     (re-matches #"build.xml|.*/build.xml" file-path) (fn [p] {:builder "Ant" :path project-relative-path})
-    (re-matches #"pom.xml|.*/pom.xml" file-path) (fn [p] (merge (maven/analyse-pom-file p) {:builder "Maven" :path project-relative-path}))
+    (re-matches #"pom.xml|.*/pom.xml" file-path) (fn [p]
+                                                   (merge {:builder "Maven" :path project-relative-path}
+                                                          (maven/analyse-pom-file p)))
     :else (fn [p] nil)))
 
 

@@ -13,7 +13,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class MavenDotReaderTest {
   @org.junit.Test
-  public void readsEmptyFile() throws Exception {
+  public void readsEmptyFile() {
 
     InputStream stream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
     Map<String, Object> result = MavenDotReader.readDependencies(stream);
