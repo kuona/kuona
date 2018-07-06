@@ -16,7 +16,6 @@
   <!-- Main Inspinia CSS files -->
   <link href="/css/animate.css" rel="stylesheet">
   <link id="loadBefore" href="/css/style.css" rel="stylesheet">
-  <base href="/repositories.html">
 </head>
 
 <body ng-controller="RepositoriesController as controller" class="top-navigation pace-done">
@@ -32,8 +31,7 @@
                 <h2>Search the repository store</h2>
                 <form class="form">
                   <div class="form-group">
-                    <input placeholder="search text" class="form-control" ng-model="repoterm"
-                           ng-change="repoSearch(repoterm)">
+                    <input placeholder="search text" class="form-control" ng-model="repoterm" ng-change="repoSearch(repoterm)">
                   </div>
                 </form>
 
@@ -51,15 +49,16 @@
                       <td>
                         <h4>{{i.project.name}}</h4>
                         <p ng-if="i.project.created_at">{{ i.project.created_at | age }}</p>
-                        <img alt="image" class="img-circle img-sm" ng-src="{{i.project.owner.avatar_url}}"
-                             ng-if="i.project.owner.avatar_url">
-                        <a href="/snapshot.html?id={{i.id}}"><i class="fa fa-bar-chart"
-                                                                      aria-hidden="true"></i>&nbsp;Snapshot&nbsp;</a>
-                        <a href="{{i.project.html_url}}" ng-if="i.project.html_url">&vert;&nbsp;<i
-                          class="fas fa-link" aria-hidden="true"></i>&nbsp;Project</a>
+
+                        <img alt="image" class="img-circle img-sm" ng-src="{{i.project.owner.avatar_url}}" ng-if="i.project.owner.avatar_url">
+
+                        <a href="/snapshot/snapshot.html?id={{i.id}}"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;Snapshot&nbsp;</a>
+
+                        <a href="{{i.project.html_url}}" ng-if="i.project.html_url">&vert;&nbsp;<i class="fas fa-link" aria-hidden="true"></i>&nbsp;Project</a>
+
                         <p class="text-muted">{{i.project.description}}</p>
-                        <p ng-if="i.project.updated_at">Last update {{ i.project.updated_at | age }} | Last Analysed
-                          {{ i.last_analysed | age }}</p>
+
+                        <p ng-if="i.project.updated_at">Last update {{ i.project.updated_at | age }} | Last Analysed {{ i.last_analysed | age }}</p>
                       </td>
                       <td align="right" class="stats">{{i.project.watchers | number}}&nbsp;watchers<br/>
                         {{i.project.open_issues_count | number}} open issues<br/>
