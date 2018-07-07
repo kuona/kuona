@@ -46,13 +46,12 @@
                 </p>
               </div>
             </div>
-            <div class="row" ng-if="snapshot.manifest">
+            <div class="row" ng-if="hasManifest()">
               <div class="col-lg-4">
                 <json-view data="snapshot.manifest"></json-view>
               </div>
               <div class="col-lg-8">
-                <manifest-panel data="snapshot.manifest" class="manifest-panel"
-                                ng-if="snapshot.manifest"></manifest-panel>
+                <manifest-panel data="snapshot.manifest" class="manifest-panel"></manifest-panel>
               </div>
             </div>
             <div class="row">

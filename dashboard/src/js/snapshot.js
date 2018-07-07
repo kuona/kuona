@@ -75,12 +75,25 @@ function manifestGraph(data) {
   return result;
 }
 
+function isEmpty(obj) {
+  for (var x in obj) {
+    return false;
+  }
+  return true;
+}
+
 function SnapshotController($scope, $http, $location) {
   $scope.id = $location.search().id;
   $scope.repository = {}
   $scope.snapshot = {};
   $scope.avatar_url = null;
   $scope.commits = [];
+  $scope.hasManifest = function () {
+    if ($scope.snapshot.manifest) {
+      return !isEmpty($scope.snapshot.manifest)
+    }
+    return false;
+  };
 
   $http.get("/api/snapshots/" + $scope.id).then(function (res) {
     $scope.snapshot = res.data;
@@ -111,7 +124,11 @@ function SnapshotController($scope, $http, $location) {
 
   $http.get("/api/repositories/" + $scope.id).then(function (res) {
     $scope.repository = res.data;
-    $scope.avatar_url = $scope.repository.project.owner.avatar_url
+    if ($scope.repository.project) {
+      if ($scope.repository.project.owner) {
+        $scope.avatar_url = $scope.repository.project.owner.avatar_url;
+      }
+    }
   });
 
   $http.get("/api/repositories/" + $scope.id + "/commits").then(function (res) {

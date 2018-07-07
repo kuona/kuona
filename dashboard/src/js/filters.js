@@ -24,11 +24,11 @@ function ageFilter() {
     var time = date;
 
     if (typeof date === 'string') {
-      console.log('date '+ date + ' is a string')
+      console.log('date ' + date + ' is a string')
       time = Date.parse(date);
     } else {
       time = new Date(date);
-       console.log('date is a ' + typeof date + ' ' + date + ' interpreted as ' + time);
+      console.log('date is a ' + typeof date + ' ' + date + ' interpreted as ' + time);
     }
 
     var timeNow = new Date().getTime(),
@@ -36,10 +36,15 @@ function ageFilter() {
       seconds = Math.floor(difference / 1000),
       minutes = Math.floor(seconds / 60),
       hours = Math.floor(minutes / 60),
-      days = Math.floor(hours / 24);
+      days = Math.floor(hours / 24),
+      months = Math.floor(days / 30);
     var years = Math.floor(days / 365);
     if (years > 0) {
       return years + " years ago";
+    } else if (months == 1) {
+      return "about a month ago";
+    }else if (months > 1) {
+      return "about " + months + " months ago";
     } else if (days > 1) {
       return days + " days ago";
     } else if (days == 1) {
