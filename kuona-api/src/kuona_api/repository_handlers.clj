@@ -33,7 +33,13 @@
 (defn get-commits
   [id page]
   (log/info "finding commits for repository " id " page " page)
-  (response (store/search commit-logs-store (str "repository_id:" id) 100 page #(commits-page-link id %))))
+  (let [query  {:query {:term {:repository_id id}}
+                :sort  [{:timestamp {:order :desc}}]
+                :from  (* (- page 1) 100)
+                :size  100}
+        result (store/search2 commit-logs-store query)]
+    (doall (map #(clojure.pprint/pprint  (:timestamp %)) (:items result)))
+    (response result)))
 
 (defn get-repository-by-id
   [id]

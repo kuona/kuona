@@ -74,6 +74,18 @@
   "Mergese the _id field with the contents of the _source object in results"
   [r] (merge {:id (:_id r)} (:_source r)))
 
+
+(defn search2
+  [^DataStore store query]
+  (log/info "document-search2" query)
+  (let [url (.url store ["_search"])]
+    (let [request (build-json-request query)
+          json-response (parse-json-body (http/get url request))
+          documents     (map source-with-id (-> json-response :hits :hits))]
+      (log/info "search2 request" request)
+      {:count (count documents)
+       :items documents})))
+
 (defn search
   [^DataStore store search-term size page page-fn]
   (log/info "document-search" search-term size page)

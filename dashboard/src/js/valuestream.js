@@ -62,6 +62,6 @@ kuonaValueStream.directive('commitsPanel', function () {
       commits: '=',
       count: '='
     },
-    templateUrl: '/directives/commits.html'
+    templateUrl: '/directives/commit-log-panel.html'
   };
 });

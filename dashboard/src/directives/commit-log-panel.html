@@ -2,17 +2,16 @@
   <div class="ibox-title">
     <h5>Most resent {{count}} commits</h5>
   </div>
-
   <div class="ibox-content">
     <div class="activity-stream">
       <div class="stream" ng-repeat="value in commits | orderBy : '-timestamp' | limitTo: count">
         <div class="stream-badge">
-          <i class="fab fab-git bg-primary"></i>
+          <i class="{{value.icon}} bg-primary"></i>
         </div>
         <div class="stream-panel">
           <div class="stream-info">
             <p>
-              <span class="date">{{value.commit.time | age}}</span>
+              <span class="date">{{value.timestamp | age}} ({{value.timestamp | date}})</span>
             </p>
             <a href="mailto:{{value.commit.email}}">
               <span>{{value.commit.author}}</span>

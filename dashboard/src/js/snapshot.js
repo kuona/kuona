@@ -119,7 +119,12 @@ function SnapshotController($scope, $http, $location) {
 
     for (var i in $scope.commits) {
       var c = $scope.commits[i];
-      c.timestamp = Date.parse(c.time);
+      c.timestamp = Date.parse(c.commit.time);
+      if (c.source.system == "git") {
+        c.icon = "fab fa-git";
+      } else {
+        c.icon = "fas fa-code-branch";
+      }
     }
   });
 }
@@ -145,7 +150,7 @@ kuonaSnapshot.directive('commitsPanel', function () {
       commits: '=',
       count: '='
     },
-    templateUrl: '/directives/commits.html'
+    templateUrl: '/directives/commit-log-panel.html'
   };
 });
 
