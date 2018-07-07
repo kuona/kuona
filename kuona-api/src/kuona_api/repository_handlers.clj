@@ -38,7 +38,6 @@
                 :from  (* (- page 1) 100)
                 :size  100}
         result (store/search2 commit-logs-store query)]
-    (doall (map #(clojure.pprint/pprint  (:timestamp %)) (:items result)))
     (response result)))
 
 (defn get-repository-by-id

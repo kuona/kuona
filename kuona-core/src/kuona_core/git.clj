@@ -62,7 +62,7 @@
                      :collector     {:name    :kuona-git-collector
                                      :version "0.1"}}]
     (let [result (store/put-document metric commit-store id)]
-      (log/info "Processing commit " url " " id " @ " (:time commit-info))
+      (log/info "new commit entry " url " " id " @ " (:time commit-info))
       result)))
 
 (defn commit-entry-not-captured
