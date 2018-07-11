@@ -94,32 +94,36 @@ function SnapshotController($scope, $http, $location) {
     }
     return false;
   };
+  $scope.snapshotFound = false;
 
   $http.get("/api/snapshots/" + $scope.id).then(function (res) {
     $scope.snapshot = res.data;
+    if ($scope.snapshot != "") {
+      $scope.snapshotFound = true;
 
-    $scope.file_piechart_data = [];
+      $scope.file_piechart_data = [];
 
-    for (var i = 0; i < $scope.snapshot.content.file_details.length; i++) {
-      var item = $scope.snapshot.content.file_details[i];
-      $scope.file_piechart_data.push({
-        "label": item.language, "color": colors[i], "value": item.count
-      });
+      for (var i = 0; i < $scope.snapshot.content.file_details.length; i++) {
+        var item = $scope.snapshot.content.file_details[i];
+        $scope.file_piechart_data.push({
+          "label": item.language, "color": colors[i], "value": item.count
+        });
+      }
+
+      barChart(document.getElementById("filesBarCanvas"), "Files", "Repository files by type", $scope.file_piechart_data);
+
+      $scope.code_piechart_data = [];
+      for (var i = 0; i < $scope.snapshot.content.code_line_details.length; i++) {
+        var item = $scope.snapshot.content.code_line_details[i];
+        $scope.code_piechart_data.push({
+          "label": item.language, "color": colors[i], "value": item.count
+        });
+      }
+
+      barChart(document.getElementById("codeBarCanvas"), "Code", "Lines of code by type", $scope.code_piechart_data);
+
+      enhanceDependencies($scope.snapshot.build);
     }
-
-    barChart(document.getElementById("filesBarCanvas"), "Files", "Repository files by type", $scope.file_piechart_data);
-
-    $scope.code_piechart_data = [];
-    for (var i = 0; i < $scope.snapshot.content.code_line_details.length; i++) {
-      var item = $scope.snapshot.content.code_line_details[i];
-      $scope.code_piechart_data.push({
-        "label": item.language, "color": colors[i], "value": item.count
-      });
-    }
-
-    barChart(document.getElementById("codeBarCanvas"), "Code", "Lines of code by type", $scope.code_piechart_data);
-
-    enhanceDependencies($scope.snapshot.build);
   });
 
   $http.get("/api/repositories/" + $scope.id).then(function (res) {
@@ -265,6 +269,23 @@ kuonaSnapshot.directive('jsonView', function () {
             hljs.highlightBlock(codeElement);
           });
         }
+      });
+    }
+  };
+});
+
+kuonaSnapshot.directive('markdown', function () {
+  return {
+    restrict: 'E',
+    transclude: true,
+    scope: {
+      data: "="
+    },
+    link: function (scope, element, attrs) {
+      scope.$watch('data', function () {
+        var converter = new showdown.Converter();
+        var htmlText = converter.makeHtml(scope.data);
+        element.html(htmlText);
       });
     }
   };

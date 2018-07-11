@@ -1,6 +1,5 @@
 (ns kuona-core.collector.manifest-test
-  (:require [clojure.test :refer :all]
-            [midje.sweet :refer :all]
+  (:require [midje.sweet :refer :all]
             [kuona-core.collector.manifest :as manifest]))
 
 

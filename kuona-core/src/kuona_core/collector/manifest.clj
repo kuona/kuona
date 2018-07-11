@@ -16,7 +16,7 @@
     :else nil))
 
 (defn clean-manifest [m]
-  {:manifest {
+  {:manifest {:found true
               :description (-> m :manifest :description)
               :components  (into [] (map (fn [c]
                                            {:id           (-> c :id)
@@ -35,4 +35,4 @@
     (cond
       manifest-file (let [text (slurp manifest-file)]
                       (clean-manifest (yaml/parse-string text)))
-      :else {:manifest {}})))
+      :else {:manifest {:found false}})))

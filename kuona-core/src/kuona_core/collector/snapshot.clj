@@ -10,7 +10,8 @@
     [kuona-core.builder :as builder]
     [kuona-core.workspace :refer [get-workspace-path]]
     [kuona-core.util :as util]
-    [kuona-core.collector.manifest :as manifest])
+    [kuona-core.collector.manifest :as manifest]
+    [kuona-core.collector.readme :as readme])
   (:gen-class))
 
 
@@ -69,8 +70,11 @@
       (let [loc-data      (cloc/loc-collector local-dir)
             build-data    (builder/collect-builder-metrics local-dir)
             snapshot-data (create-snapshot (-> repo :project) (loc-metrics loc-data) build-data)
-            manifest      (manifest/collect local-dir)]
+            manifest      (manifest/collect local-dir)
+            readme        (readme/collect local-dir)]
 
-        (store/put-document (merge snapshot-data manifest) stores/snapshots-store id))
+        (store/put-document (merge snapshot-data
+                                   manifest
+                                   readme) stores/snapshots-store id))
       (catch Object _
         (log/error (:throwable &throw-context) "Unexpected error creating snapshot for" name "id" id "url" url)))))
