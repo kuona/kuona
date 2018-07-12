@@ -38,7 +38,7 @@
             </div>
           </div>
         </div>
-        <div class="row" ng-show="snapshotFound">
+        <div class="row">
           <div class="col-sm-12">
             <div class="row">
               <div class="col-sm-6">
@@ -91,7 +91,7 @@
                               <h5><i class="fa fa-file"></i>&nbsp;File Counts</h5>
                             </div>
                             <div class="panel-content">
-                              <canvas id="filesBarCanvas"></canvas>
+                              <canvas horizontal-bar-chart data="fileChartData" label="'Files'" title="'Repository files by type'"></canvas>
                             </div>
                           </div>
                         </div>
@@ -101,7 +101,7 @@
                               <h5><i class="fa fa-file"></i> Lines of code</h5>
                             </div>
                             <div class="panel-content">
-                              <canvas id="codeBarCanvas"></canvas>
+                              <canvas horizontal-bar-chart label="'Code'" title="'Lines of code by type'" data="code_piechart_data"></canvas>
                             </div>
                           </div>
                         </div>

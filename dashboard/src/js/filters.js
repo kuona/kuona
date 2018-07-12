@@ -28,7 +28,6 @@ function ageFilter() {
       time = Date.parse(date);
     } else {
       time = new Date(date);
-      console.log('date is a ' + typeof date + ' ' + date + ' interpreted as ' + time);
     }
 
     var timeNow = new Date().getTime(),

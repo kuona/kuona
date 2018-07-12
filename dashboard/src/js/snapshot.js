@@ -88,6 +88,7 @@ function SnapshotController($scope, $http, $location) {
   $scope.snapshot = {};
   $scope.avatar_url = null;
   $scope.commits = [];
+  $scope.fileChartData = null;
   $scope.hasManifest = function () {
     if ($scope.snapshot.manifest) {
       return !isEmpty($scope.snapshot.manifest)
@@ -101,16 +102,16 @@ function SnapshotController($scope, $http, $location) {
     if ($scope.snapshot != "") {
       $scope.snapshotFound = true;
 
-      $scope.file_piechart_data = [];
+      $scope.fileChartData = [];
 
       for (var i = 0; i < $scope.snapshot.content.file_details.length; i++) {
         var item = $scope.snapshot.content.file_details[i];
-        $scope.file_piechart_data.push({
+        $scope.fileChartData.push({
           "label": item.language, "color": colors[i], "value": item.count
         });
       }
 
-      barChart(document.getElementById("filesBarCanvas"), "Files", "Repository files by type", $scope.file_piechart_data);
+      // barChart(document.getElementById("filesBarCanvas"), "Files", "Repository files by type", $scope.fileChartData);
 
       $scope.code_piechart_data = [];
       for (var i = 0; i < $scope.snapshot.content.code_line_details.length; i++) {
@@ -120,7 +121,7 @@ function SnapshotController($scope, $http, $location) {
         });
       }
 
-      barChart(document.getElementById("codeBarCanvas"), "Code", "Lines of code by type", $scope.code_piechart_data);
+      // barChart(document.getElementById("codeBarCanvas"), "Code", "Lines of code by type", $scope.code_piechart_data);
 
       enhanceDependencies($scope.snapshot.build);
     }
@@ -160,6 +161,29 @@ kuonaSnapshot.directive('dependencyChart', function () {
     },
     link: function (scope, element, attrs) {
       dependencyTreeChart(scope.data, d3.select(element[0]));
+    }
+  };
+});
+
+kuonaSnapshot.directive('horizontalBarChart', function () {
+  return {
+    restrict: 'A',
+    scope: {
+      data: '=',
+      label: '=',
+      title: '='
+    },
+    template: '<canvas height="140"></canvas>',
+    link: function (scope, element, attrs) {
+      console.log("element " + element);
+      console.log("element[0] " + element[0]);
+      console.log("element[0].children[0] " + element[0].children[0]);
+      var canvasElement = element[0];
+      scope.$watch('data', function (newValue, oldValue) {
+        if (scope.data) {
+          barChart(canvasElement, scope.label, scope.title, scope.data);
+        }
+      });
     }
   };
 });
@@ -265,7 +289,6 @@ kuonaSnapshot.directive('jsonView', function () {
       scope.$watch('data', function (newValue, oldValue) {
         if (scope.data) {
           scope.$evalAsync(function () {
-            console.log(scope.data);
             hljs.highlightBlock(codeElement);
           });
         }
