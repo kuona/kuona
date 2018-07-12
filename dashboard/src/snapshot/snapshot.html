@@ -135,6 +135,7 @@
                 <div class="ibox float-e-margins">
                   <div class="ibox-content">
                     <h2>Readme</h2>
+                    <p class="label-warning" ng-show="!snapshot.readme.found">No README file found during repository scan.</p>
                     <markdown data="snapshot.readme.text"></markdown>
                   </div>
                 </div>
