@@ -18,8 +18,7 @@
                                                  :dependencies [{:id "kuona-api"
                                                                  }]
                                                  }
-                                                {
-                                                 :component    nil
+                                                {:component    nil
                                                  :id           "kuona-api"
                                                  :path         "/kuona-api"
                                                  :description  "Web service for captured data"
@@ -32,7 +31,7 @@
                                                  }]
 
                                   }}]
-         (fact (manifest/clean-manifest original) => {:manifest {
+         (fact (manifest/clean-manifest original) => {:manifest {:found       true
                                                                  :description "Kuona manifest for kuona-project"
                                                                  :components  [{:id           "dashboard"
                                                                                 :description  "Angular Kuona UI"

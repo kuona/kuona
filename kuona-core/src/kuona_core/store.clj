@@ -1,6 +1,7 @@
 (ns kuona-core.store
   (:require [cheshire.core :refer :all]
-            [clj-http.client :as http]
+            [clj-http.client :as http-client]
+            [kuona-core.http :as http]
             [clojure.tools.logging :as log]
             [kuona-core.util :refer :all]
             [slingshot.slingshot :refer :all]
@@ -11,31 +12,28 @@
 
 (defn health
   []
-  (let [response (http/get (stores/es-url "_cluster" "health"))]
-    (parse-json-body response)))
+  (let [response (http-client/get (stores/es-url "_cluster" "health"))]
+    (http/parse-json-body response)))
 
 (defn put-document
   ([document ^DataStore store] (put-document document store (uuid)))
   ([document ^DataStore store id]
    (let [url (.url store [id])]
      (log/info "put-document " id url)
-     (parse-json-body (http/put url {:headers json-headers
-                                     :body    (generate-string document)})))))
-
+     (http/json-put url document))))
 
 (defn put-partial-document
   [^DataStore store id update]
   (let [url     (.url store '(id "_update"))
         request {:doc update}]
     (log/info "put-partial-update " store id)
-    (parse-json-body (http/post url {:headers json-headers
-                                     :body    (generate-string request)}))))
+    (http/json-post url request)))
 
 (defn get-count
   [^DataStore store]
   (let [url (.url store ["_count"])]
     (log/info "Reading document count for " url)
-    (parse-json-body (http/get url {:headers json-headers}))))
+    (http/json-get url)))
 
 (defn page-links
   [f & {:keys [size count]}]
@@ -66,9 +64,8 @@
 (defn internal-search
   [^DataStore store query]
   (log/info "internal-search" (-> store :index-name))
-  (let [url      (.url store '("_search"))
-        response (http/post url {:headers json-headers :body (generate-string query)})]
-    (parse-json-body response)))
+  (let [url (.url store '("_search"))]
+    (http/json-post url query)))
 
 (defn source-with-id
   "Mergese the _id field with the contents of the _source object in results"
@@ -79,10 +76,9 @@
   [^DataStore store query]
   (log/info "document-search2" query)
   (let [url (.url store ["_search"])]
-    (let [request (build-json-request query)
-          json-response (parse-json-body (http/get url request))
+    (let [json-response (http/json-get url query)
           documents     (map source-with-id (-> json-response :hits :hits))]
-      (log/info "search2 request" request)
+      (log/info "search2: " query)
       {:count (count documents)
        :items documents})))
 
@@ -94,10 +90,9 @@
         all-url    (str base-url "?" (pagination-param :size size :page page))
         url        (if (clojure.string/blank? search-term) all-url search-url)]
     (log/info "Reading document count for " url)
-    (let [json-response (parse-json-body (http/get url {:headers json-headers}))
+    (let [json-response (http/json-get url)
           result-count  (-> json-response :hits :total)
-          documents     (map source-with-id (-> json-response :hits :hits))
-          ]
+          documents     (map source-with-id (-> json-response :hits :hits))]
       {:count (count documents)
        :items documents
        :links (page-links page-fn :size size :count result-count)})))
@@ -137,7 +132,7 @@
   []
   {:indices (into []
                   (map (fn [[k v]] (merge v {:name k}))
-                       (:indices (parse-json-body (http/get (stores/es-url "_stats"))))))})
+                       (:indices (http/json-get (stores/es-url "_stats")))))})
 
 (defn read-schema
   [source]
@@ -146,8 +141,7 @@
     (let [id               (-> source :id)
           ^DataStore index (-> source :index)
           url              (.mapping-url index)
-          response         (http/get url {:headers json-headers})
-          body             (parse-json-body response)
+          body             (http/json-get url)
           mappings         (-> body hash-child hash-child hash-child hash-child)]
       {id (es-mapping-to-ktypes mappings)})
     (catch [:status 400] {:keys [body]}
@@ -164,17 +158,14 @@
       (log/error (:throwable &throw-context) "Unexpected error reading schema" source)
       {:error {:type        :unexpected
                :description (str (:throwable &throw-context))}})))
-
-
 (defn query
   [^DataStore source q]
   (try+
-    (let [store    (-> source :index)
-          url      (.url store '("_search"))
-          response (http/get url {:headers json-headers :body (generate-string q)})
-          body     (parse-json-body response)
-          results  (map source-with-id (-> body :hits :hits))
-          schema   (read-schema source)]
+    (let [store   (-> source :index)
+          url     (.url store '("_search"))
+          body    (http/json-get url q)
+          results (map source-with-id (-> body :hits :hits))
+          schema  (read-schema source)]
       {:count        (-> body :hits :total)
        :results      results
        :aggregations (merge {} (-> body :aggregations))
@@ -189,7 +180,7 @@
 (defn find-documents
   [url]
   (log/info "find-documents" url)
-  (let [json-response (parse-json-body (http/get url {:headers json-headers}))
+  (let [json-response (http/json-get url)
         documents     (map source-with-id (-> json-response :hits :hits))]
     {:count (count documents)
      :items documents
@@ -199,7 +190,7 @@
   [^DataStore mapping id]
   (try+
     (log/debug "getting" mapping id)
-    (parse-json-body (http/get (.url mapping [id])))
+    (http/json-get (.url mapping [id]))
     (catch [:status 404] {:keys [body]}
       (let [error (parse-json body)]
         (es-error error))
@@ -224,14 +215,13 @@
   "Retrieves all the activity based on the supplied key from the index."
   [^DataStore store]
   (let [url      (.url store ["_search"] ["size=10000"])
-        response (http/get url)]
+        response (http/json-get url)]
     (map source-with-id
          (-> response
-             parse-json-body
              :hits
              :hits))))
 
 (defn delete-document [^DataStore store id]
   (let [url (.url store [id])]
     (log/info "delete-document " store id url)
-    (parse-json-body (http/delete url {:headers json-headers}))))
+    (http/delete url)))

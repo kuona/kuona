@@ -1,6 +1,5 @@
 (ns kuona-api.handler
   (:require [cheshire.core :refer :all]
-            [clj-http.client :as http]
             [compojure.core :refer :all]
             [compojure.handler :as handler]
             [compojure.route :as route]
@@ -21,7 +20,8 @@
             [kuona-api.dashboard-handlers :as dashboards]
             [ring.middleware.json :as middleware]
             [ring.util.response :refer [file-response resource-response response status redirect]]
-            [clojure.java.io :as io])
+            [clojure.java.io :as io]
+            [clj-http.client :as http])
   (:gen-class))
 
 
@@ -42,7 +42,7 @@
 
 (defn api-info
   []
-  (let [es (util/parse-json-body (http/get (stores/es-url)))]
+  (let [es (kuona-core.http/json-get (stores/es-url))]
     {:kuona_api      {:version (util/get-project-version 'kuona-api)}
      :clojure        {:version (util/get-project-version 'org.clojure/clojure)}
      :elastic_search es}))

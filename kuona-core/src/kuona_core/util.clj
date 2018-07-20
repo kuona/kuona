@@ -2,25 +2,26 @@
   (:require [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [cheshire.core :refer :all])
-  (:import java.util.Properties)
+  (:import java.util.Properties
+           (java.util UUID))
   (:gen-class))
 
 
-(defn uuid [] (str (java.util.UUID/randomUUID)))
+(defn uuid ^UUID [] (str (UUID/randomUUID)))
 
 (defn uuid-from
   ([a b] (uuid-from (str a b)))
-  ([s] (str (java.util.UUID/nameUUIDFromBytes (.getBytes s)))))
+  ([s] (str (UUID/nameUUIDFromBytes (.getBytes s)))))
 
 (defn not-nil? [v] (not (nil? v)))
 
 (defn directory?
   "Tests the path for being a directory"
-  [path]
+  [^String path]
   (.isDirectory (io/as-file path)))
 
 (defn file-exists?
-  [file-path]
+  [^String file-path]
   (.exists (io/file file-path)))
 
 (defn timestamp
@@ -30,33 +31,24 @@
 
 (defn canonical-path
   "Returns canonical path of a given path"
-  [path]
+  [^String path]
   (.getCanonicalPath (io/file path)))
 
 (defn absolute-path
-  [path]
+  [^String path]
   (.getAbsolutePath (io/file path)))
 
 (defn file-reader
-  [path]
+  [^String path]
   (clojure.java.io/reader path))
 
 (defn find-files
-  [path]
+  [^String path]
   (file-seq (clojure.java.io/file path)))
 
 (defn parse-json
-  [text]
+  [^String text]
   (parse-string text true))
-
-(defn parse-json-body
-  [response]
-  (parse-json (:body response)))
-
-(defn build-json-request
-  [content]
-  {:headers {"content-type" "application/json; charset=UTF-8"}
-   :body    (generate-string content)})
 
 
 (defn map-kv
@@ -86,8 +78,8 @@
   
   usage (get-project-version 'projectname)"
   [dep]
-  (let [path (str "META-INF/maven/" (or (namespace dep) (name dep))
-                  "/" (name dep) "/pom.properties")
+  (let [path  (str "META-INF/maven/" (or (namespace dep) (name dep))
+                   "/" (name dep) "/pom.properties")
         props (io/resource path)]
     (when props
       (with-open [stream (io/input-stream props)]
@@ -103,5 +95,3 @@
     (do
       (log/warn (str "Configuration file \"" filename "\" not found"))
       {})))
-
-(def json-headers {"content-type" "application/json; charset=UTF-8"})

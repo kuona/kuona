@@ -159,8 +159,9 @@
             (f repo-path (.getName c) (:time (git-query/commit-info repo c))))
           (git/git-checkout repo "master")))))
 
-(defn clone-or-update [url local-dir]
-  (if (directory? local-dir) (git-pull url local-dir) (git-clone url local-dir)))
+(defn clone-or-update [^String url ^String local-dir]
+  (if (directory? local-dir) (git-pull url local-dir)
+                             (git-clone url local-dir)))
 
 
 (defn loc-to-code-doc [loc url repository-id timestamp]
