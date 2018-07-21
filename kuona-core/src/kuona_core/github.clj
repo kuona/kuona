@@ -2,6 +2,7 @@
   (:require [slingshot.slingshot :refer :all]
             [clojure.tools.logging :as log]
             [clojure.string :as string]
+            [kuona-core.http :as http]
             [kuona-core.util :as util]))
 
 
@@ -32,7 +33,7 @@
    (wrap-http-call
      #(let [url (string/join "/" ["https://api.github.com/repos" username repository])]
         {:status :success
-         :github (kuona-core.http/json-get url)}))))
+         :github (http/json-get url)}))))
 
 (defn get-project-repositories
   [project-name]
@@ -40,4 +41,4 @@
     #(let [url (string/join "/" ["https://api.github.com/users" project-name "repos"])]
        (log/info "github-query" url)
        {:status :success
-        :github (kuona-core.http/json-get url)})))
+        :github (http/json-get url)})))

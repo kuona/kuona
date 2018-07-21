@@ -55,12 +55,6 @@
              expected-no-results {:count 0 :items '() :links []}]
          (fact (store/search test-store "term" 10 1 #(%)) => expected-no-results
                (provided
-                 (http/get "http://localhost:9200/kuona-test/tests/_search?q=term&size=10" anything) => expected-no-results))
-         (fact (store/search test-store "term" 10 1 #(%)) => expected-no-results
-               (provided
-                 (http/get "http://localhost:9200/kuona-test/tests/_search?q=term&size=10" anything) => no-search-results :times 1))
-         (fact (store/search test-store "term" 10 1 #(%)) => expected-no-results
-               (provided
                  (http/get "http://localhost:9200/kuona-test/tests/_search?q=term&size=10" anything) => no-search-results :times 1))
          (fact (store/search test-store "term" 10 2 #(%)) => expected-no-results
                (provided

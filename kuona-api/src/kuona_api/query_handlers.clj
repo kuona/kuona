@@ -20,6 +20,7 @@
 (defn make-query
   "Calls the backing store to make query the index"
   [source query]
+  (log/info "make-query" (:id source)  query)
   (let [result (store/query source query)]
     (cond
       (-> result :error) result)
@@ -30,7 +31,7 @@
   [source-name query]
   (let [id     (keyword source-name)
         source (-> sources id)]
-    (log/info "Query source" source-name)
+    (log/info "Query source '" source-name "'")
     (cond
       source (response (make-query source query))
       :else (not-found {:error {:description "Invalid source name in query"}}))))
@@ -39,7 +40,7 @@
   "Handles requests for source schemas. Returns the requested schema or
   an error if the schema is not known"
   [source-name]
-  (log/info "Query source schema for" source-name)
+  (log/info "Query source schema for '" source-name "'")
   (let [id     (keyword source-name)
         source (-> sources id)]
     (cond

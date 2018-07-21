@@ -1,5 +1,6 @@
 (ns kuona-core.http
   (:require [cheshire.core :refer :all]
+            [clojure.tools.logging :as log]
             [clj-http.client :as http-client]
             [kuona-core.util :as util])
   (:gen-class))
@@ -25,8 +26,10 @@
 (defn json-get
   "Makes a Json web service call"
   ([url body]
-   (json-call http-client/post url body))
+   (log/info "json-get" url body)
+   (json-call http-client/get url body))
   ([url]
+   (log/info "json-get" url)
    (json-call http-client/get url)))
 
 (defn json-post
