@@ -1,6 +1,5 @@
 (ns kuona-core.collector.snapshot-test
   (:require [midje.sweet :refer :all]
-            [kuona-core.util :as util]
             [kuona-core.collector.snapshot :refer :all]))
 
 (facts "lines of code counts"
@@ -103,9 +102,9 @@
 
 (facts "about json requests"
        (fact "content type is application/json"
-             (:headers (util/build-json-request {})) => {"content-type" "application/json; charset=UTF-8"})
+             (:headers (kuona-core.http/build-json-request {})) => {"content-type" "application/json; charset=UTF-8"})
        (fact "handles empty json object"
-             (:body (util/build-json-request {})) => "{}")
+             (:body (kuona-core.http/build-json-request {})) => "{}")
        (fact "converts hashmap to json text"
-             (:body (util/build-json-request {:key :value})) => "{\"key\":\"value\"}"))
+             (:body (kuona-core.http/build-json-request {:key :value})) => "{\"key\":\"value\"}"))
 

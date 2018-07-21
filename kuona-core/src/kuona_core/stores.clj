@@ -26,6 +26,8 @@
    :type type})
 
 (defn es-url
+
+
   [& elements]
   (string/join "/" (map name (concat [(deref es-host)] elements))))
 
@@ -59,8 +61,8 @@
   [index types]
   (try+
     (log/info "Creating index" index)
-    (util/parse-json-body (http/put index {:headers util/json-headers
-                                           :body    (generate-string {:mappings types})}))
+    (kuona-core.http/json-put index {:mappings types})
+
     (catch [:status 400] {:keys [request-time headers body]}
       (log/error (str "Unexpected error creating index " index) body)
       (log/error (util/parse-json body))
@@ -75,14 +77,14 @@
   [index]
   (try+
     (log/info "Deleting store " index)
-    (util/parse-json-body (http/delete index))
+    (kuona-core.http/delete index)
     (catch Object _
       false)))
 
 (defn delete-index-by-id
   [id]
   (try+
-    (util/parse-json-body (http/delete (clojure.string/join "/" [default-es-host id])))
+    (kuona-core.http/delete (clojure.string/join "/" [default-es-host id]))
     (catch Object _
       false)))
 
@@ -347,6 +349,7 @@
 (def collector-config-store (DataStore. :collector-config :collector collector-config-schema))
 (def commit-logs-store (DataStore. :vcs-commit :commit-log commit-log-schema))
 (def code-metric-store (DataStore. :vcs-content :content {}))
+(def source-code-store (DataStore. :vcs-source :source {}))
 (def dashboards-store (DataStore. :dashboards :dashboard dashboards-schema))
 
 (def sources
@@ -366,6 +369,9 @@
    :code               {:id          :code
                         :index       code-metric-store
                         :description "Results of source analysis"}
+   :source             {:id          :source
+                        :index       source-code-store
+                        :description "Scanned repository code"}
    :collector-activity {:id          :collector-activity
                         :index       collector-activity-store
                         :description "Records collector activity"}
@@ -409,7 +415,7 @@
   (let [store (find-store-by-name name)]
     (cond
       (nil? store) (do
-                     (log/warn "Requested index rebuld for " name "nor found")
+                     (log/warn "Requested index rebuild for " name "nor found")
                      {:error ("Requested index '" name "' not found")})
       :else (do
               (log/info "Rebuilding  " name)

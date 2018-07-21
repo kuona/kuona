@@ -1,7 +1,8 @@
 (ns kuona-core.http
   (:require [cheshire.core :refer :all]
             [clj-http.client :as http-client]
-            [kuona-core.util :as util]))
+            [kuona-core.util :as util])
+  (:gen-class))
 
 (def json-headers {"content-type" "application/json; charset=UTF-8"})
 
@@ -19,27 +20,27 @@
   ([f url body]
    (parse-json-body (f url (build-json-request body))))
   ([f url]
-   (parse-json-body (f url))))
+   (parse-json-body (f url {:headers json-headers}))))
 
 (defn json-get
   "Makes a Json web service call"
   ([url body]
-   (parse-json-body (http-client/post url (build-json-request body))))
+   (json-call http-client/post url body))
   ([url]
-   (parse-json-body (http-client/get url {:headers json-headers}))))
+   (json-call http-client/get url)))
 
 (defn json-post
   "Makes a Json web service call"
   [url request]
-  (parse-json-body (http-client/post url (build-json-request request))))
+  (json-call http-client/post url request))
 
 (defn json-put
   [url request]
-  (parse-json-body (http-client/put url (build-json-request request))))
+  (json-call http-client/put url request))
 
 (defn head [url]
   (http-client/head url))
 
 (defn delete [url]
-  (http-client/delete url {:headers json-headers}))
+  (json-call http-client/delete url))
 

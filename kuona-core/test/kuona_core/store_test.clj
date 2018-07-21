@@ -51,35 +51,35 @@
 
 
 (facts "search"
-       (let [no-search-results {:body (generate-string {:hits {:total 0 :hits  []}})}
+       (let [no-search-results   {:body (generate-string {:hits {:total 0 :hits []}})}
              expected-no-results {:count 0 :items '() :links []}]
-       (fact (store/search test-store "term" 10 1 #(%)) => expected-no-results
-             (provided
-              (http/get anything anything) => no-search-results :times 1 ))
-       (fact (store/search test-store "term" 10 1 #(%)) => expected-no-results
-             (provided
-              (http/get "http://localhost:9200/kuona-test/tests/_search?q=term&size=10" anything) => no-search-results :times 1 ))
-       (fact (store/search test-store "term" 10 1 #(%)) => expected-no-results
-             (provided
-              (http/get "http://localhost:9200/kuona-test/tests/_search?q=term&size=10" anything) => no-search-results :times 1 ))
-       (fact (store/search test-store "term" 10 2 #(%)) => expected-no-results
-             (provided
-              (http/get "http://localhost:9200/kuona-test/tests/_search?q=term&size=10&from=10" anything) => no-search-results :times 1 ))))
+         (fact (store/search test-store "term" 10 1 #(%)) => expected-no-results
+               (provided
+                 (http/get "http://localhost:9200/kuona-test/tests/_search?q=term&size=10" anything) => expected-no-results))
+         (fact (store/search test-store "term" 10 1 #(%)) => expected-no-results
+               (provided
+                 (http/get "http://localhost:9200/kuona-test/tests/_search?q=term&size=10" anything) => no-search-results :times 1))
+         (fact (store/search test-store "term" 10 1 #(%)) => expected-no-results
+               (provided
+                 (http/get "http://localhost:9200/kuona-test/tests/_search?q=term&size=10" anything) => no-search-results :times 1))
+         (fact (store/search test-store "term" 10 2 #(%)) => expected-no-results
+               (provided
+                 (http/get "http://localhost:9200/kuona-test/tests/_search?q=term&size=10&from=10" anything) => no-search-results :times 1))))
 
 (def parsing-exception
-  {:error {:root_cause [{:type   :parsing_exception
-                         :reason "[match_all] malformed query, expected [END_OBJECT] but found [FIELD_NAME]"
-                         :line   1
-                         :col    73}]
-           :type       :parsing_exception
-           :reason     "[match_all] malformed query, expected [END_OBJECT] but found [FIELD_NAME]"
-           :line       1
-           :col        73}
-   :status  400})
+  {:error  {:root_cause [{:type   :parsing_exception
+                          :reason "[match_all] malformed query, expected [END_OBJECT] but found [FIELD_NAME]"
+                          :line   1
+                          :col    73}]
+            :type       :parsing_exception
+            :reason     "[match_all] malformed query, expected [END_OBJECT] but found [FIELD_NAME]"
+            :line       1
+            :col        73}
+   :status 400})
 
 (facts "about elasticsearch error handling"
        (fact "maps parsing exception"
-       (-> (store/es-error parsing-exception) :error :type) => :parsing_exception)
+             (-> (store/es-error parsing-exception) :error :type) => :parsing_exception)
        (fact "composes description"
              (-> (store/es-error parsing-exception) :error :description) => "[match_all] malformed query, expected [END_OBJECT] but found [FIELD_NAME] line 1 column 73")
        (fact "maps parsing location"

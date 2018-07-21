@@ -12,10 +12,11 @@
             [kuona-core.util :as util]
             [kuona-core.git :as git]
             [kuona-core.collector.snapshot :as snapshot]
-            [kuona-core.stores :refer [repositories-store commit-logs-store code-metric-store collector-config-store]]
+            [kuona-core.stores :refer [repositories-store commit-logs-store code-metric-store collector-config-store source-code-store]]
             [kuona-core.workspace :refer [get-workspace-path]]
             [kuona-core.stores :as stores]
-            [kuona-core.collector.manifest :as manifest]))
+            [kuona-core.collector.manifest :as manifest]
+            [kuona-core.collector.source-code :as source-code]))
 
 (defn track-activity
   ([stage status]
@@ -126,7 +127,17 @@
           (nil? url) (log/error "No URL field found in repository" repo)
           :else (record-activity "Historical code metric collector"
                                  {:url url}
-                                 (git/collect-repository-historical-code-metrics1 code-metric-store (get-workspace-path) url (-> repo :id)))))))
+                                 (git/collect-repository-historical-code-metrics1 code-metric-store (get-workspace-path) url (-> repo :id))))))
+    (doseq [repo repositories]
+      (let [url (-> repo :url)]
+        (cond
+          (nil? url) (log/error "No URL field found in repository" repo)
+          :else (record-activity "Historical code metric collector"
+                                 {:url url}
+                                 (source-code/collect  source-code-store (get-workspace-path) url (-> repo :id)))))
+      )
+
+    )
   (track-activity "Updating respository metrics" :completed))
 
 (defn refresh-build-metrics []
