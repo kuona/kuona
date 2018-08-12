@@ -3,36 +3,38 @@ package kuona.maven.dot.parser;
 import kuona.maven.dot.parser.MavenDotParser.ArtifactContext;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.hamcrest.CoreMatchers;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class ParserTest {
+@DisplayName("Maven pom parser")
+class ParserTest {
   @Test
-  public void recognisesArtifact() {
+  @DisplayName("Recognises artifact references")
+  void recognisesArtifact() {
 
     ArtifactContext context = parseArtifact("\"a:b:jar:1.0:test\"");
 
-    assertThat(context.groupid.getText(), equalTo("a"));
-    assertThat(context.artifactid.getText(), equalTo("b"));
-    assertThat(context.packageing.getText(), equalTo("jar"));
-    assertThat(context.version.getText(), equalTo("1.0"));
-    assertThat(context.scope.getText(), equalTo("test"));
+    assertEquals("a", context.groupid.getText());
+    assertEquals("b", context.artifactid.getText());
+    assertEquals("jar", context.packageing.getText());
+    assertEquals("1.0", context.version.getText());
+    assertEquals("test", context.scope.getText());
   }
 
   @Test
-  public void recognisesArtifactWithoutScope() {
+  @DisplayName("Recognises artifact references without a scope reference")
+  void recognisesArtifactWithoutScope() {
 
     ArtifactContext context = parseArtifact("\"a:b:jar:1.0\"");
 
-    assertThat(context.groupid.getText(), equalTo("a"));
-    assertThat(context.artifactid.getText(), equalTo("b"));
-    assertThat(context.packageing.getText(), equalTo("jar"));
-    assertThat(context.version.getText(), equalTo("1.0"));
-    assertThat(context.scope, nullValue());
+    assertEquals("a", context.groupid.getText());
+    assertEquals("b", context.artifactid.getText());
+    assertEquals("jar", context.packageing.getText());
+    assertEquals("1.0", context.version.getText());
+    assertNull(context.scope);
   }
 
   private ArtifactContext parseArtifact(String input) {
@@ -43,14 +45,14 @@ public class ParserTest {
   }
 
   @Test
-  public void readsArtifactWithSpecialCharacters() {
+  void readsArtifactWithSpecialCharacters() {
 
     ArtifactContext context = parseArtifact("\"p2.eclipse-plugin:org.openhab.core.compat1x:jar:lib/jackson-core-asl-1.9.2.jar:2.2.0.201706290927:system\" ;");
 
-    assertThat(context.groupid.getText(), equalTo("p2.eclipse-plugin"));
-    assertThat(context.artifactid.getText(), equalTo("org.openhab.core.compat1x"));
-    assertThat(context.packageing.getText(), equalTo("jar"));
-    assertThat(context.version.getText(), equalTo("2.2.0.201706290927"));
-    assertThat(context.scope.getText(), equalTo("system"));
+    assertEquals("p2.eclipse-plugin", context.groupid.getText());
+    assertEquals("org.openhab.core.compat1x", context.artifactid.getText());
+    assertEquals("jar", context.packageing.getText());
+    assertEquals("2.2.0.201706290927", context.version.getText());
+    assertEquals("system", context.scope.getText());
   }
 }

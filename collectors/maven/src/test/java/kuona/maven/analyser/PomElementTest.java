@@ -1,6 +1,6 @@
 package kuona.maven.analyser;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -16,8 +16,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class PomElementTest {
     @Test
@@ -28,7 +28,7 @@ public class PomElementTest {
 
         pomElement.apply(document);
 
-        assertThat(documentToString(document), is("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><project><child/></project>"));
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><project><child/></project>", documentToString(document) );
 
     }
 
@@ -40,7 +40,7 @@ public class PomElementTest {
 
         pomElement.apply(document);
 
-        assertThat(documentToString(document), is("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><project><path><to><child/></to></path></project>"));
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><project><path><to><child/></to></path></project>", documentToString(document));
 
     }
 

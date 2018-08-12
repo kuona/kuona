@@ -15,20 +15,20 @@ import java.util.Map;
 
 public class MavenDotReader {
   public static Map<String, Object> readDependencies(InputStream stream) {
-    HashMap<String, Object> result = new HashMap<>();
+    var result = new HashMap<String, Object>();
 
     try {
-      MavenDotLexer lexer = new MavenDotLexer(CharStreams.fromStream(stream));
-      CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-      MavenDotParser parser = new MavenDotParser(tokenStream);
-      GraphContext context = parser.graph();
+      var lexer = new MavenDotLexer(CharStreams.fromStream(stream));
+      var tokenStream = new CommonTokenStream(lexer);
+      var parser = new MavenDotParser(tokenStream);
+      var context = parser.graph();
 
       kuona.maven.dot.parser.MavenDotParser.ArtifactContext artifact = context.artifact();
       if (context.artifact() != null) {
         result.put("root", artifactAsMap(artifact));
       }
 
-      ArrayList<Map> dependencies = new ArrayList<>();
+      var dependencies = new ArrayList<Map>();
       for (MavenDotParser.DependencyContext dependencyContext : context.dependency()) {
         dependencies.add(dependencyAsMap(dependencyContext));
       }
@@ -51,8 +51,8 @@ public class MavenDotReader {
   }
 
   private static HashMap<String, String> artifactAsMap(MavenDotParser.ArtifactContext artifact) {
-    String quotedId = artifact.getText();
-    return new HashMap<String, String>() {{
+    var quotedId = artifact.getText();
+    return new HashMap<>() {{
       put("id", quotedId.substring(1, quotedId.length() - 1));
       put("groupId", artifact.groupid.getText());
       put("artifactId", artifact.artifactid.getText());

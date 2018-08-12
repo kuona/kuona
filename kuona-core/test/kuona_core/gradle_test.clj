@@ -11,7 +11,7 @@
          (fact
            (gradle/analyse-gradle-project test-project-path)
            => {:project {:description nil
-                         :jdk         "1.8"
+                         :jdk         "1.10"
                          :modules     [{:dependencies [{:exported false
                                                         :group    "org.antlr"
                                                         :name     "antlr4-runtime"

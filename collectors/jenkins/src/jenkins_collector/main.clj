@@ -1,13 +1,11 @@
 (ns jenkins-collector.main
   (:require [cheshire.core :refer :all]
-            [clj-http.client :as http]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jenkins-collector.jenkins :as jenkins]
             [kuona-core.cli :as cli]
-            [kuona-core.store :as store]
             [kuona-core.util :as util]
-            [kuona-core.http :as json]
+            [kuona-core.http :as http]
             [slingshot.slingshot :refer :all])
   (:gen-class))
 
@@ -19,15 +17,10 @@
    ["-c" "--config FILE" "Configuration file for CLI options" :default "local-properties.edn"]
    ["-h" "--help"]])
 
-(defn updated-collect-metrics
-  [mapping config]
-  (let [metrics (jenkins/collect-metrics (jenkins/http-source (:credentials config)) (:url config))]
-    (doall (map #(store/put-document % mapping) metrics))))
-
 (defn collector-log
   "Posts details of the collector to the API server to record the collector run"
   [api-url collector-details parameters status]
-  (json/json-post (string/join "/" [api-url "api" "collectors" "activities"])
+  (http/json-post (string/join "/" [api-url "api" "collectors" "activities"])
                   {:id         (util/uuid)
                    :collector  collector-details
                    :activity   status

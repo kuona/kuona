@@ -11,9 +11,9 @@ import java.io.InputStream;
 public class Parser {
   public static Query parse(InputStream stream) {
     try {
-      QueryLexer lexer = new QueryLexer(CharStreams.fromStream(stream));
-      CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-      QueryParser parser = new QueryParser(tokenStream);
+      var lexer = new QueryLexer(CharStreams.fromStream(stream));
+      var tokenStream = new CommonTokenStream(lexer);
+      var parser = new QueryParser(tokenStream);
       parser.query();
       return parser.getResult();
 

@@ -1,15 +1,17 @@
 package kuona.maven.analyser.model;
 
 import com.google.gson.Gson;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@DisplayName("Element serialization tests")
 public class ElementTest {
-    @Test
-    public void ElementsSerialize() {
+  @Test
+  @DisplayName("Elements are serializable")
+  public void ElementsSerialize() {
 
-        assertThat(new Gson().toJson(new FlareNode("Foo")).toString(), is("{\"name\":\"Foo\",\"children\":[]}"));
-    }
+    assertEquals("{\"name\":\"Foo\",\"children\":[]}", new Gson().toJson(new FlareNode("Foo")).toString());
+  }
 }

@@ -1,87 +1,85 @@
 package kuona.maven.analyser;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@DisplayName("Maven Dependency Analyzer CLI tests")
 public class MainTest {
-    @Test
-    public void acceptsPathsOnCommandline() {
-        final AnalyserRuntimeOptions options = Main.parseOptions(new String[]{"some/path"});
+  @Test
+  public void acceptsPathsOnCommandline() {
+    final AnalyserRuntimeOptions options = Main.parseOptions(new String[]{"some/path"});
 
-        assertThat(options.getArgs().size(), is(1));
-        assertThat(options.getArgs().get(0), is("some/path"));
-    }
+    assertEquals(1, options.getArgs().size());
+    assertEquals("some/path", options.getArgs().get(0));
+  }
 
-    @Test
-    public void defaultIncludesEverything() {
-        final AnalyserRuntimeOptions options = Main.parseOptions(new String[]{"some/path"});
+  @Test
+  public void defaultIncludesEverything() {
+    final AnalyserRuntimeOptions options = Main.parseOptions(new String[]{"some/path"});
 
-        assertThat(options.getIncludeFilter().test(new MavenArtifact("anything", null, null)), is(true));
-    }
+    assertTrue(options.getIncludeFilter().test(new MavenArtifact("anything", null, null)));
+  }
 
-    @Test
-    public void acceptsIncludeFilterOption() {
-        final AnalyserRuntimeOptions options = Main.parseOptions(new String[]{"--include", "foo", "dummy"});
+  @Test
+  public void acceptsIncludeFilterOption() {
+    final AnalyserRuntimeOptions options = Main.parseOptions(new String[]{"--include", "foo", "dummy"});
 
-        assertThat(options.getIncludeFilter().test(new MavenArtifact("anything", null, null)), is(false));
-    }
+    assertFalse(options.getIncludeFilter().test(new MavenArtifact("anything", null, null)));
+  }
 
-    @Test
-    public void acceptsAllArtifactsWithNoFilterOption() {
-        final AnalyserRuntimeOptions options = Main.parseOptions(new String[]{"dummy"});
+  @Test
+  public void acceptsAllArtifactsWithNoFilterOption() {
+    final AnalyserRuntimeOptions options = Main.parseOptions(new String[]{"dummy"});
 
-        assertThat(options.getArtifactFilter().test(new MavenArtifact(null, "anything", null)), is(true));
-    }
+    assertTrue(options.getArtifactFilter().test(new MavenArtifact(null, "anything", null)));
+  }
 
-    @Test
-    public void acceptsArtifactFilterOption() {
-        final AnalyserRuntimeOptions options = Main.parseOptions(new String[]{"--artifact", "bar", "dummy"});
+  @Test
+  public void acceptsArtifactFilterOption() {
+    final AnalyserRuntimeOptions options = Main.parseOptions(new String[]{"--artifact", "bar", "dummy"});
 
-        assertThat(options.getArtifactFilter().test(new MavenArtifact(null, "bar", null)), is(true));
-        assertThat(options.getArtifactFilter().test(new MavenArtifact(null, "foo", null)), is(false));
-    }
+    assertTrue(options.getArtifactFilter().test(new MavenArtifact(null, "bar", null)));
+    assertFalse(options.getArtifactFilter().test(new MavenArtifact(null, "foo", null)));
+  }
 
-    @Test
-    public void defaultsOutputFilename() {
-        final AnalyserRuntimeOptions options = Main.parseOptions(new String[]{"dummy"});
+  @Test
+  public void defaultsOutputFilename() {
+    final AnalyserRuntimeOptions options = Main.parseOptions(new String[]{"dummy"});
 
-        assertThat(options.getOutputFilename(), is("dependencies.json"));
-    }
+    assertEquals("dependencies.json", options.getOutputFilename());
+  }
 
-    @Test
-    public void canSpecifyOutputFilename() {
-        final AnalyserRuntimeOptions options = Main.parseOptions(new String[]{"--output", "foo.json", "dummy"});
+  @Test
+  public void canSpecifyOutputFilename() {
+    final AnalyserRuntimeOptions options = Main.parseOptions(new String[]{"--output", "foo.json", "dummy"});
 
-        assertThat(options.getOutputFilename(), is("foo.json"));
-    }
+    assertEquals("foo.json", options.getOutputFilename());
+  }
 
 
-    @Test
-    public void helpTest() {
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+  @Test
+  public void helpTest() {
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        Main.printHelp(outputStream);
+    Main.printHelp(outputStream);
 
-        String result = new String(outputStream.toByteArray());
+    String result = new String(outputStream.toByteArray());
 
-        assertThat(result, is("usage: java -jar kuona-maven-analyser.jar [options] <paths>\n" +
-                "\n" +
-                "Options\n" +
-                "   -a,--artifact <arg>  Filter the output artifacts based on the supplied filter\n" +
-                "                        pattern.\n" +
-                "   -h,--help            Output this message\n" +
-                "   -i,--include <arg>   Pattern used to filter all the dependencies in the\n" +
-                "                        output\n" +
-                "   -o,--output <arg>    Output filename\n" +
-                "\n" +
-                " See http://kuona.io\n"));
-    }
-
-    @Test
-    public void canSpecifyOutput() {
-
-    }
+    assertEquals("usage: java -jar kuona-maven-analyser.jar [options] <paths>\n" +
+      "\n" +
+      "Options\n" +
+      "   -a,--artifact <arg>  Filter the output artifacts based on the supplied filter\n" +
+      "                        pattern.\n" +
+      "   -h,--help            Output this message\n" +
+      "   -i,--include <arg>   Pattern used to filter all the dependencies in the\n" +
+      "                        output\n" +
+      "   -o,--output <arg>    Output filename\n" +
+      "\n" +
+      " See http://kuona.io\n", result);
+  }
 }
