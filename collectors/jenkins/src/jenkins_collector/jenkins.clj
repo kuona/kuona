@@ -2,6 +2,7 @@
   (:require [cheshire.core :refer :all]
             [clojure.tools.logging :as log]
             [kuona-core.util :as util]
+            [kuona-core.http :as json]
             [clj-http.client :as http]
             [clojure.string :as string]
             [slingshot.slingshot :refer :all]
@@ -102,7 +103,7 @@
 (defn get-jenkins-content
   [url credentials options]
   (try+
-    (let [content-parser (or (first options) util/parse-json-body)
+    (let [content-parser (or (first options) json/parse-json-body)
           uri (api-url url)
           http-credentials (http-credentials (:username credentials) (:password credentials))]
       (content-parser (http/get uri http-credentials)))

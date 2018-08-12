@@ -120,10 +120,3 @@
                                                                          :comment_line_details [{:language :foo :count 3}]
                                                                          :file_details         [{:language :foo :count 1}]}))
 
-(facts "about json requests"
-       (fact "content type is application/json"
-         (:headers (util/build-json-request {})) => {"content-type" "application/json; charset=UTF-8"})
-       (fact "handles empty json object"
-         (:body (util/build-json-request {})) => "{}")
-       (fact "converts hashmap to json text"
-         (:body (util/build-json-request {:key :value})) => "{\"key\":\"value\"}"))

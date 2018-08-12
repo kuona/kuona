@@ -5,16 +5,16 @@
             [cheshire.core :refer :all]
             [slingshot.slingshot :refer :all]
             [clj-http.client :as http]
-            [kuona-core.store :as store]
             [kuona-core.git :refer :all]
             [kuona-core.util :as util]
+            [kuona-core.http :as json]
             [kuona-core.cloc :as cloc]
             [kuona-core.builder :as builder])
   (:gen-class))
 
 (defn get-repositories
   [url]
-  (util/parse-json-body (http/get url)))
+  (json/parse-json-body (http/get url)))
 
 (defn repository-id
   [r]
@@ -53,8 +53,7 @@
 (defn put-snapshot!
   [snapshot url]
   (log/info "put-snapshot " url)
-  (let [request (util/build-json-request snapshot)]
-    (util/parse-json-body (http/put url request))))
+  (json/json-put url snapshot))
 
 (defn snapshot-commits-url
   [api-url id]
@@ -63,8 +62,7 @@
 (defn put-commit!
   [commit url]
   (log/info "put-commit " url)
-  (let [request (util/build-json-request commit)]
-    (util/parse-json-body (http/put url request))))
+  (json/json-put url commit))
 
 (defn has-snapshot?
   [id api-url]
@@ -138,22 +136,22 @@
         force-update    (:force options)
         requires-update (fn [r] (if force-update true (requires-snapshot? r api-url)))]
     (log/info "Updating " api-url " using " workspace " for repository data")
-    (http/post (string/join "/" [api-url "api" "collectors" "activities"]) (util/build-json-request {:id         (util/uuid)
-                                                                                                     :collector  {:name    "snapshot-collector"
-                                                                                                                  :version (util/get-project-version 'kuona-snapshot-collector)}
-                                                                                                     :activity   :started
-                                                                                                     :parameters [{:api api-url}
-                                                                                                                  {:workspace workspace}
-                                                                                                                  {:force-update force-update}]
-                                                                                                     :timestamp  (util/timestamp)}))
+    (json/json-post (string/join "/" [api-url "api" "collectors" "activities"]) {:id         (util/uuid)
+                                                                                 :collector  {:name    "snapshot-collector"
+                                                                                              :version (util/get-project-version 'kuona-snapshot-collector)}
+                                                                                 :activity   :started
+                                                                                 :parameters [{:api api-url}
+                                                                                              {:workspace workspace}
+                                                                                              {:force-update force-update}]
+                                                                                 :timestamp  (util/timestamp)})
     (let [repositories (all-repositories api-url)]
       (log/info "Found " (count repositories) " configured repositories for analysis")
       (create-snapshots api-url workspace (filter requires-update repositories)))
-    (http/post (string/join "/" [api-url "api" "collectors" "activities"]) (util/build-json-request {:id         (util/uuid)
-                                                                                                     :collector  {:name    "snapshot-collector"
-                                                                                                                  :version (util/get-project-version 'kuona-snapshot-collector)}
-                                                                                                     :activity   :finished
-                                                                                                     :parameters [{:api api-url}
-                                                                                                                  {:workspace workspace}
-                                                                                                                  {:force-update force-update}]
-                                                                                                     :timestamp  (util/timestamp)}))))
+    (json/json-post (string/join "/" [api-url "api" "collectors" "activities"]) {:id         (util/uuid)
+                                                                                 :collector  {:name    "snapshot-collector"
+                                                                                              :version (util/get-project-version 'kuona-snapshot-collector)}
+                                                                                 :activity   :finished
+                                                                                 :parameters [{:api api-url}
+                                                                                              {:workspace workspace}
+                                                                                              {:force-update force-update}]
+                                                                                 :timestamp  (util/timestamp)})))
