@@ -1,124 +1,3 @@
-/* TOOGLE SWICH */
-
-.onoffswitch
-  position: relative
-  width: 64px
-  -webkit-user-select: none
-  -moz-user-select: none
-  -ms-user-select: none
-
-
-.onoffswitch-checkbox
-  display: none
-
-
-.onoffswitch-label
-  display: block
-  overflow: hidden
-  cursor: pointer
-  border: 2px solid $navy
-  border-radius: 2px
-
-
-.onoffswitch-inner
-  width: 200%
-  margin-left: -100%
-  -moz-transition: margin 0.3s ease-in 0s
-  -webkit-transition: margin 0.3s ease-in 0s
-  -o-transition: margin 0.3s ease-in 0s
-  transition: margin 0.3s ease-in 0s
-
-
-.onoffswitch-inner:before, .onoffswitch-inner:after
-  float: left
-  width: 50%
-  height: 20px
-  padding: 0
-  line-height: 20px
-  font-size: 12px
-  color: white
-  font-family: Trebuchet, Arial, sans-serif
-  font-weight: bold
-  -moz-box-sizing: border-box
-  -webkit-box-sizing: border-box
-  box-sizing: border-box
-
-
-.onoffswitch-inner:before
-  content: "ON"
-  padding-left: 10px
-  background-color: $navy
-  color: #FFFFFF
-
-
-.onoffswitch-inner:after
-  content: "OFF"
-  padding-right: 10px
-  background-color: #FFFFFF
-  color: #999999
-  text-align: right
-
-
-.onoffswitch-switch
-  width: 20px
-  margin: 0
-  background: #FFFFFF
-  border: 2px solid $navy
-  border-radius: 2px
-  position: absolute
-  top: 0
-  bottom: 0
-  right: 44px
-  -moz-transition: all 0.3s ease-in 0s
-  -webkit-transition: all 0.3s ease-in 0s
-  -o-transition: all 0.3s ease-in 0s
-  transition: all 0.3s ease-in 0s
-
-
-.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner
-  margin-left: 0
-
-
-.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch
-  right: 0
-
-.onoffswitch-checkbox:disabled + .onoffswitch-label .onoffswitch-inner:before
-  background-color: #919191
-
-
-.onoffswitch-checkbox:disabled + .onoffswitch-label, .onoffswitch-checkbox:disabled + .onoffswitch-label .onoffswitch-switch
-  border-color: #919191
-
-
-/* CHOSEN PLUGIN */
-
-.chosen-container-single .chosen-single
-  background: #ffffff
-  box-shadow: none
-  -moz-box-sizing: border-box
-  border: 1px solid #CBD5DD
-  border-radius: 2px
-  cursor: text
-  height: auto !important
-  margin: 0
-  min-height: 30px
-  overflow: hidden
-  padding: 4px 12px
-  position: relative
-  width: 100%
-
-
-.chosen-container-multi .chosen-choices li.search-choice
-  background: #f1f1f1
-  border: 1px solid #ededed
-  border-radius: 2px
-  box-shadow: none
-  color: #333333
-  cursor: default
-  line-height: 13px
-  margin: 3px 0 3px 5px
-  padding: 3px 20px 3px 5px
-  position: relative
 
 
 /* Tags Input Plugin */
@@ -225,7 +104,7 @@
 
 .fc-button
   color: inherit
-  border: 1px solid $border-color
+  border: 1px solid $color-ibox-border
   cursor: pointer
   display: inline-block
   height: 1.9em
@@ -237,8 +116,8 @@
 
 
 .fc-state-active
-  background-color: $navy
-  border-color: $navy
+  background-color: $color-primary-background
+  border-color: $color-primary-background
   color: #ffffff
 
 
@@ -249,7 +128,7 @@
 
 
 .fc-content .fc-widget-header, .fc-content .fc-widget-content
-  border-color: $border-color
+  border-color: $color-ibox-border
   font-weight: normal
 
 
@@ -276,8 +155,10 @@
 .fc-agenda .fc-event-time,
 .fc-event a
   padding: 4px 6px
-  background-color: $navy /* background color */
-  border-color: $navy /* border color */
+  background-color: $color-primary-background
+  /* background color */
+  border-color: $color-primary-background
+/* border color */
 
 
 .fc-event-time, .fc-event-title
@@ -291,7 +172,7 @@
 
 /* Chat */
 .chat-activity-list .chat-element
-  border-bottom: 1px solid $border-color
+  border-bottom: 1px solid $color-ibox-border
 
 
 .chat-element:first-child
@@ -325,7 +206,7 @@
 
 
 .chat-element .well
-  border: 1px solid $border-color
+  border: 1px solid $color-ibox-border
   box-shadow: none
   margin-top: 10px
   margin-bottom: 5px
@@ -393,8 +274,8 @@
 /* LIST GROUP */
 
 a.list-group-item.active, a.list-group-item.active:hover, a.list-group-item.active:focus
-  background-color: $navy
-  border-color: $navy
+  background-color: $color-primary-background
+  border-color: $color-primary-background
   color: #FFFFFF
   z-index: 2
 
@@ -429,7 +310,7 @@ a.list-group-item.active, a.list-group-item.active:hover, a.list-group-item.acti
 
 .list-group-item
   background-color: inherit
-  border: 1px solid $border-color
+  border: 1px solid $color-ibox-border
   display: block
   margin-bottom: -1px
   padding: 10px 15px
@@ -742,7 +623,7 @@ div.dt-button-info
 
 
 .pace .pace-progress
-  background: $navy
+  background: $color-primary-background
   position: fixed
   z-index: 2040
   top: 0
@@ -756,37 +637,26 @@ div.dt-button-info
 
 
 /* WIDGETS */
-
-.widget
+@mixin widget
   border-radius: 5px
   padding: 15px 20px
   margin-bottom: 10px
   margin-top: 10px
+  background-color: lighten($color-dashboard-background, 7%)
+  color: $color-dashboard-text
+  border: 1px solid lighten($color-dashboard-background, 15%)
 
-
-.widget.style1 h2
-  font-size: 30px
-
-
-.widget h2, .widget h3
-  margin-top: 5px
-  margin-bottom: 0
-
-
-.widget-text-box
-  padding: 20px
-  border: 1px solid $border-color
-  background: #ffffff
-
-
-.widget-head-color-box
-  border-radius: 5px 5px 0 0
+.widget
+  @include widget-colors
+  border-radius: 5px
+  padding: 15px 20px
+  margin-bottom: 10px
   margin-top: 10px
-
-
-
-.widget .flot-chart
-  height: 100px
+  &.dashboard
+    @include widget
+  h2, h3
+    margin-top: 5px
+    margin-bottom: 0
 
 
 .vertical-align div
@@ -810,7 +680,7 @@ div.dt-button-info
 
 
 .todo-list.small-list > li
-  background: $gray
+  background: $color-background-wrapper
   border-left: none
   border-right: none
   border-radius: 4px
@@ -827,9 +697,9 @@ div.dt-button-info
 
 
 .todo-list > li
-  background: $gray
-  border-left: 6px solid $border-color
-  border-right: 6px solid $border-color
+  background: $color-background-wrapper
+  border-left: 6px solid $color-ibox-border
+  border-right: 6px solid $color-ibox-border
   border-radius: 4px
   color: inherit
   margin-bottom: 2px
@@ -898,31 +768,31 @@ div.dt-button-info
   width: 100%
 
 .form-control:focus, .single-line:focus
-  border-color: $navy !important
+  border-color: $color-primary-background !important
 
 
 .has-success .form-control, .has-success .form-control:focus
-  border-color: $navy
+  border-color: $color-primary-background
 
 
 .has-warning .form-control, .has-warning .form-control:focus
-  border-color: $yellow
+  border-color: $color-warning
 
 
 .has-error .form-control, .has-error .form-control:focus
-  border-color: $red
+  border-color: $color-danger
 
 
 .has-success .control-label
-  color: $navy
+  color: $color-primary-background
 
 
 .has-warning .control-label
-  color: $yellow
+  color: $color-warning
 
 
 .has-error .control-label
-  color: $red
+  color: $color-danger
 
 
 .input-group-addon
@@ -946,12 +816,12 @@ div.dt-button-info
 
 
 .noUi-connect
-  background: none repeat scroll 0 0 $navy
+  background: none repeat scroll 0 0 $color-primary-background
   box-shadow: none
 
 
 .slider_red .noUi-connect
-  background: none repeat scroll 0 0 $red
+  background: none repeat scroll 0 0 $color-danger
   box-shadow: none
 
 
@@ -1433,7 +1303,7 @@ div.dt-button-info
   width: 100%
   font-size: 0.75em
   line-height: 1.333333em
-  font-family: open sans, lucida grande, lucida sans unicode, helvetica, arial, sans-serif
+  font-family: $font-stack
   padding: 5px
   box-sizing: border-box
   -moz-box-sizing: border-box
@@ -1584,23 +1454,23 @@ label.error
 
 
 .toast
-  background-color: $navy
+  background-color: $color-primary-background
 
 
 .toast-success
-  background-color: $navy
+  background-color: $color-primary-background
 
 
 .toast-error
-  background-color: $red
+  background-color: $color-danger
 
 
 .toast-info
-  background-color: $lazur
+  background-color: $color-info
 
 
 .toast-warning
-  background-color: $yellow
+  background-color: $color-warning
 
 
 .toast-top-full-width
@@ -1624,19 +1494,19 @@ label.error
 
 
 .inspinia-notify.alert-warning
-  border-left: 6px solid $yellow
+  border-left: 6px solid $color-warning
 
 
 .inspinia-notify.alert-success
-  border-left: 6px solid $blue
+  border-left: 6px solid $color-success
 
 
 .inspinia-notify.alert-danger
-  border-left: 6px solid $red
+  border-left: 6px solid $color-danger
 
 
 .inspinia-notify.alert-info
-  border-left: 6px solid $navy
+  border-left: 6px solid $color-primary-background
 
 
 /* Image cropper style */
@@ -1776,11 +1646,11 @@ a.forum-item-title:hover
 
 
 .forum-item.active .fa
-  color: $navy
+  color: $color-primary-background
 
 
 .forum-item.active a.forum-item-title
-  color: $navy
+  color: $color-primary-background
 
 
 @media (max-width: 992px)
@@ -1982,7 +1852,7 @@ a.forum-item-title:hover
 
 
 .vertical-date small
-  color: $navy
+  color: $color-primary-background
   font-weight: 400
 
 
@@ -2067,7 +1937,7 @@ a.forum-item-title:hover
 
   .panel-body
     background: #fff
-    border: 1px solid $border-color
+    border: 1px solid $color-ibox-border
     border-radius: 2px
     padding: 20px
     position: relative
@@ -2076,7 +1946,7 @@ a.forum-item-title:hover
   .nav-tabs > li.active > a,
   .nav-tabs > li.active > a:hover,
   .nav-tabs > li.active > a:focus
-    border: 1px solid $border-color
+    border: 1px solid $color-ibox-border
     border-bottom-color: transparent
     background-color: #fff
 
@@ -2091,12 +1961,12 @@ a.forum-item-title:hover
 
 
   .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus
-    border: 1px solid $border-color
+    border: 1px solid $color-ibox-border
     border-bottom-color: transparent
 
 
   .nav-tabs
-    border-bottom: 1px solid $border-color
+    border-bottom: 1px solid $color-ibox-border
 
 
   .tab-pane .panel-body
@@ -2104,7 +1974,7 @@ a.forum-item-title:hover
 
 
   .tabs-left .tab-pane .panel-body, .tabs-right .tab-pane .panel-body
-    border-top: 1px solid $border-color
+    border-top: 1px solid $color-ibox-border
 
 
   .nav-tabs > li a:hover
@@ -2147,7 +2017,7 @@ a.forum-item-title:hover
 
 
   .tabs-below > .nav-tabs
-    border-top: 1px solid $border-color
+    border-top: 1px solid $color-ibox-border
 
 
   .tabs-below > .nav-tabs > li
@@ -2163,7 +2033,7 @@ a.forum-item-title:hover
 
   .tabs-below > .nav-tabs > li > a:hover,
   .tabs-below > .nav-tabs > li > a:focus
-    border-top-color: $border-color
+    border-top-color: $color-ibox-border
     border-bottom-color: transparent
 
 
@@ -2194,7 +2064,7 @@ a.forum-item-title:hover
   .tabs-left > .nav-tabs .active > a,
   .tabs-left > .nav-tabs .active > a:hover,
   .tabs-left > .nav-tabs .active > a:focus
-    border-color: $border-color transparent $border-color $border-color
+    border-color: $color-ibox-border transparent $color-ibox-border $color-ibox-border
 
 
   .tabs-right > .nav-tabs
@@ -2212,7 +2082,7 @@ a.forum-item-title:hover
   .tabs-right > .nav-tabs .active > a,
   .tabs-right > .nav-tabs .active > a:hover,
   .tabs-right > .nav-tabs .active > a:focus
-    border-color: $border-color $border-color $border-color transparent
+    border-color: $color-ibox-border $color-ibox-border $color-ibox-border transparent
     z-index: 1
 
 
@@ -2253,7 +2123,7 @@ a.forum-item-title:hover
   position: absolute
   left: 10px
   border-radius: 3px
-  background: $navy
+  background: $color-primary-background
   padding: 3px
   color: white
   cursor: pointer
@@ -2365,7 +2235,7 @@ a.forum-item-title:hover
 
 .slick-prev:before,
 .slick-next:before
-  color: $navy !important
+  color: $color-primary-background !important
 
 
 /* Payments */
@@ -2374,12 +2244,12 @@ a.forum-item-title:hover
   background: #ffffff
   padding: 20px
   margin-bottom: 25px
-  border: 1px solid $border-color
+  border: 1px solid $color-ibox-border
 
 
 .payment-icon-big
   font-size: 60px
-  color: $light-gray
+  color: $color-text-label
 
 
 .payments-method.panel-group .panel + .panel
@@ -2406,20 +2276,20 @@ a.forum-item-title:hover
 
 .select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple
-  border-color: $border-color
+  border-color: $color-ibox-border
 
 .select2-container--default.select2-container--focus .select2-selection--single,
 .select2-container--default.select2-container--focus .select2-selection--multiple
-  border-color: $navy
+  border-color: $color-primary-background
 
 .select2-container--default .select2-results__option--highlighted[aria-selected]
-  background-color: $navy
+  background-color: $color-primary-background
 
 .select2-container--default .select2-search--dropdown .select2-search__field
-  border-color: $border-color
+  border-color: $color-ibox-border
 
 .select2-dropdown
-  border-color: $border-color
+  border-color: $color-ibox-border
 
   input:focus
     outline: none
@@ -2429,7 +2299,7 @@ a.forum-item-title:hover
   outline: none
 
 .ui-select-container.ui-select-bootstrap .ui-select-choices-row.active > a
-  background-color: $navy
+  background-color: $color-primary-background
 
 
 /* Tour */
@@ -2474,47 +2344,47 @@ body.tour-open .animated
     width: 50px
 
     i
-      border: 1px solid $border-color
+      border: 1px solid $color-ibox-border
       border-radius: 50%
       padding: 6px
-      color: lighten($text-color, 10%)
+      color: lighten($color-text-default, 10%)
       position: absolute
       background-color: #ffffff
       left: 8px
 
       &.fa-circle
-        color: lighten($text-color, 40%)
+        color: lighten($color-text-default, 40%)
 
       &.bg-success
         color: #ffffff
-        background-color: $blue
-        border-color: $blue
+        background-color: $color-success
+        border-color: $color-success
 
       &.bg-primary
         color: #ffffff
-        background-color: $navy
-        border-color: $navy
+        background-color: $color-primary-background
+        border-color: $color-primary-background
 
       &.bg-warning
         color: #ffffff
-        background-color: $yellow
-        border-color: $yellow
+        background-color: $color-warning
+        border-color: $color-warning
 
       &.bg-info
         color: #ffffff
-        background-color: $lazur
-        border-color: $lazur
+        background-color: $color-info
+        border-color: $color-info
 
       &.bg-danger
         color: #ffffff
-        background-color: $red
-        border-color: $red
+        background-color: $color-danger
+        border-color: $color-danger
 
 
     &:before
       content: ''
       width: 1px
-      background-color: $border-color
+      background-color: $color-ibox-border
       position: absolute
       top: 0
       bottom: 0
@@ -2534,7 +2404,7 @@ body.tour-open .animated
 
 
     .date
-      color: lighten($text-color, 20%)
+      color: lighten($color-text-default, 20%)
       font-size: 80%
 
 

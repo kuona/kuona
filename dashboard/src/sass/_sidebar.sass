@@ -1,6 +1,6 @@
 .sidebar-panel
   width: 220px
-  background: darken($gray, 3%)
+  background: darken($color-background-wrapper, 3%)
   padding: 10px 20px
   position: absolute
   right: 0
@@ -87,17 +87,17 @@
     padding: 12px 10px
     margin: 0
     border-radius: 0
-    background: $nav-bg
+    background: $color-navigation-background
     color: #fff
     text-align: center
 
-    border-right: 1px solid lighten($nav-bg, 2%)
+    border-right: 1px solid lighten($color-navigation-background, 2%)
 
 
   ul.nav-tabs li.active a
     border: none
     background: #f9f9f9
-    color: $text-color
+    color: $color-text-default
     font-weight: bold
 
 
@@ -115,7 +115,7 @@
 
 
   ul.sidebar-list li
-    border-bottom: 1px solid $border-color
+    border-bottom: 1px solid $color-ibox-border
     padding: 15px 20px
     list-style: none
 
@@ -143,7 +143,7 @@
   .sidebar-title
     background: #f9f9f9
     padding: 20px
-    border-bottom: 1px solid $border-color
+    border-bottom: 1px solid $color-ibox-border
 
     h3
       margin-bottom: 3px
@@ -184,4 +184,4 @@
 
   .setings-item
     padding: 15px 20px
-    border-bottom: 1px solid $border-color
+    border-bottom: 1px solid $color-ibox-border

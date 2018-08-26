@@ -1,5 +1,6 @@
+
 .nav > li > a
-  color: $nav-text-color
+  color: $color-navigation-text
   font-weight: 600
   padding: 14px 20px 14px 25px
 
@@ -13,7 +14,7 @@
 
 
 .navbar-default .nav > li > a:hover, .navbar-default .nav > li > a:focus
-  background-color: darken($nav-bg, 3%)
+  background-color: darken($color-navigation-background, 3%)
   color: white
 
 
@@ -35,7 +36,7 @@
 
 .navbar-default
   background-color: transparent
-  border-color: $nav-bg
+  border-color: $color-navigation-background
 
 
 .navbar-top-links li
@@ -84,7 +85,7 @@
 .dropdown-menu > .active > a:hover
   color: #fff
   text-decoration: none
-  background-color: $navy
+  background-color: $color-primary-background
   outline: 0
 
 
@@ -151,18 +152,15 @@
 
 .nav-header
   padding: 33px 25px
-  background-color: $nav-bg
-  background-image: $nav-profile-pattern
-
-
+  background-color: $color-navigation-background
 
 .pace-done .nav-header
   transition: all 0.4s
 
 
 .nav > li.active
-  border-left: 4px solid darken($navy, 2%)
-  background: darken($nav-bg, 3%)
+  border-left: 4px solid darken($color-primary-background, 2%)
+  background: darken($color-navigation-background, 3%)
 
 
 .nav.nav-second-level > li.active
@@ -174,11 +172,11 @@
 
 
 .nav-header a
-  color: #DFE4ED
+  color: $color-navigation-header
 
 
 .nav-header .text-muted
-  color: #8095a8
+  color: $color-navigation-text-muted
 
 
 .minimalize-styl-2
@@ -276,13 +274,13 @@ body.mini-navbar .navbar-default .nav > li > .nav-second-level li a
   position: absolute
   left: 70px
   top: 0
-  background-color: $nav-bg
+  background-color: $color-navigation-background
   padding: 10px 10px 10px 10px
   font-size: 12px
 
 
 .canvas-menu.mini-navbar .nav-second-level
-  background: darken($nav-bg, 3%)
+  background: darken($color-navigation-background, 3%)
 
 
 .mini-navbar li.active .nav-second-level
@@ -290,8 +288,8 @@ body.mini-navbar .navbar-default .nav > li > .nav-second-level li a
 
 
 .navbar-default .special_link a
-  background: $navy
-  color: white
+  background: $color-primary-background
+  color: lighten($color-text-default, 3%)
 
 
 .navbar-default .special_link a:hover
@@ -300,23 +298,22 @@ body.mini-navbar .navbar-default .nav > li > .nav-second-level li a
 
 
 .navbar-default .special_link a span.label
-  background: #fff
-  color: $navy
+  background: lighten($color-primary-background, 3%)
+  color: lighten($color-text-default, 3%)
 
 
 .navbar-default .landing_link a
-  background: lighten($navy, 3%)
-  color: white
+  background: lighten($color-primary-background, 3%)
 
 
 .navbar-default .landing_link a:hover
-  background: $navy !important
-  color: white
+  background: $color-primary-background !important
+  color: lighten($color-text-default, 3%)
 
 
 .navbar-default .landing_link a span.label
-  background: #fff
-  color: lighten($navy, 3%)
+  background: $color-primary-background
+  color: lighten($color-text-default, 3%)
 
 
 .logo-element
@@ -336,14 +333,14 @@ body.mini-navbar .navbar-default .nav > li > .nav-second-level li a
 
 
 .navbar-fixed-top
-  background: #fff
+  background: $color-navigation-background
   transition-duration: 0.4s
   border-bottom: 1px solid #e7eaec !important
   z-index: 2030
 
 
 .navbar-fixed-top, .navbar-static-top
-  background: $gray
+  background: $color-primary-background
 
 
 .fixed-nav #wrapper
@@ -356,7 +353,7 @@ body.mini-navbar .navbar-default .nav > li > .nav-second-level li a
   -moz-border-top-colors: none
   background: none
   border-color: #DDDDDD #DDDDDD rgba(0, 0, 0, 0)
-  border-bottom: $gray
+  border-bottom: $color-background-wrapper
   border-image: none
   border-style: solid
   border-width: 1px
@@ -439,7 +436,7 @@ body.canvas-menu .logo-element
 
 body.mini-navbar .nav-header
   padding: 0
-  background-color: $navy
+  background-color: $color-primary-background
 
 
 body.canvas-menu .nav-header

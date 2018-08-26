@@ -11,7 +11,7 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
 
   <link href="css/animate.css" rel="stylesheet">
-  <link id="loadBefore" href="css/style.css" rel="stylesheet">
+  <link id="loadBefore" href="css/dashboard.css" rel="stylesheet">
   <link rel="apple-touch-icon-precomposed" sizes="57x57" href="favicon-apple-touch-114.png">
   <link rel="apple-touch-icon-precomposed" sizes="114x114" href="favicon-apple-touch-114.png">
   <link rel="apple-touch-icon-precomposed" sizes="72x72" href="favicon-apple-touch-144.png">
@@ -23,7 +23,7 @@
 
 <body ng-controller="MainController as main" class="top-navigation pace-done">
 <div id="wrapper">
-  <div id="page-wrapper" class="gray-bg">
+  <div id="page-wrapper">
     <div ng-include="'/views/common/navigation.html'"></div>
     <div class="wrapper wrapper-content">
       <div class="container-fluid">
@@ -75,31 +75,33 @@
 
             <div class="row">
               <div class="col-md-4">
-                <div class="ibox float-e-margins">
-                  <div class="ibox-title">
-                    <h3>Latest Collector Activity</h3>
-                  </div>
-                  <div class="ibox-content inspinia-timeline">
-                    <div class="timeline-item" ng-repeat="a in collector_activity | limitTo:5">
-                      <div class="row">
-                        <div class="col-xs-3 date">
-                          <i class="fas fa-clock-o"></i>
-                          {{ a.timestamp | date: 'yyyy-MM-dd hh:mm:ss' }}
-                          <br>
-                          <small class="text-navy">{{a.timestamp | age}}</small>
-                        </div>
-                        <div class="col-xs-7 content no-top-border">
-                          <p class="m-b-xs"><strong>{{a.collector.name}}</strong> V {{a.collector.version}} <strong>{{a.activity}}</strong>
-                          </p>
-                          <p class="m-b-xs" ng-if="a.parameters.length">Parameters</p>
-                          <p>
-                          <ul class="list-unstyled m-t-m">
-                            <li ng-repeat="(k, v) in a.parameters">
-                              {{k}}:
-                              <small class="text-navy">{{v}}</small>
-                            </li>
-                          </ul>
-                          <p>
+                <div class="widget no-padding">
+                  <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                      <h3>Latest Collector Activity</h3>
+                    </div>
+                    <div class="ibox-content inspinia-timeline">
+                      <div class="timeline-item" ng-repeat="a in collector_activity | limitTo:5">
+                        <div class="row">
+                          <div class="col-xs-3 date">
+                            <i class="far fa-clock"></i>
+                            {{ a.timestamp | date: 'yyyy-MM-dd hh:mm:ss' }}
+                            <br>
+                            <small class="text-navy">{{a.timestamp | age}}</small>
+                          </div>
+                          <div class="col-xs-7 content no-top-border">
+                            <p class="m-b-xs"><strong>{{a.collector.name}}</strong> V {{a.collector.version}} <strong>{{a.activity}}</strong>
+                            </p>
+                            <p class="m-b-xs" ng-if="a.parameters.length">Parameters</p>
+                            <p>
+                            <ul class="list-unstyled m-t-m">
+                              <li ng-repeat="(k, v) in a.parameters">
+                                {{k}}:
+                                <small class="text-navy">{{v}}</small>
+                              </li>
+                            </ul>
+                            <p>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -108,7 +110,7 @@
               </div>
               <div class="col-md-4">
 
-                <div class="widget navy-bg no-padding">
+                <div class="widget no-padding">
                   <div class="p-m">
                     <i class="fab fa-github fa-5x pull-right"></i>
                     <h1 class="m-xs">{{repository_count | number}}</h1>
@@ -118,7 +120,7 @@
                 </div>
 
 
-                <div class="widget navy-bg no-padding">
+                <div class="widget no-padding">
                   <div class="p-m">
                     <i class="far fa-clock fa-5x pull-right"></i>
                     <h1 class="m-xs">{{vcs_count | number}}</h1>
@@ -127,7 +129,7 @@
                   </div>
                 </div>
 
-                <div class="widget navy-bg no-padding">
+                <div class="widget no-padding">
                   <div class="p-m">
                     <i class="fas fa-chart-bar fa-4x pull-right"></i>
                     <h1 class="m-xs">{{code_metric_count | number }}</h1>
@@ -136,7 +138,7 @@
                   </div>
                 </div>
 
-                <div class="widget navy-bg no-padding">
+                <div class="widget no-padding">
                   <div class="p-m">
                     <i class="far fa-file fa-4x pull-right"></i>
                     <h1 class="m-xs">{{code_snapshot_count | number }}</h1>
@@ -148,7 +150,7 @@
               </div>
 
               <div class="col-md-4">
-                <div class="widget navy-bg no-padding">
+                <div class="widget no-padding">
                   <div class="p-m">
                     <div class="text-center">
                       <canvas id="buildToolCanvas"></canvas>

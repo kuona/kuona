@@ -1,8 +1,8 @@
 body
-  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif
-  background-color: #2f4050
+  font-family: $font-stack
+  background-color: $color-page-background
   font-size: 13px
-  color: $text-color
+  color: $color-text-default
   overflow-x: hidden
 
 
@@ -57,7 +57,7 @@ a:hover, a:focus
 
 
 .border-bottom
-  border-bottom: 1px solid $border-color !important
+  border-bottom: 1px solid $color-ibox-border !important
 
 
 .font-bold
@@ -75,11 +75,11 @@ a:hover, a:focus
   font-style: italic
 
 .b-r
-  border-right: 1px solid $border-color
+  border-right: 1px solid $color-ibox-border
 
 
 .hr-line-dashed
-  border-top: 1px dashed $border-color
+  border-top: 1px dashed $color-ibox-border
   color: #ffffff
   background-color: #ffffff
   height: 1px
@@ -87,7 +87,7 @@ a:hover, a:focus
 
 
 .hr-line-solid
-  border-bottom: 1px solid $border-color
+  border-bottom: 1px solid $color-ibox-border
   background-color: rgba(0, 0, 0, 0)
   border-style: solid !important
   margin-top: 15px
@@ -122,7 +122,7 @@ video
   z-index: 2020
 
 .note-editor.note-frame .note-editing-area .note-editable
-  color: $text-color
+  color: $color-text-default
   padding: 15px
 
 .note-editor.note-frame
@@ -214,10 +214,6 @@ video
   padding-top: 30px
 
 
-.ibox-content h1, .ibox-content h2, .ibox-content h3, .ibox-content h4, .ibox-content h5,
-.ibox-title h1, .ibox-title h2, .ibox-title h3, .ibox-title h4, .ibox-title h5
-  margin-top: 5px
-
 
 ul.unstyled, ol.unstyled
   list-style: none outside none
@@ -232,9 +228,8 @@ ul.unstyled, ol.unstyled
 /* FOOTER */
 
 .footer
-
-  background: none repeat scroll 0 0 white
-  border-top: 1px solid $border-color
+  background: none repeat scroll 0 0 $color-page-background
+  border-top: 1px solid $color-ibox-border
   bottom: 0
   left: 0
   padding: 10px 20px
@@ -249,8 +244,8 @@ ul.unstyled, ol.unstyled
   right: 0
   z-index: 1000
   padding: 10px 20px
-  background: white
-  border-top: 1px solid $border-color
+  background: $color-page-background
+  border-top: 1px solid $color-ibox-border
 
 
 .footer.fixed
@@ -261,7 +256,7 @@ ul.unstyled, ol.unstyled
   z-index: 1000
   padding: 10px 20px
   background: white
-  border-top: 1px solid $border-color
+  border-top: 1px solid $color-ibox-border
   margin-left: $sidebar-width
 
 
@@ -315,7 +310,7 @@ body.body-small .footer.fixed
 
 
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td
-  border-top: 1px solid $border-color
+  border-top: 1px solid $color-ibox-border
   line-height: 1.42857
   padding: 8px
   vertical-align: top
@@ -340,7 +335,7 @@ body.body-small .footer.fixed
 
 .nav-tabs > li > a:hover, .nav-tabs > li > a:focus
   background-color: #e6e6e6
-  color: $text-color
+  color: $color-text-default
 
 
 .ui-tab .tab-content
@@ -365,18 +360,14 @@ body.body-small .footer.fixed
   border-top: 0 !important
 
 
-.ibox-content.text-box
-  padding-bottom: 0
-  padding-top: 15px
-
 
 .border-left-right
-  border-left: 1px solid $border-color
-  border-right: 1px solid $border-color
+  border-left: 1px solid $color-ibox-border
+  border-right: 1px solid $color-ibox-border
 
 
 .border-left
-  border-left: 1px solid $border-color
+  border-left: 1px solid $color-ibox-border
   border-right: none
   border-top: none
   border-bottom: none
@@ -384,16 +375,16 @@ body.body-small .footer.fixed
 
 .border-right
   border-left: none
-  border-right: 1px solid $border-color
+  border-right: 1px solid $color-ibox-border
   border-top: none
   border-bottom: none
 
 .border-top
-  border-top: 1px solid $border-color
+  border-top: 1px solid $color-ibox-border
 
 
 .border-bottom
-  border-bottom: 1px solid $border-color
+  border-bottom: 1px solid $color-ibox-border
 
 
 .border-size-sm
@@ -447,7 +438,7 @@ img.circle-border
   font-weight: 600
   padding: 17px 20px
   text-align: center
-  background-color: $navy
+  background-color: $color-primary-background
 
 
 .login-panel
@@ -462,7 +453,7 @@ img.circle-border
 .icons-box .infont a i
   font-size: 25px
   display: block
-  color: $text-color
+  color: $color-text-default
 
 
 .icons-box .infont a
@@ -502,242 +493,157 @@ code
   padding: 2px 4px
   white-space: nowrap
 
-
 .ibox
   clear: both
   margin-bottom: 25px
   margin-top: 0
   padding: 0
+  &.collapsed
+    .ibox-content
+      display: none
+    .fa
+      &.fa-chevron-up:before
+        content: "\f078"
+      &.fa-chevron-down:before
+        content: "\f077"
+  &:after, &:before
+    display: table
 
+  .ibox-title
+    -moz-border-bottom-colors: none
+    -moz-border-left-colors: none
+    -moz-border-right-colors: none
+    -moz-border-top-colors: none
+    background-color: lighten($color-dashboard-background, 7%)
+    border-color: lighten($color-dashboard-background, 15%)
+    border-image: none
+    border-style: solid solid none
+    border-width: 2px 0 0
+    color: $dashboard-title-color
+    margin-bottom: 0
+    padding: 15px 15px 7px
+    min-height: 48px
+  .ibox-heading
+    h3
+      font-weight: 200
+      font-size: 24px
+  .ibox-title
+    h1, h2, h3, h4, h5
+      margin-top: 5px
+    h5
+      display: inline-block
+      font-size: 14px
+      margin: 0 0 7px
+      padding: 0
+      text-overflow: ellipsis
+      float: left
+    .label
+      float: left
+      margin-left: 4px
+  .ibox-tools
+    display: block
+    float: none
+    margin-top: 0
+    position: relative
+    padding: 0
+    text-align: right
+    a
+      cursor: pointer
+      margin-left: 5px
+      color: #c4c4c4
+      &.btn-primary
+        color: #fff
+    .dropdown-menu > li > a
+      padding: 4px 10px
+      font-size: 12px
+    &.open > .dropdown-menu
+      left: auto
+      right: 0
+  .ibox-content
+    background-color: lighten($color-dashboard-background, 10%)
+    color: inherit
+    padding: 15px 20px 20px 20px
 
-.ibox.collapsed .ibox-content
-  display: none
-
-
-.ibox.collapsed .fa.fa-chevron-up:before
-  content: "\f078"
-
-
-.ibox.collapsed .fa.fa-chevron-down:before
-  content: "\f077"
-
-
-.ibox:after, .ibox:before
-  display: table
-
-
-.ibox-title
-  -moz-border-bottom-colors: none
-  -moz-border-left-colors: none
-  -moz-border-right-colors: none
-  -moz-border-top-colors: none
-  background-color: $ibox-title-bg
-  border-color: $border-color
-  border-image: none
-  border-style: solid solid none
-  border-width: 2px 0 0
-  color: inherit
-  margin-bottom: 0
-  padding: 15px 15px 7px
-  min-height: 48px
-
-
-.ibox-content
-  background-color: $ibox-content-bg
-  color: inherit
-  padding: 15px 20px 20px 20px
-
-  border-color: $border-color
-  border-image: none
-  border-style: solid solid none
-  border-width: 1px 0
-
-
-.ibox-footer
-  color: inherit
-  border-top: 1px solid $border-color
-  font-size: 90%
-  background: #ffffff
-  padding: 10px 15px
-
-
-table.table-mail tr td
-  padding: 12px
-
-
-.table-mail .check-mail
-  padding-left: 20px
-
-
-.table-mail .mail-date
-  padding-right: 20px
-
-
-.star-mail, .check-mail
-  width: 40px
-
-
-.unread td a, .unread td
-  font-weight: 600
-  color: inherit
-
-
-.read td a, .read td
-  font-weight: normal
-  color: inherit
-
-
-.unread td
-  background-color: #f9f8f8
-
-
-.ibox-content
-  clear: both
-
-
-.ibox-heading
-  background-color: #f3f6fb
-  border-bottom: none
-
-
-.ibox-heading h3
-  font-weight: 200
-  font-size: 24px
-
-
-.ibox-title h5
-  display: inline-block
-  font-size: 14px
-  margin: 0 0 7px
-  padding: 0
-  text-overflow: ellipsis
-  float: left
-
-
-.ibox-title .label
-  float: left
-  margin-left: 4px
-
-
-.ibox-tools
-  display: block
-  float: none
-  margin-top: 0
-  position: relative
-  padding: 0
-  text-align: right
-
-
-.ibox-tools a
-  cursor: pointer
-  margin-left: 5px
-  color: #c4c4c4
-
-
-.ibox-tools a.btn-primary
-  color: #fff
-
-
-.ibox-tools .dropdown-menu > li > a
-  padding: 4px 10px
-  font-size: 12px
-
-
-.ibox .ibox-tools.open > .dropdown-menu
-  left: auto
-  right: 0
-
+    border-color: $color-ibox-border
+    border-image: none
+    border-style: solid solid none
+    border-width: 1px 0
+    h1, h2, h3, h4,h5
+      margin-top: 5px
+    &.text-box
+      padding-bottom: 0
+      padding-top: 15px
+  .ibox-footer
+    color: inherit
+    border-top: 1px solid $color-ibox-border
+    font-size: 90%
+    background: #ffffff
+    padding: 10px 15px
+  .dashboard
+    padding: 15px 20px
+  &.fullscreen
+    z-index: 2030
+    position: fixed
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+    overflow: auto
+    margin-bottom: 0
+    .collapse-link
+      display: none
+    .ibox-content
+      min-height: calc(100% - 48px)
 
 /* BACKGROUNDS */
 
 .gray-bg, .bg-muted
-  background-color: $gray
-
-
-.white-bg
-  background-color: #ffffff
-
-
-.blue-bg, .bg-success
-  background-color: $blue
-  color: #ffffff
-
-
-.navy-bg, .bg-primary
-  background-color: $navy
-  color: #ffffff
-
-
-.lazur-bg, .bg-warning
-  background-color: $lazur
-  color: #ffffff
-
-
-.yellow-bg
-  background-color: $yellow
-  color: #ffffff
-
-
-.red-bg, .bg-danger
-  background-color: $red
-  color: #ffffff
-
-
-.black-bg
-  background-color: #262626
-
+  background-color: $color-raised-background
 
 .panel-primary
-  border-color: $navy
-
+  border-color: $color-primary-background
 
 .panel-primary > .panel-heading
-  background-color: $navy
-  border-color: $navy
-
+  background-color: $color-primary-background
+  border-color: $color-primary-background
 
 .panel-success
-  border-color: $blue
-
+  border-color: $color-success
 
 .panel-success > .panel-heading
-  background-color: $blue
-  border-color: $blue
+  background-color: $color-success
+  border-color: $color-success
   color: #ffffff
-
 
 .panel-info
-  border-color: $lazur
-
+  border-color: $color-info
 
 .panel-info > .panel-heading
-  background-color: $lazur
-  border-color: $lazur
+  background-color: $color-info
+  border-color: $color-info
   color: #ffffff
 
-
 .panel-warning
-  border-color: $yellow
-
+  border-color: $color-warning
 
 .panel-warning > .panel-heading
-  background-color: $yellow
-  border-color: $yellow
+  background-color: $color-warning
+  border-color: $color-warning
   color: #ffffff
 
 
 .panel-danger
-  border-color: $red
+  border-color: $color-danger
 
 
 .panel-danger > .panel-heading
-  background-color: $red
-  border-color: $red
+  background-color: $color-danger
+  border-color: $color-danger
   color: #ffffff
 
 
 .progress-bar
-  background-color: $navy
+  background-color: $color-primary-background
 
 
 .progress-small, .progress-small .progress-bar
@@ -758,19 +664,19 @@ table.table-mail tr td
 
 
 .progress-bar-success
-  background-color: $blue
+  background-color: $color-success
 
 
 .progress-bar-info
-  background-color: $lazur
+  background-color: $color-info
 
 
 .progress-bar-warning
-  background-color: $yellow
+  background-color: $color-warning
 
 
 .progress-bar-danger
-  background-color: $red
+  background-color: $color-danger
 
 
 .panel-title
@@ -789,7 +695,7 @@ table.table-mail tr td
 /* COLORS */
 
 .text-navy
-  color: $navy
+  color: $color-primary-background
 
 
 .text-primary
@@ -797,19 +703,19 @@ table.table-mail tr td
 
 
 .text-success
-  color: $blue
+  color: $color-success
 
 
 .text-info
-  color: $lazur
+  color: $color-info
 
 
 .text-warning
-  color: $yellow
+  color: $color-warning
 
 
 .text-danger
-  color: $red
+  color: $color-danger
 
 
 .text-muted
@@ -1332,23 +1238,6 @@ body.fullscreen-ibox-mode
   overflow-y: hidden
 
 
-.ibox.fullscreen
-  z-index: 2030
-  position: fixed
-  top: 0
-  left: 0
-  right: 0
-  bottom: 0
-  overflow: auto
-  margin-bottom: 0
-
-
-.ibox.fullscreen .collapse-link
-  display: none
-
-
-.ibox.fullscreen .ibox-content
-  min-height: calc(100% - 48px)
 
 
 // Bootstrap issue in 3.3.0 with modal https://github.com/twbs/bootstrap/issues/9855

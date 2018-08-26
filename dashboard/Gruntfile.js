@@ -1,6 +1,3 @@
-var api = process.env.dashlocal ? 'http://localhost:9001' : 'http://dashboard.kuona.io:9001';
-
-
 module.exports = function (grunt) {
   grunt.initConfig({
     "babel": {
@@ -50,7 +47,7 @@ module.exports = function (grunt) {
     browserSync: {
       options: {
         port: 8080,
-        middleware: [require('http-proxy-middleware')('/api', {target: api})]
+        middleware: [require('http-proxy-middleware')('/api', {target: 'http://localhost:9001'})]
       },
       dev: {
         bsFiles: {

@@ -1,66 +1,48 @@
-.top-navigation #page-wrapper
-  margin-left: 0
+.top-navigation
+  #page-wrapper
+    margin-left: 0
 
 
-.top-navigation .navbar-nav .dropdown-menu > .active > a
-  background: white
-  color: $navy
-  font-weight: bold
+.top-navigation
+  .navbar-nav
+    .dropdown-menu > .active > a
+      background: white
+      color: $color-primary-background
+      font-weight: bold
+  .navbar-nav .dropdown-menu
+    box-shadow: none
+    border: 1px solid #e7eaec
+  .navbar
+    margin-bottom: 0
+  .navbar .nav > li.active
+    background: #fff
+    border: none
+  .nav > li > a
+    padding: 15px 20px
+    color: #676a6c
+  .nav > li a:hover, .top-navigation .nav > li a:focus
+    background: #fff
+    color: $color-primary-background
+  .nav > li.active > a
+    color: $color-primary-background
+  .navbar-right
+    margin-right: 10px
+  .dropdown-menu > li > a
+    margin: 0
+    padding: 7px 20px
+  .navbar-brand
+    background: $color-primary-background
+    color: #fff
+    padding: 15px 25px
+  .navbar-top-links li:last-child
+    margin-right: 0
 
-
-.white-bg .navbar-fixed-top, .white-bg .navbar-static-top
-  background: #fff
-
-
-.top-navigation .navbar
-  margin-bottom: 0
-
-
-.top-navigation .nav > li > a
-  padding: 15px 20px
-  color: #676a6c
-
-
-.top-navigation .nav > li a:hover, .top-navigation .nav > li a:focus
-  background: #fff
-  color: $navy
-
-
-.top-navigation .navbar .nav > li.active
-  background: #fff
-  border: none
-
-
-.top-navigation .nav > li.active > a
-  color: $navy
-
-
-.top-navigation .navbar-right
-  margin-right: 10px
-
-
-.top-navigation .navbar-nav .dropdown-menu
-  box-shadow: none
-  border: 1px solid #e7eaec
-
-
-.top-navigation .dropdown-menu > li > a
-  margin: 0
-  padding: 7px 20px
 
 
 .navbar .dropdown-menu
   margin-top: 0
 
 
-.top-navigation .navbar-brand
-  background: $navy
-  color: #fff
-  padding: 15px 25px
-
-
-.top-navigation .navbar-top-links li:last-child
-  margin-right: 0
 
 
 .top-navigation.mini-navbar #page-wrapper,
@@ -88,7 +70,7 @@
 
 
 .navbar-toggle
-  background-color: $navy
+  background-color: $color-primary-background
   color: #fff
   padding: 6px 12px
   font-size: 14px
