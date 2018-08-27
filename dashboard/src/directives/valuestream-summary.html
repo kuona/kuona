@@ -30,7 +30,7 @@
           <i class="fa fa-git"></i>
           6:00 am
           <br>
-          <small class="text-navy">2 hour ago</small>
+          <small class="text-highlight">2 hour ago</small>
         </div>
         <div class="col-xs-9 content no-top-border">
           <p class="m-b-xs"><strong>Commits in build</strong></p>
@@ -45,7 +45,7 @@
           <i class="fa fa-cogs"></i>
           {{ valuestream.build.timestamp | date:'yyyy-MM-dd HH:mm:ss'}}
           <br>
-          <small class="text-navy">{{ valuestream.build.timestamp | age }}</small>
+          <small class="text-highlight">{{ valuestream.build.timestamp | age }}</small>
         </div>
         <div class="col-xs-7 content no-top-border">
           <p class="m-b-xs"><strong>Build</strong></p>
@@ -62,10 +62,10 @@
           <i class="fa fa-cloud"></i>
           {{ deployment.timestamp | date:'yyyy-MM-dd HH:mm:ss'}}
           <br>
-          <small class="text-navy">{{ deployment.timestamp | age }}</small>
+          <small class="text-highlight">{{ deployment.timestamp | age }}</small>
         </div>
         <div class="col-xs-7 content no-top-border">
-          <p class="m-b-xs">Deployment to <strong class="text-navy">{{ deployment.environment.name }}</strong></p>
+          <p class="m-b-xs">Deployment to <strong class="text-highlight">{{ deployment.environment.name }}</strong></p>
           {{ deployment.duration | elapsed }}
         </div>
       </div>

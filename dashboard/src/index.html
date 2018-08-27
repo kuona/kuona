@@ -33,8 +33,8 @@
               <div class="col-sm-12">
                 <div class="text-center">
                   <h1>Welcome to Kuona</h1>
-                  <p>Please see <a href="http://kuona.io"><i class="fa fa-home text-navy"></i> kuona.io</a> and <a
-                    href="https://github.com/kuona/kuona-project"><i class="fa fa-github text-navy"></i>
+                  <p>Please see <a href="http://kuona.io"><i class="fa fa-home text-highlight"></i> kuona.io</a> and <a
+                    href="https://github.com/kuona/kuona-project"><i class="fa fa-github text-highlight"></i>
                     https://github.com/kuona/kuona-project</a> for project background and objectives</p>
                 </div>
               </div>
@@ -87,7 +87,7 @@
                             <i class="far fa-clock"></i>
                             {{ a.timestamp | date: 'yyyy-MM-dd hh:mm:ss' }}
                             <br>
-                            <small class="text-navy">{{a.timestamp | age}}</small>
+                            <small class="text-highlight">{{a.timestamp | age}}</small>
                           </div>
                           <div class="col-xs-7 content no-top-border">
                             <p class="m-b-xs"><strong>{{a.collector.name}}</strong> V {{a.collector.version}} <strong>{{a.activity}}</strong>
@@ -97,7 +97,7 @@
                             <ul class="list-unstyled m-t-m">
                               <li ng-repeat="(k, v) in a.parameters">
                                 {{k}}:
-                                <small class="text-navy">{{v}}</small>
+                                <small class="text-highlight">{{v}}</small>
                               </li>
                             </ul>
                             <p>

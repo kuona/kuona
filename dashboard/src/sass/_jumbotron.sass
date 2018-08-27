@@ -1,0 +1,42 @@
+$border-radius: .25rem !default
+$border-radius-lg: .3rem !default
+$border-radius-sm: .2rem !default
+
+@mixin border-radius($radius: $border-radius)
+  @if $enable-rounded
+    border-radius: $radius
+
+@mixin border-top-radius($radius)
+  @if $enable-rounded
+    border-top-left-radius: $radius
+    border-top-right-radius: $radius
+
+@mixin border-right-radius($radius)
+  @if $enable-rounded
+    border-top-right-radius: $radius
+    border-bottom-right-radius: $radius
+
+@mixin border-bottom-radius($radius)
+  @if $enable-rounded
+    border-bottom-right-radius: $radius
+    border-bottom-left-radius: $radius
+
+@mixin border-left-radius($radius)
+  @if $enable-rounded
+    border-top-left-radius: $radius
+    border-bottom-left-radius: $radius
+
+.jumbotron
+  padding: $jumbotron-padding ($jumbotron-padding / 2)
+  margin-bottom: $jumbotron-padding
+  background-color: $jumbotron-bg
+  @include border-radius($border-radius-lg)
+
+  @include media-breakpoint-up(sm)
+    padding: ($jumbotron-padding * 2) $jumbotron-padding
+
+.jumbotron-fluid
+  padding-right: 0
+  padding-left: 0
+  @include border-radius(0)
+

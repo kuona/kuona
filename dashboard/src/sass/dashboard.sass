@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700")
 $font-stack: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif
+$mono-font-stack: Menlo, Monaco, monospace
 
 // Basic Colors
 $color-page-background: black
@@ -7,12 +8,13 @@ $color-primary-background: lighten(rgb(37, 40, 48), 10%)
 $color-highlight: #2a2a2a
 $color-box-shadow: #c2c2c2
 $color-success: #23c6c8
-$color-info:  #1c84c6
+$color-info: #1c84c6
 $color-warning: #f8ac59
 $color-danger: #ED5565
 
 $color-text-default: #676a6c
 $color-text-default: #f8d641
+$color-text-highlight: lighten($color-text-default, 20%)
 $color-background-wrapper: #f3f3f4
 
 $color-raised-background: lighten($color-page-background, 30%)
@@ -28,7 +30,7 @@ $color-ibox-border: #e7eaec
 $color-ibox-title-background: #ffffff
 $color-ibox-content-background: #ffffff
 
-$color-navigation-background: #2F4050
+$color-navigation-background: $color-page-background
 $color-navigation-header: lighten($color-navigation-background, 20%)
 $color-navigation-text: #a7b1c2
 $color-navigation-text-muted: #8095a8
@@ -70,13 +72,11 @@ $warning-color: #e8d74f
   background-color: $color-warning
   color: #ffffff
 
-
 //Sidebar width
 $sidebar-width: 220px
 
 // Boxed layout width
 $boxed-width: 1200px
-$boxed-background: url('patterns/shattered.png')
 
 //Border radius for buttons
 $btn-border-radius: 3px
@@ -86,11 +86,10 @@ $sidebar-width: 220px
 
 // Boxed layout width
 $boxed-width: 1200px
-$boxed-background: url('patterns/shattered.png')
+$boxed-background: $color-primary-background
 
 //Border radius for buttons
 $btn-border-radius: 3px
-
 
 @import "typography"
 @import "navigation"
@@ -102,15 +101,19 @@ $btn-border-radius: 3px
 @import "base"
 @import "pages"
 @import "chart"
+$grid-breakpoints: (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px) !default
 
+$jumbotron-padding: 2rem !default
+$jumbotron-bg: lighten($color-page-background, 20%) !default
+$enable-rounded: true !default
+@import "breakpoints"
+@import "jumbotron"
 // Stick main content higher to the top
 .top-navigation
   .wrapper.wrapper-content
     padding: 0 0 40px
   .nav > li.active
     background: transparent
-
-
 
 // Clear layout on print mode
 @media print
@@ -164,8 +167,6 @@ $btn-border-radius: 3px
     width: 20px
     height: 20px
     border-radius: 5px
-
-
 
 .activity-stream
   @include widget
@@ -262,15 +263,124 @@ $btn-border-radius: 3px
 
 .manifest-panel
   canvas
+    color: $color-text-default
     height: 300px
+
+code
+  color: inherit
+  background-color: inherit
+  font-family: $mono-font-stack
+  font-weight: lighter
+pre
+  background-color: $color-page-background
+  code
+    color: $color-text-default
+    font-family: $mono-font-stack
+    font-size: 9px
+
 
 .snapshot
   font-size: 10px
-  pre code
-    font-family: monospace
-    font-size: 9px
 
 .file-change-list li
   font-family: monospace
   //padding: 5px 10px
   font-size: 9px
+
+$table-striped-order: odd !default
+$table-accent-bg: lighten($color-page-background, 20%)
+.table-striped
+  tbody
+    tr:nth-of-type(#{$table-striped-order})
+      background-color: $table-accent-bg
+
+.panel
+  margin-bottom: 20px
+  background-color: $boxed-background
+  border: 1px solid transparent
+  border-radius: 4px
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05)
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .05)
+
+.panel-body
+  background-color: $boxed-background
+  padding: 15px
+
+.panel-heading
+  padding: 10px 15px
+  border-bottom: 1px solid transparent
+  border-top-left-radius: 3px
+  border-top-right-radius: 3px
+  > .dropdown .dropdown-toggle
+    color: inherit
+
+.panel-title
+  margin-top: 0
+  margin-bottom: 0
+  font-size: 16px
+  color: inherit
+
+.panel-title > .small, .panel-title > .small > a, .panel-title > a, .panel-title > small, .panel-title > small > a
+  color: inherit
+
+.panel-footer
+  padding: 10px 15px
+  background-color: #f5f5f5
+  border-top: 1px solid #ddd
+  border-bottom-right-radius: 3px
+  border-bottom-left-radius: 3px
+
+.panel > .list-group, .panel > .panel-collapse > .list-group
+  margin-bottom: 0
+
+.panel > .list-group .list-group-item, .panel > .panel-collapse > .list-group .list-group-item
+  border-width: 1px 0
+  border-radius: 0
+
+.panel > .list-group:first-child .list-group-item:first-child, .panel > .panel-collapse > .list-group:first-child .list-group-item:first-child
+  border-top: 0
+  border-top-left-radius: 3px
+  border-top-right-radius: 3px
+
+.panel > .list-group:last-child .list-group-item:last-child, .panel > .panel-collapse > .list-group:last-child .list-group-item:last-child
+  border-bottom: 0
+  border-bottom-right-radius: 3px
+  border-bottom-left-radius: 3px
+
+.panel > .panel-heading + .panel-collapse > .list-group .list-group-item:first-child
+  border-top-left-radius: 0
+  border-top-right-radius: 0
+
+
+.panel-heading + .list-group .list-group-item:first-child
+  border-top-width: 0
+
+.panel-default
+  border-color: #ddd
+  > .panel-heading
+    color: $color-text-default
+    background-color: $boxed-background
+    border-color: $color-ibox-border
+  > .panel-heading + .panel-collapse > .panel-body
+    border-top-color: #ddd
+  > .panel-heading .badge
+    color: #f5f5f5
+    background-color: $boxed-background
+  > .panel-footer + .panel-collapse > .panel-body
+    border-bottom-color: #ddd
+
+.panel-primary
+  border-color: #337ab7
+  > .panel-heading
+    color: #fff
+    background-color: #337ab7
+    border-color: #337ab7
+  > .panel-heading + .panel-collapse > .panel-body
+    border-top-color: #337ab7
+  > .panel-heading .badge
+    color: #337ab7
+    background-color: #fff
+  > .panel-footer + .panel-collapse > .panel-body
+    border-bottom-color: #337ab7
+
+

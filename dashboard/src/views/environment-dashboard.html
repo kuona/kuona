@@ -37,7 +37,7 @@
 
                 <li ng-If="environment.environment.version" class="list-group-item">
                   <small class="block text-muted">
-                    Version <strong class="text-navy">{{environment.environment.version}}</strong></small>
+                    Version <strong class="text-highlight">{{environment.environment.version}}</strong></small>
                 </li>
               </ul>
             </div>
@@ -208,12 +208,12 @@
                   <td class="project-status">
                     <span class="label label-primary">{{ environment.environment.status }}</span>
                     <span ng-If="environment.environment.version">
-                      Version <strong class="text-navy">{{environment.environment.version}}</strong>
+                      Version <strong class="text-highlight">{{environment.environment.version}}</strong>
                     </span>
                   </td>
 		  
                   <td class="project-title">
-                    <h5 class="text-navy">{{environment.environment.name}}</h5>
+                    <h5 class="text-highlight">{{environment.environment.name}}</h5>
                   </td>
 		  
                   <td>
