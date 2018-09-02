@@ -1,65 +1,61 @@
-<div class="wrapper wrapper-content">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="text-center m-t-lg">
-        <h1>
-          {{main.helloText}}
-        </h1>
-        <small>
-          {{main.descriptionText}}
-        </small>
-      </div>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="text-center m-t-lg">
+      <h1>
+        {{main.helloText}}
+      </h1>
+      <small>
+        {{main.descriptionText}}
+      </small>
     </div>
   </div>
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="ibox float-e-margins">
-        <div class="ibox-title">
-          <h5>Currently defined dashboards</h5>
-        </div>
-        <div class="ibox-content">
-          <div class="row">
-            <div class="col-sm-8">
-              <a role="button" class="btn btn-primary btn-lg" ui-sref="index.new-dashboard">New Dashboard</a>
-            </div>
+</div>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="ibox float-e-margins">
+      <div class="ibox-title">
+        <h5>Currently defined dashboards</h5>
+      </div>
+      <div class="ibox-content">
+        <div class="row">
+          <div class="col-sm-8">
+            <a role="button" class="btn btn-primary btn-lg" ui-sref="index.new-dashboard">New Dashboard</a>
+          </div>
 
-            <div class="col-sm-4">
-              <div class="input-group"><input type="text" placeholder="Search" class="input-sm form-control">
-                <span class="input-group-btn">
+          <div class="col-sm-4">
+            <div class="input-group"><input type="text" placeholder="Search" class="input-sm form-control">
+              <span class="input-group-btn">
                 <button type="button" class="btn btn-sm btn-primary"> Go!</button> </span>
-              </div>
             </div>
           </div>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-              <tr>
-                <th></th>
-                <th>Dashboard</th>
-                <th>Description</th>
-                <th>Display</th>
-                <th>Created</th>
-                <th>Action</th>
-              </tr>
-              </thead>
-              <tbody>
-
-
-              <tr ng-repeat="dashboard in dashboards">
-                <td><i class="fa fa-desktop text-highlight"></i></td>
-                <td><a href="/dashboard.html"> {{dashboard.name}} </a></td>
-
-                <td>{{dashboard.description}}</td>
-                <td><i class="fa fa-chart-pie text-muted"></i></td>
-                <td>Jul 22, 2013</td>
-                <td><a href="#"><i class="fas fa-trash text-highlight"></i></a></td>
-              </tr>
-
-              </tbody>
-            </table>
-          </div>
-
         </div>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th></th>
+              <th>Dashboard</th>
+              <th>Description</th>
+              <th>Display</th>
+              <th>Created</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="dashboard in dashboards">
+              <td><i class="fa fa-desktop text-highlight"></i></td>
+              <td><a href="/dashboard.html"> {{dashboard.name}} </a></td>
+
+              <td>{{dashboard.description}}</td>
+              <td><i class="fa fa-chart-pie text-muted"></i></td>
+              <td>Jul 22, 2013</td>
+              <td><a href="#"><i class="fas fa-trash text-highlight"></i></a></td>
+            </tr>
+
+            </tbody>
+          </table>
+        </div>
+
       </div>
     </div>
   </div>

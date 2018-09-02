@@ -26,7 +26,7 @@
 
 <body ng-controller="SnapshotController as controller" class="top-navigation pace-done">
 <div id="wrapper">
-  <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
+  <div id="page-wrapper" class="{{$state.current.name}}">
     <div ng-include="'/views/common/navigation.html'"></div>
     <div class="wrapper wrapper-content snapshot">
       <div class="container-fluid">
@@ -70,7 +70,7 @@
                     <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">Recent History</a></li>
                     <li class=""><a data-toggle="tab" href="#tab-3" aria-expanded="false">Modules</a></li>
                   </ul>
-                  <div class="tab-content ibox float-e-margins">
+                  <div class="tab-content float-e-margins">
 
                     <div id="tab-1" class="tab-pane active ibox-content">
                       <div class="row">

@@ -2,18 +2,17 @@
 $font-stack: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif
 $mono-font-stack: Menlo, Monaco, monospace
 
+@import tomorrow_night_bright
 // Basic Colors
-$color-page-background: black
-$color-primary-background: lighten(rgb(37, 40, 48), 10%)
-$color-highlight: #2a2a2a
+$color-page-background: $color-background
+$color-primary-background: $color-highlight
 $color-box-shadow: #c2c2c2
-$color-success: #23c6c8
-$color-info: #1c84c6
-$color-warning: #f8ac59
-$color-danger: #ED5565
+$color-success: $color-green
+$color-info: $color-blue
+$color-warning: $color-yellow
+$color-danger: $color-red
 
-$color-text-default: #676a6c
-$color-text-default: #f8d641
+$color-text-default: $color-foreground
 $color-text-highlight: lighten($color-text-default, 20%)
 $color-background-wrapper: #f3f3f4
 
@@ -26,23 +25,25 @@ $light-blue: #f3f6fb
 $spin-color: $color-primary-background
 $spin-margin: 0 auto
 
-$color-ibox-border: #e7eaec
-$color-ibox-title-background: #ffffff
-$color-ibox-content-background: #ffffff
+$color-ibox-border: lighten($color-highlight, 7%)
 
 $color-navigation-background: $color-page-background
 $color-navigation-header: lighten($color-navigation-background, 20%)
 $color-navigation-text: #a7b1c2
 $color-navigation-text-muted: #8095a8
 $color-dashboard-background: rgb(37, 40, 48)
-$color-dashboard-text: white
+$color-dashboard-text: $color-text-default
 
-$color-timeline-icon-background: #f8f8f8
-$color-timeline-icon-background: red
-$danger-color: #ea4059
+$dashboard-title-color: $color-yellow
 
-$dashboard-title-color: yellow
-$warning-color: #e8d74f
+@mixin widget
+  border-radius: 5px
+  padding: 15px 20px
+  margin-bottom: 10px
+  margin-top: 10px
+  background-color: $color-primary-background
+  color: $color-dashboard-text
+  border: 1px solid lighten($color-primary-background, 15%)
 
 @mixin widget-colors
   background-color: $color-primary-background
@@ -50,23 +51,23 @@ $warning-color: #e8d74f
 
 @mixin primary-colors
   background-color: $color-primary-background
-  color: #FFFFFF
+  color: $color-text-default
 
 @mixin success-colors
   background-color: $color-success
-  color: #FFFFFF
+  color: $color-background
 
 @mixin warning-colors
   background-color: $color-warning
-  color: #FFFFFF
+  color: $color-text-default
 
 @mixin danger-colors
   background-color: $color-danger
-  color: #FFFFFF
+  color: $color-text-default
 
 @mixin info-colors
   background-color: $color-info
-  color: #FFFFFF
+  color: $color-text-default
 
 @mixin light-warning-colors
   background-color: $color-warning
@@ -127,24 +128,22 @@ $enable-rounded: true !default
     margin: 0
 
 .dashboard
-  background-color: $color-dashboard-background
   .dashboard-title
     border-top: 0
     padding: 15px 20px
-    border-bottom: 1px solid darken($color-dashboard-text, 10%)
     h1
-      color: yellow
+      color: $color-yellow
     p
-      color: yellow
+      color: $color-yellow
 
 .text-green
-  color: #00ca92
+  color: $color-green
 
 .text-danger
-  color: $danger-color
+  color: $color-danger
 
 .text-warning
-  color: $warning-color
+  color: $color-warning
 
 .chart-legend
   list-style-type: none
@@ -168,6 +167,9 @@ $enable-rounded: true !default
     height: 20px
     border-radius: 5px
 
+.ibox
+  @include widget
+
 .activity-stream
   @include widget
   .ibox
@@ -186,7 +188,6 @@ $enable-rounded: true !default
 
   .stream-badge
     width: 50px
-
     i
       border: 1px solid $color-ibox-border
       border-radius: 50%
@@ -271,8 +272,12 @@ code
   background-color: inherit
   font-family: $mono-font-stack
   font-weight: lighter
+
 pre
-  background-color: $color-page-background
+  background-color: $color-primary-background
+  font-family: $mono-font-stack
+  font-weight: lighter
+  color: $color-text-default
   code
     color: $color-text-default
     font-family: $mono-font-stack

@@ -486,7 +486,7 @@ img.circle-border
 
 
 code
-  background-color: #F9F2F4
+  //background-color: #F9F2F4
   border-radius: 4px
   color: #ca4440
   font-size: 90%
@@ -514,10 +514,7 @@ code
     -moz-border-left-colors: none
     -moz-border-right-colors: none
     -moz-border-top-colors: none
-    background-color: lighten($color-dashboard-background, 7%)
-    border-color: lighten($color-dashboard-background, 15%)
     border-image: none
-    border-style: solid solid none
     border-width: 2px 0 0
     color: $dashboard-title-color
     margin-bottom: 0
@@ -560,13 +557,11 @@ code
       left: auto
       right: 0
   .ibox-content
-    background-color: lighten($color-dashboard-background, 10%)
     color: inherit
     padding: 15px 20px 20px 20px
-
     border-color: $color-ibox-border
     border-image: none
-    border-style: solid solid none
+    border-style: none none none none
     border-width: 1px 0
     h1, h2, h3, h4,h5
       margin-top: 5px
