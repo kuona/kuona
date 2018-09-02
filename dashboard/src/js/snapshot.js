@@ -19,9 +19,7 @@ function fromDependencyId(a) {
   return "";
 }
 
-var dependencyCompare = function (a, b) {
-  return (a.height - b.height) || a.id.localeCompare(b.id);
-}
+const dependencyCompare = (a, b) => (a.height - b.height) || a.id.localeCompare(b.id);
 
 
 function enhanceDependencies(build) {
@@ -29,13 +27,13 @@ function enhanceDependencies(build) {
   for (var i = 0; i < build.length; i++) {
     var b = build[i];
 
-    if (b.dependencies != undefined && b.dependencies.dependencies != undefined) {
+    if (b.dependencies !== undefined && b.dependencies.dependencies !== undefined) {
 
-      var list = []
+      let list = [];
       list.push({"from": null, "to": b.dependencies.root});
 
-      for (var k in b.dependencies.dependencies) {
-        var item = b.dependencies.dependencies[k]
+      for (let k in b.dependencies.dependencies) {
+        let item = b.dependencies.dependencies[k];
         list.push(item);
       }
 
@@ -45,25 +43,24 @@ function enhanceDependencies(build) {
 }
 
 function manifestNodeShape(t) {
-  switch (t) {
-    case 'database':
-      return 'database';
-    default:
-      return 'box';
+  if (t === 'database') {
+    return 'database';
+  } else {
+    return 'box';
   }
 }
 
 function manifestGraph(data) {
-  var result = {nodes: [], edges: []};
-  var seen = {};
-  for (var i in data.components) {
-    var c = data.components[i]
+  let result = {nodes: [], edges: []};
+  let seen = {};
+  for (let i in data.components) {
+    let c = data.components[i];
     if (!(c.id in seen)) {
       result.nodes.push({id: c.id, label: c.description, shape: manifestNodeShape(c.kind)});
       seen[c.id] = true;
     }
-    for (var j in c.dependencies) {
-      var d = c.dependencies[j]
+    for (let j in c.dependencies) {
+      let d = c.dependencies[j];
       if (!(d.id in seen)) {
         result.nodes.push({id: d.id, label: d.id, shape: manifestNodeShape(d.kind)});
         seen[d.id] = true;
@@ -76,7 +73,7 @@ function manifestGraph(data) {
 }
 
 function isEmpty(obj) {
-  for (var x in obj) {
+  for (let x in obj) {
     return false;
   }
   return true;
@@ -84,7 +81,7 @@ function isEmpty(obj) {
 
 function SnapshotController($scope, $http, $location) {
   $scope.id = $location.search().id;
-  $scope.repository = {}
+  $scope.repository = {};
   $scope.snapshot = {};
   $scope.avatar_url = null;
   $scope.commits = [];
@@ -98,14 +95,16 @@ function SnapshotController($scope, $http, $location) {
   $scope.snapshotFound = false;
 
   $http.get("/api/snapshots/" + $scope.id).then(function (res) {
+    let item;
     $scope.snapshot = res.data;
-    if ($scope.snapshot != "") {
+    if ($scope.snapshot !== "") {
+      let i;
       $scope.snapshotFound = true;
 
       $scope.fileChartData = [];
 
-      for (var i = 0; i < $scope.snapshot.content.file_details.length; i++) {
-        var item = $scope.snapshot.content.file_details[i];
+      for (i = 0; i < $scope.snapshot.content.file_details.length; i++) {
+        item = $scope.snapshot.content.file_details[i];
         $scope.fileChartData.push({
           "label": item.language, "color": colors[i], "value": item.count
         });
@@ -114,8 +113,8 @@ function SnapshotController($scope, $http, $location) {
       // barChart(document.getElementById("filesBarCanvas"), "Files", "Repository files by type", $scope.fileChartData);
 
       $scope.code_piechart_data = [];
-      for (var i = 0; i < $scope.snapshot.content.code_line_details.length; i++) {
-        var item = $scope.snapshot.content.code_line_details[i];
+      for (i = 0; i < $scope.snapshot.content.code_line_details.length; i++) {
+        item = $scope.snapshot.content.code_line_details[i];
         $scope.code_piechart_data.push({
           "label": item.language, "color": colors[i], "value": item.count
         });
@@ -139,10 +138,10 @@ function SnapshotController($scope, $http, $location) {
   $http.get("/api/repositories/" + $scope.id + "/commits").then(function (res) {
     $scope.commits = res.data.items;
 
-    for (var i in $scope.commits) {
-      var c = $scope.commits[i];
+    for (let i in $scope.commits) {
+      let c = $scope.commits[i];
       c.timestamp = Date.parse(c.commit.time);
-      if (c.source.system == "git") {
+      if (c.source.system === "git") {
         c.icon = "fab fa-git";
       } else {
         c.icon = "fas fa-code-branch";
@@ -165,28 +164,26 @@ kuonaSnapshot.directive('dependencyChart', function () {
   };
 });
 
-kuonaSnapshot.directive('horizontalBarChart', function () {
-  return {
-    restrict: 'A',
-    scope: {
-      data: '=',
-      label: '=',
-      title: '='
-    },
-    template: '<canvas height="140"></canvas>',
-    link: function (scope, element, attrs) {
-      console.log("element " + element);
-      console.log("element[0] " + element[0]);
-      console.log("element[0].children[0] " + element[0].children[0]);
-      var canvasElement = element[0];
-      scope.$watch('data', function (newValue, oldValue) {
-        if (scope.data) {
-          barChart(canvasElement, scope.label, scope.title, scope.data);
-        }
-      });
-    }
-  };
-});
+kuonaSnapshot.directive('horizontalBarChart', () => ({
+  restrict: 'A',
+  scope: {
+    data: '=',
+    label: '=',
+    title: '='
+  },
+  template: '<canvas height="140"></canvas>',
+  link: (scope, element, attrs) => {
+    console.log("element " + element);
+    console.log("element[0] " + element[0]);
+    console.log("element[0].children[0] " + element[0].children[0]);
+    var canvasElement = element[0];
+    scope.$watch('data', (newValue, oldValue) => {
+      if (scope.data) {
+        barChart(canvasElement, scope.label, scope.title, scope.data);
+      }
+    });
+  }
+}));
 
 kuonaSnapshot.directive('commitsPanel', function () {
   return {
@@ -242,77 +239,70 @@ kuonaSnapshot.directive('artifactPanel', function () {
   };
 });
 
-kuonaSnapshot.directive('manifestPanel', function () {
-  return {
-    restrict: 'E',
-    transclude: true,
-    scope: {
-      data: '='
-    },
-    link: function (scope, element, attrs) {
-      scope.$watch('data', function (newValue, oldValue) {
-        if (scope.data) {
-          var graphData = manifestGraph(scope.data);
-          new vis.Network(element[0],
-            {
-              nodes: new vis.DataSet(graphData.nodes),
-              edges: new vis.DataSet(graphData.edges)
-            }, {
-              autoResize: true,
-              height: '300px',
-              width: '100%',
-              nodes: {fixed: true},
-              edges: {arrows: 'to'},
-              layout: {
-                hierarchical: {direction: 'UD'}
-              }
-            });
-        } else {
-          console.warn("manifest graph directive called with no data");
-        }
-      });
-    }
-  };
-
-});
-
-kuonaSnapshot.directive('jsonView', function () {
-  return {
-    restrict: 'E',
-    transclude: true,
-    scope: {
-      data: '='
-    },
-    templateUrl: '/directives/json-view.html',
-    link: function (scope, element, attrs) {
-      var codeElement = element[0].children[0].children[0];
-      scope.$watch('data', function (newValue, oldValue) {
-        if (scope.data) {
-          scope.$evalAsync(function () {
-            hljs.highlightBlock(codeElement);
+kuonaSnapshot.directive('manifestPanel', () => ({
+  restrict: 'E',
+  transclude: true,
+  scope: {
+    data: '='
+  },
+  link: (scope, element, attrs) => {
+    scope.$watch('data', function (newValue, oldValue) {
+      if (scope.data) {
+        const graphData = manifestGraph(scope.data);
+        new vis.Network(element[0],
+          {
+            nodes: new vis.DataSet(graphData.nodes),
+            edges: new vis.DataSet(graphData.edges)
+          }, {
+            autoResize: true,
+            height: '300px',
+            width: '100%',
+            nodes: {fixed: true},
+            edges: {arrows: 'to'},
+            layout: {
+              hierarchical: {direction: 'UD'}
+            }
           });
-        }
-      });
-    }
-  };
-});
+      } else {
+        console.warn("manifest graph directive called with no data");
+      }
+    });
+  }
+}));
 
-kuonaSnapshot.directive('markdown', function () {
-  return {
-    restrict: 'E',
-    transclude: true,
-    scope: {
-      data: "="
-    },
-    link: function (scope, element, attrs) {
-      scope.$watch('data', function () {
-        var converter = new showdown.Converter();
-        var htmlText = converter.makeHtml(scope.data);
-        element.html(htmlText);
-      });
-    }
-  };
-});
+kuonaSnapshot.directive('jsonView', () => ({
+  restrict: 'E',
+  transclude: true,
+  scope: {
+    data: '='
+  },
+  templateUrl: '/directives/json-view.html',
+  link: (scope, element, attrs) => {
+    const codeElement = element[0].children[0].children[0];
+    scope.$watch('data', (newValue, oldValue) => {
+      if (scope.data) {
+        scope.$evalAsync(() => {
+          hljs.highlightBlock(codeElement);
+        });
+      }
+    });
+  }
+}));
+
+kuonaSnapshot.directive('markdown', () => ({
+  restrict: 'E',
+  transclude: true,
+  scope: {
+    data: "="
+  },
+  link: (scope, element, attrs) => {
+    scope.$watch('data', () => {
+      const converter = new showdown.Converter();
+      const htmlText = converter.makeHtml(scope.data);
+      element.html(htmlText);
+    });
+  }
+}));
 
 kuonaSnapshot.filter('elapsed', elapsedFilter);
 kuonaSnapshot.filter('age', ageFilter);
