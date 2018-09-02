@@ -12,7 +12,6 @@
 (defn set-workspace-path [path]
   (reset! workspace-path path))
 
-
 (defn workspace-path-valid? []
   (cond
     (nil? (get-workspace-path)) false

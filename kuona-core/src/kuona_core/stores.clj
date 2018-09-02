@@ -88,9 +88,6 @@
     (catch Object _
       false)))
 
-
-
-
 (def keyword-field
   {:type "text" :fields {:keyword {:type "keyword" :ignore_above 256}}})
 
@@ -151,51 +148,9 @@
                          :collector collector-mapping-type
                          :jenkins   es/disabled-object}}})
 
-
-
-;; Needs to be split into two stores or removed.
-(def metric-mapping-type
-  {:build {:properties {:timestamp es/timestamp
-
-                        :collector collector-mapping-type
-                        :metric    {:properties {:activity  {:properties {:duration {:type "long"}
-
-                                                                          :name     es/string-not-analyzed
-                                                                          :id       es/string-not-analyzed
-                                                                          :number   {:type "long"}
-
-                                                                          :result   es/string-not-analyzed
-                                                                          :type     es/string-not-analyzed}}
-
-                                                 :collected es/timestamp
-
-                                                 :source    {:properties {:system es/string-not-analyzed
-
-                                                                          :url    es/string-not-analyzed}}
-
-                                                 :type      es/string-not-analyzed}}}}
-   :vcs   {:properties {:collector collector-mapping-type
-                        :metric    {:properties {:activity  {:properties {:author        es/string
-                                                                          :branches      es/string-not-analyzed
-                                                                          :change_count  {:type "long"}
-
-                                                                          :changed_files {:properties {:change es/string-not-analyzed
-                                                                                                       :path   es/string-not-analyzed}}
-                                                                          :email         es/string-not-analyzed
-                                                                          :id            es/string-not-analyzed
-                                                                          :merge         {:type "boolean"}
-                                                                          :message       es/string}}
-                                                 :collected es/timestamp
-                                                 :name      es/string-not-analyzed
-                                                 :source    {:properties {:system es/string-not-analyzed
-                                                                          :url    es/string-not-analyzed}}
-                                                 :type      {:type "keyword"}}}
-                        :timestamp es/timestamp}}})
-
 (def dashboards-schema {:dashboard {:properties {:id          es/string-not-analyzed
                                                  :name        es/string-not-analyzed
                                                  :description es/string}}})
-
 
 (def snapshot-schema
   {:snapshots {:properties {:build      {:properties {:artifact     {:properties {:artifactId es/indexed-keyword
@@ -261,9 +216,6 @@
                 }
 
    })
-
-(def code-metric-schema
-  )
 
 (defn create-store-if-missing
   [store schema]

@@ -15,7 +15,6 @@
             [kuona-core.stores :refer [repositories-store commit-logs-store code-metric-store collector-config-store source-code-store]]
             [kuona-core.workspace :refer [get-workspace-path]]
             [kuona-core.stores :as stores]
-            [kuona-core.collector.manifest :as manifest]
             [kuona-core.collector.source-code :as source-code]))
 
 (defn track-activity
@@ -95,8 +94,6 @@
                          docs (store/find-documents url)]
                      (doall (map collect-repository-data (-> docs :items))))))
 
-
-
 (defn collect-repository-metrics
   []
   (log/info "Collecting metrics from known repositories")
@@ -134,7 +131,7 @@
           (nil? url) (log/error "No URL field found in repository" repo)
           :else (record-activity "Historical code metric collector"
                                  {:url url}
-                                 (source-code/collect  source-code-store (get-workspace-path) url (-> repo :id)))))
+                                 (source-code/collect source-code-store (get-workspace-path) url (-> repo :id)))))
       )
 
     )
@@ -154,8 +151,6 @@
         (refresh-build-metrics)
         (collect-environment-metrics))
 
-
-
 (defn start
   []
   (let [s                        (-> (scheduler/initialize) scheduler/start)
@@ -169,5 +164,4 @@
                                                              (repeat-forever)
                                                              ;(with-repeat-count 10)
                                                              (with-interval-in-minutes 30))))]
-    (scheduler/schedule s refresh-repositories-job trigger)
-    ))
+    (scheduler/schedule s refresh-repositories-job trigger)))

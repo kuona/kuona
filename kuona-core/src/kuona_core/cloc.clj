@@ -33,22 +33,6 @@
                      :code     (sum-count metrics :code)}
          :languages metrics}})
 
-;(defn add-metadata
-;  [metrics]
-;  {:timestamp (timestamp)
-;   :metric    {:type      :loc
-;               :name      "TBD"
-;               :source    {:system :git
-;                           :url    "TBD"}
-;               :activity  {:files    (sum-count metrics :files)
-;                           :comments (sum-count metrics :comments)
-;                           :blanks   (sum-count metrics :blanks)
-;                           :code    (sum-count metrics :code)
-;                          :languages     metrics}
-;;              :collected (timestamp)}
-;  :collector {:name    :kuona-code-collector
-;               :version "0.1"}})
-
 (defn root-relative-path
   [root path]
   (let [relative-path (subs path (count root))]
@@ -151,4 +135,3 @@
   ([path f]
    (log/info "loc-collector " path)
    (f (collect-loc path))))
-

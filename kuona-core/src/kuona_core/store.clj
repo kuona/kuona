@@ -44,7 +44,6 @@
     (let [pages (/ count size)]
       (into [] (map f (range 1 (+ pages 1)))))))
 
-
 (defn parse-integer
   [n]
   (cond
