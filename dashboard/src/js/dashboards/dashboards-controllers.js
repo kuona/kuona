@@ -1,7 +1,6 @@
-function MainCtrl($scope, $http) {
-  this.helloText = 'Kuona Dashboards';
-  this.descriptionText = 'Manage your dashboards.';
-
+function DashboardListController($scope, $http) {
+  $scope.pageHeading = 'Kuona Dashboards';
+  $scope.pageDescription = 'Manage your dashboards.';
   $scope.dashboards = [];
 
   $http.get("/api/dashboards").then(function (res) {
@@ -9,23 +8,21 @@ function MainCtrl($scope, $http) {
   });
 }
 
-function DashboardController($scope, $http, $location) {
-  $scope.dashboard = {name: "", description: ""};
+function NewDashboardController($scope, $http, $location) {
+  $scope.dashboard = {name: "", description: "", definition: ""};
   $scope.dashboardNameRegex = '[A-Za-z0-9_-]+';
 
-  $scope.saveDashboard = function () {
-    var request = {
-      "name": $scope.dashboard.name,
-      "description": $scope.dashboard.description
+  $scope.saveDashboard = () => {
+    const request = {
+      name: $scope.dashboard.name,
+      description: $scope.dashboard.description,
+      panels: JSON.parse($scope.dashboard.definition)
     };
-    $http.post("/api/dashboards", request).then(function (res) {
-      $location.path("/dashboards")
-    });
+    $http.post("/api/dashboards", request).then(res => $location.path("/dashboards"));
   };
 }
 
-
 angular
   .module('kuona-dashboards')
-  .controller('MainCtrl', ['$scope', '$http', MainCtrl])
-  .controller('DashboardController', ['$scope', '$http', '$location', DashboardController]);
+  .controller('DashboardListController', ['$scope', '$http', DashboardListController])
+  .controller('NewDashboardController', ['$scope', '$http', '$location', NewDashboardController]);

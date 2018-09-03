@@ -1,4 +1,4 @@
-<div class="wrapper wrapper-content" ng-controller="DashboardController">
+<div class="wrapper wrapper-content" ng-controller="NewDashboardController">
   <div class="row">
 
     <div class="col-lg-12">
@@ -38,6 +38,14 @@
                                                class="form-control"
                                                ng-model="dashboard.description"></textarea></div>
             </div>
+
+            <div class="form-group">
+              <label class="col-lg-2 control-label">Dashboard Panels JSON</label>
+              <div class="col-lg-10"><textarea placeholder="[]"
+                                               class="form-control"
+                                               ng-model="dashboard.definition"></textarea></div>
+            </div>
+
             <div class="form-group">
               <div class="col-lg-offset-2 col-lg-10">
                 <button class="btn btn-sm btn-primary" type="submit" ng-click="saveDashboard()">Create Dashboard</button>

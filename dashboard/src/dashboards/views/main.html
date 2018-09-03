@@ -2,10 +2,10 @@
   <div class="col-lg-12">
     <div class="text-center m-t-lg">
       <h1>
-        {{main.helloText}}
+        {{pageHeading}}
       </h1>
       <small>
-        {{main.descriptionText}}
+        {{pageDescription}}
       </small>
     </div>
   </div>
@@ -18,6 +18,7 @@
       </div>
       <div class="ibox-content">
         <div class="row">
+
           <div class="col-sm-8">
             <a role="button" class="btn btn-primary btn-lg" ui-sref="index.new-dashboard">New Dashboard</a>
           </div>
@@ -29,6 +30,9 @@
             </div>
           </div>
         </div>
+
+        <pre ng-bind="dashboards | json:2"></pre>
+
         <div class="table-responsive">
           <table class="table table-striped">
             <thead>

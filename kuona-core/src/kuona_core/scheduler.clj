@@ -75,16 +75,18 @@
       (doseq [entry entries] (put-repository! entry)))))
 
 (defn collect-repository-data [e]
-  (log/info "Collecting/refreshing repository date")
-  (let [config (-> e :config)]
-    (cond
-      (github-org-collector-config? e) (refresh-github-org
-                                         (-> config :org)
-                                         (-> config :username)
-                                         (-> config :token))
-      (tfs-org-collector-config? e) (refresh-tfs-org (-> config :org) (-> config :token))
-      :else (log/info "collector type not supported"))))
-
+  (log/info "Collecting/refreshing repository data")
+  (try+
+    (let [config (-> e :config)]
+      (cond
+        (github-org-collector-config? e) (refresh-github-org
+                                           (-> config :org)
+                                           (-> config :username)
+                                           (-> config :token))
+        (tfs-org-collector-config? e) (refresh-tfs-org (-> config :org) (-> config :token))
+        :else (log/info "collector type not supported")))
+    (catch Object _
+      (log/error (:throwable &throw-context) "Unexpected error collecting repository data " e))))
 
 (defn refresh-repositories
   []

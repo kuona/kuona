@@ -10,7 +10,7 @@
                                                     javax.jms/jms
                                                     com.sun.jdmk/jmxtools
                                                     com.sun.jmx/jmxri]]
-                 [clj-http "3.9.0"]
+                 [clj-http "3.9.1"]
                  [org.slf4j/slf4j-log4j12 "1.7.25"]
                  [clj-jgit "0.8.10"]
                  [cheshire "5.8.0"]
@@ -22,8 +22,8 @@
                  [io.forward/yaml "1.0.9"]
                  [com.jcabi/jcabi-log "0.18"]
                  [kuona/parsers "0.2"]
-                 [org.gradle/gradle-core "4.8.1"]
-                 [org.gradle/gradle-tooling-api "4.8.1"]]
+                 [org.gradle/gradle-core "4.10"]
+                 [org.gradle/gradle-tooling-api "4.10"]]
   :plugins [[lein-midje "3.0.0"]
             [lein-ancient "0.6.14"]
             [lein-asciidoctor "0.1.16"]]
@@ -31,6 +31,6 @@
                 :source-highlight true
                 :to-dir           "target/doc"}
   :profiles
-  {:dev {:dependencies [[midje "1.9.1"]]}})
+  {:dev {:dependencies [[midje "1.9.2"]]}})
 
 

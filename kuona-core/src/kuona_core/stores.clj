@@ -116,7 +116,7 @@
 
 (def repository-metric-type
   {:repositories {:properties {:source            es/string-not-analyzed
-                               :name              es/string
+                               :name              es/indexed-keyword
                                :git_url           es/string-not-analyzed
                                :description       es/string
                                :avatar_url        es/string-not-analyzed
@@ -128,7 +128,7 @@
                                :forks             es/long-integer
                                :size              es/long-integer
                                :last_analysed     es/timestamp
-                               :github            es/enabled-object}}})
+                               :project            es/enabled-object}}})
 
 (def collector-mapping-type
   {:properties {:name    es/string-not-analyzed
