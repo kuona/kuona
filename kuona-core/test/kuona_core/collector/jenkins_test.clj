@@ -1,8 +1,8 @@
-(ns jenkins-collector.jenkins-test
+(ns kuona-core.collector.jenkins-test
   (:require [clj-http.client :as http]
             [cheshire.core :refer :all]
             [midje.sweet :refer :all]
-            [jenkins-collector.jenkins :refer :all]
+            [kuona-core.collector.jenkins :refer :all]
             [clojure.tools.logging :as log]
             [clojure.data.zip.xml :refer :all]))
 
@@ -62,9 +62,9 @@
 
 
 (facts "about job configuration reading"
-       (let [empty-project "<project></project>"
+       (let [empty-project            "<project></project>"
              project-with-description "<project><description>Project Description</description></project>"
-             project-with-scm "<project><scm class=\"hudson.plugins.git.GitSCM\" plugin=\"git@3.0.0\">
+             project-with-scm         "<project><scm class=\"hudson.plugins.git.GitSCM\" plugin=\"git@3.0.0\">
 <configVersion>2</configVersion>
 <userRemoteConfigs>
 <hudson.plugins.git.UserRemoteConfig>
@@ -80,7 +80,7 @@
 <submoduleCfg class=\"list\"/>
 <extensions/>
 </scm></project>"
-             matrix-project-scm "<matrix-project>
+             matrix-project-scm       "<matrix-project>
 <scm class=\"hudson.plugins.git.GitSCM\" plugin=\"git@1.5.0\">
  <configVersion>2</configVersion>
  <userRemoteConfigs>
@@ -147,4 +147,4 @@
          (fact "connection"
                (c "http://foo/bar") => {:result "foo"}
                (provided
-                 (http/get "http://foo/bar/api/json"  {}) => {:body (generate-string {:result :foo})}))))
+                 (http/get "http://foo/bar/api/json" {}) => {:body (generate-string {:result :foo})}))))

@@ -1,0 +1,22 @@
+= Kuona User Guide
+
+The idea for Kuona started coming together in 2015 while working on a
+new software platform. The idea was to make information available in
+disparate systems supporting the development easier to find and
+understand. This included the version control system, build server,
+agile story management system and environments. At the time this
+information was buried inside these systems and not linked
+together. We could ask an individual service instance deployed into
+one of our environments about its status and version. That version
+number referenced a build in our Jenkins build system which in turn
+referenced (further upstream) the commit in our version control
+system. The problem was finding and tracing all that stuff took
+time. There had to be a better way so we started working on Kuona.
+
+Since that time much has happened but the original need is still
+there. Development teams have excellent tools for each step in the
+process but there is little linkage or integration between them. Kuona
+is designed to fill that gap but gluing the data from each of these
+systems it is hoped that development teams will gain value and benefit
+from the data and its visualization.
+

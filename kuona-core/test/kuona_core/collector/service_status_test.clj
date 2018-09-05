@@ -1,16 +1,16 @@
-(ns http-collector.core-test
+(ns kuona-core.collector.service-status-test
   (:require [midje.sweet :refer :all]
             [clj-http.client :as http]
             [cheshire.core :refer :all]
-            [http-collector.core :refer :all]))
+            [kuona-core.collector.service-status :refer :all]))
 
 (facts "Content filtering"
        (fact "Non json content type is empty string"
              (json-filter {:headers {:Content-Type "foobar"}}) => {})
        (fact "Json content type yields body"
-             (json-filter {:headers {:Content-Type "json"}:body "{\"foo\":{}}"}) => {:foo{}})
+             (json-filter {:headers {:Content-Type "json"} :body "{\"foo\":{}}"}) => {:foo {}})
        (fact "application/json content type yields body"
-             (json-filter {:headers {:Content-Type "application/json"}:body "{\"foo\":{}}"}) => {:foo{}}))
+             (json-filter {:headers {:Content-Type "application/json"} :body "{\"foo\":{}}"}) => {:foo {}}))
 
 (facts "Collecting from end points"
        (fact "Service is down if no connection"
@@ -19,7 +19,7 @@
                                                              :type   "error",
                                                              :url    "http://localhost:12000"}
              (provided (http/get anything) =throws=> (java.net.ConnectException.)))
-       
+
        (fact "Service running and healthy"
              (collect-endpoint "http://kuona.io:9002/status") => {:status "UP",
                                                                   :url    "http://kuona.io:9002/status"}

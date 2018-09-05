@@ -10,6 +10,7 @@
                                                     javax.jms/jms
                                                     com.sun.jdmk/jmxtools
                                                     com.sun.jmx/jmxri]]
+                 [org.clojure/data.zip "0.1.2"]
                  [clj-http "3.9.1"]
                  [org.slf4j/slf4j-log4j12 "1.7.25"]
                  [clj-jgit "0.8.10"]

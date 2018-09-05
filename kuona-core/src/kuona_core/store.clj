@@ -126,11 +126,14 @@
   (into {} (map (fn [k] (es-type-to-ktype (first k) (second k))) h)))
 
 
+(defn index-settings
+  [index-key]
+  (:settings (get (http/json-get (stores/es-url index-key)) index-key)))
 
 (defn indices
   []
   {:indices (into []
-                  (map (fn [[k v]] (merge v {:name k}))
+                  (map (fn [[k v]] (merge v {:name k :settings (index-settings k)}))
                        (:indices (http/json-get (stores/es-url "_stats")))))})
 
 (defn read-schema

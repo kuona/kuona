@@ -35,16 +35,10 @@ fi
 (cd ./collectors/maven; ${MAVEN_BUILD})
 (cd ./lib/parsers; ${MAVEN_BUILD})
 
-
 (cd ./kuona-core; ${LEIN_TEST}; ${LEIN_INSTALL})
 (cd ./kuona-api; ${LEIN_TEST}; ${LEIN_PACKAGE})
 (cd ./tools/github-crawler; ${LEIN_TEST}; ${LEIN_PACKAGE})
 (cd ./tools/tfs-crawler; ${LEIN_TEST}; ${LEIN_PACKAGE})
-(cd ./collectors/snapshot; ${LEIN_TEST}; ${LEIN_PACKAGE})
-(cd ./collectors/code; ${LEIN_TEST}; ${LEIN_PACKAGE})
-(cd ./collectors/http; ${LEIN_TEST}; ${LEIN_PACKAGE})
-(cd ./collectors/jenkins; ${LEIN_TEST}; ${LEIN_PACKAGE})
-(cd ./collectors/git; ${LEIN_TEST}; ${LEIN_PACKAGE})
 
 find . -iname '*standalone.jar' -not -path './target' -exec cp -f {} ./target \;
 echo "${pblue}Binaries collected to ./target${preset}"

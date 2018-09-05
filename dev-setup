@@ -38,19 +38,6 @@ fi
 echo "${pblue}Setting up web development environment${preset}"
 cd dashboard; npm install; cd ..
 
-LOG_PATH=/var/log/kuona
-
-if [ -d "${LOG_PATH}" ]; then
-  echo "${pblue}Logpath ${LOG_PATH} already exists - skipping${preset}"
-else
-  echo "${pblue}Creating logging directory${LOG_PATH} (requires sudo)${preset}"
-  sudo mkdir -p ${LOG_PATH}
-  sudo chown $(whoami) ${LOG_PATH}
-fi
-
-
-#find . -iname 'project.clj' -exec echo "Resolving dependencies for: " {} \; -execdir lein deps \;
-
 if ! [ -d "test/test-repo" ]; then
   git clone https://github.com/grahambrooks/functional-event-store.git test/test-repo
 fi
@@ -71,11 +58,6 @@ function symlink_core {
   fi
 }
 
-symlink_core "collectors/snapshot/"
-symlink_core "collectors/code/"
-symlink_core "collectors/git/"
-symlink_core "collectors/http/"
-symlink_core "collectors/jenkins/"
 symlink_core "kuona-api"
 symlink_core "tools/github-crawler"
 symlink_core "tools/tfs-crawler"

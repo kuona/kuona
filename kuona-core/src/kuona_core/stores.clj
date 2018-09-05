@@ -26,8 +26,6 @@
    :type type})
 
 (defn es-url
-
-
   [& elements]
   (string/join "/" (map name (concat [(deref es-host)] elements))))
 
@@ -81,6 +79,11 @@
     (catch Object _
       false)))
 
+(defn- unlock-index
+  [index]
+  (log/info "Unlocking store " index (string/join "/" [index "_settings"]))
+  (kuona-core.http/json-put (string/join "/" [index "_settings"]) {"index.blocks.read_only_allow_delete" false}))
+
 (defn delete-index-by-id
   [id]
   (try+
@@ -128,7 +131,7 @@
                                :forks             es/long-integer
                                :size              es/long-integer
                                :last_analysed     es/timestamp
-                               :project            es/enabled-object}}})
+                               :project           es/enabled-object}}})
 
 (def collector-mapping-type
   {:properties {:name    es/string-not-analyzed
@@ -263,6 +266,7 @@
   (exists? [this] "Tests for the stores existence")
   (create [this] "Creates the store if it does not exist")
   (destroy [this] "Destroys the index and all content in that index")
+  (unlock [this] "Unlocks a read only index for updates")
   (mapping-url [this] "URL for reading the index schema")
   (url [this] [this args] [this path params] "returns the URL for the store"))
 
@@ -278,6 +282,7 @@
   (exists? [this] (store-exists? (data-store-index-name this)))
   (create [this] (create-store-if-missing (data-store-index-name this) (-> this :schema)))
   (destroy [this] (delete-index (data-store-index-name this)))
+  (unlock [this] (unlock-index (data-store-index-name this)))
   (mapping-url [this] (string/join "/" [(data-store-index-name this) "_mapping"]))
   (url [this] (mapping (-> this :mapping-name) (data-store-index-name this)))
   (url [this args]
@@ -361,6 +366,11 @@
   (let [source (first (filter (fn [source] (= name
                                               (index-name (-> source :index :index-name)))) (vals sources)))]
     (-> source :index)))
+
+(defn unlock-store-by-name
+  [name]
+  (let [store (find-store-by-name name)]
+    (.unlock store)))
 
 (defn rebuild-store-by-name
   [name]

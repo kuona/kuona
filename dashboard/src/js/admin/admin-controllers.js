@@ -12,6 +12,12 @@ function MainCtrl($scope, $http) {
     });
   };
 
+  $scope.unlock = function (name) {
+    $http.post('/api/indices/' + name + "/unlock").then(function () {
+      $scope.refresh();
+    });
+  };
+
   $scope.deleteIndex = function (name) {
     $http.delete("/api/indicies/" + name).then(function () {
       $scope.refresh();

@@ -1,4 +1,4 @@
-(ns jenkins-collector.jenkins
+(ns kuona-core.collector.jenkins
   (:require [cheshire.core :refer :all]
             [clojure.tools.logging :as log]
             [kuona-core.util :as util]
@@ -73,7 +73,7 @@
 (defn read-jenkins-job-configuration
   [connection job]
   (try+
-    (let [uri (str (:url job) "config.xml")
+    (let [uri      (str (:url job) "config.xml")
           response (connection uri parse-xml-response)]
 
       (log/info "SCM from" uri "is" (read-scm response))
@@ -103,8 +103,8 @@
 (defn get-jenkins-content
   [url credentials options]
   (try+
-    (let [content-parser (or (first options) json/parse-json-body)
-          uri (api-url url)
+    (let [content-parser   (or (first options) json/parse-json-body)
+          uri              (api-url url)
           http-credentials (http-credentials (:username credentials) (:password credentials))]
       (content-parser (http/get uri http-credentials)))
     (catch [:status 404] {:keys [request-time headers body]}
@@ -197,8 +197,8 @@
 (defn collect-metrics-alt
   [connection url]
   (log/info "Collecting metrics from" url)
-  (let [build-jobs (read-jenkins-jobs connection url)
-        build-log (read-all-job-builds connection build-jobs)
+  (let [build-jobs    (read-jenkins-jobs connection url)
+        build-log     (read-all-job-builds connection build-jobs)
         build-metrics (map #(read-build-metric connection url %) build-log)]
     build-metrics))
 
@@ -206,7 +206,7 @@
 (defn read-build-metrics
   [connection server entries]
   (map (fn [entry]
-         {:id (util/uuid)
+         {:id     (util/uuid)
           :config (-> entry :config)
           :builds (map (fn [build]
                          (let [content (connection (-> build :url))]
