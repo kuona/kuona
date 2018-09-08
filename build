@@ -32,7 +32,7 @@ fi
 
 (cd dashboard; grunt build)
 
-(cd ./collectors/maven; ${MAVEN_BUILD})
+(cd ./lib/maven; ${MAVEN_BUILD})
 (cd ./lib/parsers; ${MAVEN_BUILD})
 
 (cd ./kuona-core; ${LEIN_TEST}; ${LEIN_INSTALL})
