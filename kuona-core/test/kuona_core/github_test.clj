@@ -5,13 +5,6 @@
             [clj-http.client :as http]
             [kuona-core.github :as github]))
 
-(facts "about http exception handling"
-       (fact (github/wrap-http-call (fn [] true)) => true)
-
-       (fact "400" (github/wrap-http-call (fn [] (throw+ {:status 400 :request-time 0 :headers {} :body "{}"}))) => {:status :error})
-       (fact "404" (github/wrap-http-call (fn [] (throw+ {:status 404 :request-time 0 :headers {} :body "{}"}))) => {:status :error :cause 404})
-       (fact "Exceptions are turned into error messages" (github/wrap-http-call (fn [] (throw (RuntimeException. "Test exception message")))) => (contains {:message "Test exception message" :status :error})))
-
 (facts "about querying github api"
        (fact "reading a single repository"
              (github/get-project-repository "username" "repository") => (contains {:status :success})

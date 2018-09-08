@@ -2,15 +2,34 @@
   (:require [cheshire.core :refer :all]
             [clojure.tools.logging :as log]
             [clj-http.client :as http-client]
+            [slingshot.slingshot :refer :all]
             [kuona-core.util :as util])
   (:gen-class))
 
 (def json-headers {"content-type" "application/json; charset=UTF-8"})
 
+(defn wrap-http-call
+  [f]
+  (try+
+    (f)
+    (catch [:status 400] {:keys [request-time headers body]}
+      (let [error (util/parse-json body)]
+        (log/info "Bad request" error)
+        {:status :error}))
+    (catch [:status 404] {:keys [request-time headers body]}
+      (let [error (util/parse-json body)]
+        (log/info "Not authorized" error)
+        {:status :error
+         :cause  404}))
+    (catch Object _
+      (log/error "Unexpected exception " (:message &throw-context))
+      {:status  :error
+       :message (:message &throw-context)
+       :cause   (:cause &throw-context)})))
+
 (defn parse-json-body
   [response]
   (util/parse-json (:body response)))
-
 
 (defn build-json-request
   [content]
