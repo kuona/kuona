@@ -199,6 +199,36 @@ function TfsCrawlerController($scope, $http, $window) {
   $scope.orgChange();
 }
 
+function NewSearchCodeServerController($scope, $http) {
+  $scope.server_url = null;
+  $scope.server_url_placeholder = 'http://searchcode.com';
+  $scope.api_key = {
+    private: null,
+    public: null
+  };
+  $scope.api_key = {
+    private: null,
+    public: null
+  };
+  $scope.api_response = null;
+
+  $scope.addSearchCodeServer = function () {
+    console.log("Search Code")
+  };
+
+  $scope.testSearchCodeServer = function () {
+    var request = {
+      integration: {
+        type: "searchcode",
+        url: $scope.server_url,
+        api_key: $scope.api_key
+      }
+    };
+    $http.post("/api/integration/test", request).then(function (res) {
+      $scope.api_response = res.data;
+    });
+  };
+}
 
 angular
   .module('kuona-admin')
@@ -209,4 +239,5 @@ angular
   .controller('CrawlerController', ['$scope', '$http', CrawlerController])
   .controller('TfsCrawlerController', ['$scope', '$http', '$window', TfsCrawlerController])
   .controller('GitHubCrawlerController', ['$scope', '$http', '$window', GitHubCrawlerController])
+  .controller('NewSearchCodeServerController', ['$scope', '$http', NewSearchCodeServerController])
 ;

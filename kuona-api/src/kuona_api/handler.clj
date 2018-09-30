@@ -18,6 +18,7 @@
             [kuona-api.build-handlers :as build]
             [kuona-api.query-handlers :as query]
             [kuona-api.dashboard-handlers :as dashboards]
+            [kuona-api.integration-handlers :as integration]
             [ring.middleware.json :as middleware]
             [ring.util.response :refer [file-response resource-response response status redirect]]
             [clojure.java.io :as io]
@@ -117,6 +118,7 @@
            (POST "/api/indices/:id/unlock" [id] (response (stores/unlock-store-by-name id)))
            (DELETE "/api/indicies/:id" [id] (response (stores/delete-index-by-id id)))
 
+           (POST "/api/integration/test" request (integration/test-integration (get-in request [:body])))
            (route/not-found "Not Found"))
 
 (def app

@@ -56,6 +56,11 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
       url: 'tfs/collector',
       templateUrl: 'views/tfs/collector.html',
       data: {pageTitle: 'TFS/Visual Studio Collector'}
+    })
+    .state('index.new-search-code-server', {
+      url: 'integration/searchcode',
+      templateUrl: 'views/integration/searchcode.html',
+      data: {pageTitle: 'Searchcode integration'}
     });
 }
 
