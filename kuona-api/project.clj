@@ -22,6 +22,7 @@
                  [clojurewerkz/quartzite "2.1.0"]
                  [io.forward/yaml "1.0.9"]
                  [com.jcabi/jcabi-log "0.18"]
+                 [commons-codec/commons-codec "1.10"]
                  [buddy/buddy-auth "2.1.0"]
                  [kuona-core "0.0.2"]]
   :plugins [[lein-ring "0.9.7"]

@@ -23,7 +23,7 @@
                  [io.forward/yaml "1.0.9"]
                  [com.jcabi/jcabi-log "0.18"]
                  [kuona/parsers "0.2"]
-                 [commons-codec/commons-codec "1.9"]
+                 [commons-codec/commons-codec "1.10"]
                  [org.gradle/gradle-core "4.10"]
                  [org.gradle/gradle-tooling-api "4.10"]]
   :plugins [[lein-midje "3.0.0"]

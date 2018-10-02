@@ -2,14 +2,15 @@
   (:require [kuona-core.http :as http]
             [clojure.tools.logging :as log]
             [slingshot.slingshot :refer :all])
-  (:import (org.apache.commons.codec.digest HmacUtils)))
+  (:import (org.apache.commons.codec.digest HmacUtils))
+  (:gen-class))
 
 (defn list-repositories
   [key url]
   (try+
     (if (and (-> key :public) (-> key :private))
       (let [pub         (str "pub=" (:public key))
-            result      (HmacUtils/hmacSha1Hex (-> key :private) pub)
+            result      (org.apache.commons.codec.digest.HmacUtils/hmacSha1Hex (-> key :private) pub)
             request-url (str url "/api/repo/list/?sig=" result "&" pub)]
         (http/json-get request-url))
       (http/json-get (str url "/api/repo/list/")))
