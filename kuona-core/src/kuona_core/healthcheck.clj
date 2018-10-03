@@ -1,5 +1,6 @@
 (ns kuona-core.healthcheck
-  (:require [kuona-core.http :as http]))
+  (:require [slingshot.slingshot :refer :all]
+            [kuona-core.http :as http]))
 
 (defn filter-actuator-links
   "Filters the list of actuator links for health and info references"
@@ -28,3 +29,21 @@
   (let [actuator-links (http/json-get url)
         links          (filter-actuator-links actuator-links)]
     (merge-list (map read-link (vals links)))))
+
+(defn health-check
+  "Executes a healthcheck and returns the results of the healthcheck operation"
+  [hc]
+  (let [encoding (-> hc :encoding)]
+    (try+
+      (cond (= encoding :json)
+            (http/json-get (-> hc :href))
+            :else {:status      :failed
+                   :description (str "Unrecognised healthcheck encoding " encoding)})
+      (catch java.net.UnknownHostException e
+        {:status      :failed
+         :description (:message &throw-context)})
+      (catch java.net.ConnectException e
+        {:status      :failed
+         :description "Connection refused"})))
+
+  )

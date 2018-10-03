@@ -37,3 +37,19 @@
                                                                       :info   {:href "http://some.info.url"}}})
              (provided (http/json-get "http://some.health.url") => {:status "DOWN"})
              (provided (http/json-get "http://some.info.url") => {:info "INFO"})))
+
+(facts "about healthchecks"
+       (fact "health checks requires a supported encoding"
+             (health-check {}) => {:status      :failed
+                                   :description "Unrecognised healthcheck encoding "}
+             (health-check {:encoding :foo}) => {:status      :failed
+                                                 :description "Unrecognised healthcheck encoding :foo"})
+       (fact "reports unresolved hosts"
+             (health-check {:encoding :json
+                            :href     "http://some.rediculous.domain"}) => {:status      :failed
+                                                                            :description "some.rediculous.domain: nodename nor servname provided, or not known"})
+       (fact "reports unreachable hosts"
+             (health-check {:encoding :json
+                            :href     "http://localhost:9843"}) => {:status      :failed
+                                                                    :description "Connection refused"})
+       )
