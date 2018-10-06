@@ -76,6 +76,12 @@
            (POST "/api/repositories/test" request (repository/test-project-url (get-in request [:body])))
            (GET "/api/repositories/manifest/:id" [id] (file-response id {:root (workspace/get-workspace-path)}))
 
+           (POST "/api/health-checks" request (route/not-found "Not yet available"))
+           (GET "/api/health-checks/logs" request (route/not-found "Not yet available"))
+           (GET "/api/health-checks/:id/" request (route/not-found "Not yet available"))
+           (GET "/api/health-checks/:id/status" request (route/not-found "Not yet available"))
+           (GET "/api/health-checks/:id/logs" request (route/not-found "Not yet available"))
+
            (GET "/api/build/tools" [] (snap-handlers/build-tool-buckets))
 
            (GET "/api/snapshots/:id" [id] (snap-handlers/get-snapshot-by-id id))
