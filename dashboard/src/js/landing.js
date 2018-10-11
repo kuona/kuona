@@ -21,7 +21,14 @@ function MainController($scope, $http) {
   $scope.collector_activity = [];
   $scope.code_metric_count = 0;
   $scope.code_snapshot_count = 0;
-
+  $scope.query = null;
+  $scope.query_response = "";
+  $scope.search = function () {
+    console.log("Query for " + $scope.query);
+    $http.post('api/chat', {query: $scope.query}).then(function (res) {
+      $scope.query_response = res.data.response.message;
+    });
+  };
   $http.get('/api/build/tools').then(function (res) {
     $scope.buildTools = [];
     var data = res.data.buckets;

@@ -37,6 +37,29 @@
                     href="https://github.com/kuona/kuona-project"> <i class="fab fa-github text-highlight"></i> https://github.com/kuona/kuona-project</a> for project background and objectives</p>
                 </div>
               </div>
+
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="jumbotron">
+                  <form ng-submit="search()">
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label"><i class="fa fa-search"></i> Search</label>
+                      <div class="col-sm-8">
+                        <input type="text" ng-model="query" class="form-control" placeholder="How many repos are there">
+                      </div>
+                      <div class="col-sm-2">
+                        <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="jumbotron">
+                  <p>{{query_response}}</p>
+                </div>
+              </div>
             </div>
 
             <div class="row">

@@ -24,7 +24,6 @@ function ageFilter() {
     var time = date;
 
     if (typeof date === 'string') {
-      console.log('date ' + date + ' is a string')
       time = Date.parse(date);
     } else {
       time = new Date(date);

@@ -14,18 +14,18 @@
                  [clj-http "3.9.1"]
                  [org.slf4j/slf4j-log4j12 "1.7.25"]
                  [clj-jgit "0.8.10"]
-                 [cheshire "5.8.0"]
+                 [cheshire "5.8.1"]
                  [slingshot "0.12.2"]
                  [clj-time "0.14.4"]
                  [org.clojure/data.xml "0.0.8"]
-                 [org.clojure/tools.cli "0.3.7"]
+                 [org.clojure/tools.cli "0.4.1"]
                  [clojurewerkz/quartzite "2.1.0"]
                  [io.forward/yaml "1.0.9"]
                  [com.jcabi/jcabi-log "0.18"]
                  [kuona/parsers "0.2"]
-                 [commons-codec/commons-codec "1.10"]
-                 [org.gradle/gradle-core "4.10"]
-                 [org.gradle/gradle-tooling-api "4.10"]
+                 [commons-codec/commons-codec "1.11"]
+                 [org.gradle/gradle-core "4.10.2"]
+                 [org.gradle/gradle-tooling-api "4.10.2"]
                  [org.apache.opennlp/opennlp-tools "1.9.0"]
                  [org.apache.opennlp/opennlp-uima "1.9.0"]
                  [buddy/buddy-auth "2.1.0"]]
@@ -36,6 +36,6 @@
                 :source-highlight true
                 :to-dir           "target/doc"}
   :profiles
-  {:dev {:dependencies [[midje "1.9.2"]]}})
+  {:dev {:dependencies [[midje "1.9.3"]]}})
 
 
