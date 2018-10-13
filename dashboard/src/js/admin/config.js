@@ -61,6 +61,11 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
       url: 'integration/searchcode',
       templateUrl: 'views/integration/searchcode.html',
       data: {pageTitle: 'Searchcode integration'}
+    })
+    .state('index.new-health-check', {
+      url: 'health-check',
+      templateUrl: 'views/health-check.html',
+      data: {pageTitle: 'New Health Check'}
     });
 }
 

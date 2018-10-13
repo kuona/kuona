@@ -230,6 +230,18 @@ function NewSearchCodeServerController($scope, $http) {
   };
 }
 
+function NewServerHealthCheckController($scope, $http) {
+  $scope.healthcheck = {
+    tags: "",
+    endpoints: "",
+    type: "HTTP_GET"
+  };
+
+  $scope.addHealthChecks = function() {
+    console.log("Health Check " + $scope.healthcheck);
+  }
+}
+
 angular
   .module('kuona-admin')
   .controller('MainCtrl', ['$scope', '$http', MainCtrl])
@@ -240,4 +252,5 @@ angular
   .controller('TfsCrawlerController', ['$scope', '$http', '$window', TfsCrawlerController])
   .controller('GitHubCrawlerController', ['$scope', '$http', '$window', GitHubCrawlerController])
   .controller('NewSearchCodeServerController', ['$scope', '$http', NewSearchCodeServerController])
+  .controller('NewServerHealthCheckController', ['$scope', '$http', NewServerHealthCheckController])
 ;
