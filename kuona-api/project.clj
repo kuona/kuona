@@ -23,8 +23,6 @@
                  [io.forward/yaml "1.0.9"]
                  [com.jcabi/jcabi-log "0.18"]
                  [commons-codec/commons-codec "1.11"]
-                 [buddy/buddy-auth "2.1.0"]
-                 [tuddman/neocons "3.2.1-SNAPSHOT"]
                  [kuona-core "0.0.2"]]
   :plugins [[lein-ring "0.9.7"]
             [lein-midje "3.0.0"]

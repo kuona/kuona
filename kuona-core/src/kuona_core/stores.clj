@@ -220,6 +220,19 @@
 
    })
 
+(def health-check-schema
+  {:health-check {:properties {:type     es/indexed-keyword
+                               :tags     es/indexed-keyword
+                               :endpoint es/indexed-keyword}}})
+(def health-check-logs-schema
+  {:health-check-log {:properties {:status      es/indexed-keyword
+                                   :description es/string
+                                   :type        es/indexed-keyword
+                                   :tags        es/indexed-keyword
+                                   :endpoint    es/indexed-keyword
+                                   :health      es/enabled-object
+                                   :info        es/enabled-object}}})
+
 (defn create-store-if-missing
   [store schema]
   (cond
@@ -308,6 +321,8 @@
 (def code-metric-store (DataStore. :vcs-content :content {}))
 (def source-code-store (DataStore. :vcs-source :source {}))
 (def dashboards-store (DataStore. :dashboards :dashboard dashboards-schema))
+(def health-check-store (DataStore. :health-check :health-check health-check-schema))
+(def health-check-log-store (DataStore. :health-check-log :health-check-log health-check-logs-schema))
 
 (def sources
   {:builds             {:id          :builds
@@ -337,7 +352,13 @@
                         :description "Stores the configuration of configured collectors"}
    :dashboards         {:id          :dashboards
                         :index       dashboards-store
-                        :description "Dashboard configuration store"}})
+                        :description "Dashboard configuration store"}
+   :health-check       {:id          :health-check
+                        :index       health-check-store
+                        :description "Health check definitions"}
+   :health-check-log   {:id          :health-check-log
+                        :index       health-check-log-store
+                        :description "Health check resiults definitions"}})
 
 (defn create-stores
   []
@@ -350,7 +371,9 @@
   (.create snapshots-store)
   (.create commit-logs-store)
   (.create code-metric-store)
-  (.create dashboards-store))
+  (.create dashboards-store)
+  (.create health-check-store)
+  (.create health-check-log-store))
 
 (defn rebuild-source
   [source]
