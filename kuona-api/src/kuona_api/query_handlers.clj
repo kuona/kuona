@@ -1,10 +1,10 @@
 (ns kuona-api.query-handlers
   (:require [clojure.tools.logging :as log]
-            [kuona-core.store :as store]
+            [kuona-api.core.store :as store]
             [kuona-api.build-handlers :as build]
             [kuona-api.snapshot-handlers :as snapshots]
             [kuona-api.repository-handlers :as repo]
-            [kuona-core.stores :refer [sources]]
+            [kuona-api.core.stores :refer [sources]]
             [ring.util.response :refer [resource-response response status not-found]])
   (:gen-class))
 

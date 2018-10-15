@@ -4,10 +4,10 @@
             [clojure.test :refer :all]
             [kuona-api.handler :refer :all]
             [kuona-api.test-helpers :as helper]
-            [kuona-core.util :as util]
+            [kuona-api.core.util :as util]
             [midje.sweet :refer :all]
             [ring.mock.request :as mock]
-            [kuona-core.stores :as stores]))
+            [kuona-api.core.stores :as stores]))
 
 (def match-all
   {:query {:match_all {}}})

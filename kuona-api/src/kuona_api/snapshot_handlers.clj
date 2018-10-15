@@ -1,9 +1,9 @@
 (ns kuona-api.snapshot-handlers
   (:require [clojure.tools.logging :as log]
             [kuona-api.environments :refer :all]
-            [kuona-core.store :as store]
+            [kuona-api.core.store :as store]
             [ring.util.response :refer [resource-response response status]]
-            [kuona-core.stores :as stores])
+            [kuona-api.core.stores :as stores])
   (:gen-class))
 
 

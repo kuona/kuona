@@ -15,7 +15,7 @@
                  [clj-http "3.1.0"]
                  [clj-jgit "0.8.9"]
                  [cheshire "5.6.3"]
-                 [kuona-core "0.0.2"]
+                 [kuona-api "0.0.2"]
                  [org.clojure/tools.cli "0.3.5"]]
   :plugins [[lein-midje "3.2.1"]
             [lein-ancient "0.6.14"]]

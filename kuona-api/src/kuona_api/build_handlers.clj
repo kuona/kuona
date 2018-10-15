@@ -1,8 +1,8 @@
 (ns kuona-api.build-handlers
   (:require [clojure.tools.logging :as log]
-            [kuona-core.store :as store]
+            [kuona-api.core.store :as store]
             [ring.util.response :refer [resource-response response status]]
-            [kuona-core.stores :refer [builds-store]])
+            [kuona-api.core.stores :refer [builds-store]])
   (:gen-class))
 
 (defn put-build!

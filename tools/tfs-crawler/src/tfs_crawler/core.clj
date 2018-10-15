@@ -1,7 +1,7 @@
 (ns tfs-crawler.core
   (:require [clojure.tools.logging :as log]
             [clojure.tools.cli :refer [parse-opts]]
-            [kuona-core.cli :as cli]
+            [kuona-api.core.cli :as cli]
             [tfs-crawler.crawler :as crawler]
             )
   (:gen-class))

@@ -2,8 +2,8 @@
   (:require [clojure.tools.logging :as log]
             [cheshire.core :refer :all]
             [slingshot.slingshot :refer :all]
-            [kuona-core.util :as util]
-            [kuona-core.collector.tfs :as tfs])
+            [kuona-api.core.util :as util]
+            [kuona-api.core.collector.tfs :as tfs])
   (:gen-class))
 
 
@@ -12,7 +12,7 @@
   (let [id  (util/uuid-from (-> entry :url))
         url (clojure.string/join "/" [api-url "/api/repositories" id])]
     (log/info "put-repository " (-> entry :url) "to" url)
-    (kuona-core.http/json-put url entry)))
+    (kuona-api.core.http/json-put url entry)))
 
 (defn crawl
   [config]

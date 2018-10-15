@@ -4,7 +4,7 @@
             [kuona-api.build-handlers :refer :all]
             [cheshire.core :refer :all]
             [clj-http.client :as http]
-            [kuona-core.util :as util]
+            [kuona-api.core.util :as util]
             [kuona-api.collector-handlers :as h]
             [kuona-api.handler :refer :all]
             [midje.sweet :refer :all]))

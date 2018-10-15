@@ -1,7 +1,7 @@
 (ns kuona-api.collector-handlers-test
   (:require [cheshire.core :refer :all]
             [clj-http.client :as http]
-            [kuona-core.util :as util]
+            [kuona-api.core.util :as util]
             [kuona-api.test-helpers :as helper]
             [kuona-api.handler :refer :all]
             [midje.sweet :refer :all]

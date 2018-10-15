@@ -4,8 +4,8 @@
     [clj-http.client :as http]
     [cheshire.core :refer :all]
     [slingshot.slingshot :refer :all]
-    [kuona-core.git :refer :all]
-    [kuona-core.util :as util])
+    [kuona-api.core.git :refer :all]
+    [kuona-api.core.util :as util])
   (:import (java.util Date))
   (:gen-class))
 
@@ -127,7 +127,7 @@
   [metric id]
   (let [url (clojure.string/join "/" ["http://dashboard.kuona.io/api/repositories" id])]
     (log/info "put-repository " (-> metric :project :name) url)
-    (kuona-core.http/json-put url metric)))
+    (kuona-api.core.http/json-put url metric)))
 
 (defn process-item
   [item]

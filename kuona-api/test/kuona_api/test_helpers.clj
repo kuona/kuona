@@ -1,7 +1,7 @@
 (ns kuona-api.test-helpers
   (:require [cheshire.core :refer :all]
             [midje.sweet :refer :all]
-            [kuona-core.util :as util]
+            [kuona-api.core.util :as util]
             [ring.mock.request :as mock]))
 
 (defn mock-json-post

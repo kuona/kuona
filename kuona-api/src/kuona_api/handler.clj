@@ -6,10 +6,10 @@
             [kuona-api.environments :refer :all]
             [kuona-api.environments :refer :all]
             [kuona-api.environment-handlers :as environments]
-            [kuona-core.store :as store]
-            [kuona-core.stores :as stores]
-            [kuona-core.util :as util]
-            [kuona-core.workspace :as workspace]
+            [kuona-api.core.store :as store]
+            [kuona-api.core.stores :as stores]
+            [kuona-api.core.util :as util]
+            [kuona-api.core.workspace :as workspace]
             [kuona-api.valuestream-handlers :as valuestream]
             [kuona-api.repository-handlers :as repository]
             [kuona-api.metric-handlers :as metric-handlers]
@@ -45,7 +45,7 @@
 
 (defn api-info
   []
-  (let [es (kuona-core.http/json-get (stores/es-url))]
+  (let [es (kuona-api.core.http/json-get (stores/es-url))]
     {:kuona_api      {:version (util/get-project-version 'kuona-api)}
      :clojure        {:version (util/get-project-version 'org.clojure/clojure)}
      :elastic_search es}))

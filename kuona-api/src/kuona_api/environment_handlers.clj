@@ -1,10 +1,10 @@
 (ns kuona-api.environment-handlers
   (:require [clojure.tools.logging :as log]
             [kuona-api.environments :refer :all]
-            [kuona-core.store :as store]
-            [kuona-core.util :as util]
+            [kuona-api.core.store :as store]
+            [kuona-api.core.util :as util]
             [ring.util.response :refer [resource-response response status]]
-            [kuona-core.stores :refer [environments-store environments-comment-store]])
+            [kuona-api.core.stores :refer [environments-store environments-comment-store]])
   (:gen-class))
 
 

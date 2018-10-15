@@ -1,7 +1,7 @@
 (ns kuona-api.integration-handlers
   (:require [clojure.tools.logging :as log]
             [ring.util.response :refer [resource-response response status]]
-            [kuona-core.integration.search-code-server :as search-code-server]))
+            [kuona-api.core.integration.search-code-server :as search-code-server]))
 
 (defn test-integration [config]
   (log/info "Testing integration" config)

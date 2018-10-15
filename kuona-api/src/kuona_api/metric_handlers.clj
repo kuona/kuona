@@ -2,10 +2,10 @@
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
             [kuona-api.environments :refer :all]
-            [kuona-core.store :as store]
-            [kuona-core.stores :as stores]
+            [kuona-api.core.store :as store]
+            [kuona-api.core.stores :as stores]
             [ring.util.response :refer [resource-response response status not-found]]
-            [kuona-core.stores :refer [metrics-store]]
+            [kuona-api.core.stores :refer [metrics-store]]
             [compojure.route :as route]
             )
   (:gen-class))

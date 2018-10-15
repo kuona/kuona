@@ -53,12 +53,11 @@ function symlink_core {
     mkdir "${p}/checkouts"
   fi
   
-  if ! [ -h "${p}/checkouts/kuona-core" ]; then
-    ln -s "${PWD}/kuona-core" "${p}/checkouts/kuona-core"
+  if ! [ -h "${p}/checkouts/kuona-api" ]; then
+    ln -s "${PWD}/kuona-api" "${p}/checkouts/kuona-api"
   fi
 }
 
-symlink_core "kuona-api"
 symlink_core "tools/github-crawler"
 symlink_core "tools/tfs-crawler"
 

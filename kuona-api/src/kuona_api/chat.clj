@@ -1,7 +1,7 @@
 (ns kuona-api.chat
   (:require [ring.util.response :refer [resource-response response status]]
-            [kuona-core.store :as store]
-            [kuona-core.stores :as stores]))
+            [kuona-api.core.store :as store]
+            [kuona-api.core.stores :as stores]))
 
 (defn message [msg]
 

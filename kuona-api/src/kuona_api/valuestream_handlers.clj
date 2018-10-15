@@ -2,7 +2,7 @@
   (:require [cheshire.core :refer :all]
             [compojure.core :refer :all]
             [kuona-api.environments :refer :all]
-            [kuona-core.util :as util]
+            [kuona-api.core.util :as util]
             [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
             [ring.util.response :refer [resource-response response status]])
   (:gen-class))

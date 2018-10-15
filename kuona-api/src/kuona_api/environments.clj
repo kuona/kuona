@@ -1,8 +1,8 @@
 (ns kuona-api.environments
   (:require [clojure.tools.logging :as log]
             [kuona-api.mapping :refer :all]
-            [kuona-core.store :as store]
-            [kuona-core.util :refer :all]
+            [kuona-api.core.store :as store]
+            [kuona-api.core.util :refer :all]
             [slingshot.slingshot :refer :all])
   (:gen-class))
 

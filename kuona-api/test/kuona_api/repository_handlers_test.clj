@@ -4,10 +4,10 @@
             [kuona-api.repository-handlers :as h]
             [kuona-api.test-helpers :as helper]
             [kuona-api.handler :refer :all]
-            [kuona-core.github :as github]
+            [kuona-api.core.github :as github]
             [midje.sweet :refer :all]
-            [kuona-core.util :as util]
-            [kuona-core.stores :as stores]
+            [kuona-api.core.util :as util]
+            [kuona-api.core.stores :as stores]
             [clojure.string :as string]))
 
 (facts "about commit pagination"

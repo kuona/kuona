@@ -1,6 +1,6 @@
 (ns github-crawler.core-test
   (:require [midje.sweet :refer :all]
-            [kuona-core.cli :as cli]
+            [kuona-api.core.cli :as cli]
             [github-crawler.core :refer :all]))
 
 (facts "about cli arguments"

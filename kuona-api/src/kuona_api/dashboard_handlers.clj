@@ -1,9 +1,9 @@
 (ns kuona-api.dashboard-handlers
   (:require [clojure.tools.logging :as log]
             [ring.util.response :refer [response]]
-            [kuona-core.store :as store]
-            [kuona-core.stores :as stores]
-            [kuona-core.util :as util]))
+            [kuona-api.core.store :as store]
+            [kuona-api.core.stores :as stores]
+            [kuona-api.core.util :as util]))
 
 (defn- dashboards-page-link
   [page-number]

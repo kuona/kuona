@@ -2,11 +2,11 @@
   (:require [slingshot.slingshot :refer [try+]]
             [ring.adapter.jetty :as jetty]
             [clojure.tools.logging :as log]
-            [kuona-core.scheduler :as scheduler]
+            [kuona-api.core.scheduler :as scheduler]
             [kuona-api.handler :as service]
-            [kuona-core.stores :as stores]
-            [kuona-core.cli :as kcli]
-            [kuona-core.workspace :refer [set-workspace-path]])
+            [kuona-api.core.stores :as stores]
+            [kuona-api.core.cli :as kcli]
+            [kuona-api.core.workspace :refer [set-workspace-path]])
   (:gen-class))
 
 (def cli-options
@@ -43,7 +43,7 @@
           (if (or (= user-input "Y") (= user-input "y"))
             (stores/rebuild)
             (kcli/exit 1 "Cancelling - indexes not updated")))))
-    (if (not (kuona-core.workspace/workspace-path-valid?)) (kcli/exit 1 "Invalid workspace path"))
+    (if (not (kuona-api.core.workspace/workspace-path-valid?)) (kcli/exit 1 "Invalid workspace path"))
     (log/info "Using workspace" (-> options :workspace))
     (start-application (-> options :port) (-> options :mode))))
 

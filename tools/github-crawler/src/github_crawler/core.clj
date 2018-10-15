@@ -1,7 +1,7 @@
 (ns github-crawler.core
   (:require [clojure.string :as string]
             [clojure.tools.cli :refer [parse-opts]]
-            [kuona-core.cli :as cli]
+            [kuona-api.core.cli :as cli]
             [github-crawler.crawler :as crawler])
   (:gen-class))
 

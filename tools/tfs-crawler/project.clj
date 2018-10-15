@@ -14,7 +14,7 @@
                  [clj-http "3.9.1"]
                  [cheshire "5.8.0"]
                  [org.clojure/tools.cli "0.3.7"]
-                 [kuona-core "0.0.2"]]
+                 [kuona-api "0.0.2"]]
   :plugins [[lein-midje "3.2.1"]
             [lein-ancient "0.6.14"]]
   :profiles {:dev     {:dependencies [[midje "1.9.2"]]}

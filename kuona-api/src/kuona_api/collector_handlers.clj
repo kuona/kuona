@@ -1,10 +1,10 @@
 (ns kuona-api.collector-handlers
   (:require [clojure.tools.logging :as log]
-            [kuona-core.store :as store]
+            [kuona-api.core.store :as store]
             [ring.util.response :refer [resource-response response status]]
-            [kuona-core.util :as util]
-            [kuona-core.elasticsearch :as es]
-            [kuona-core.stores :refer [collector-activity-store collector-config-store]])
+            [kuona-api.core.util :as util]
+            [kuona-api.core.elasticsearch :as es]
+            [kuona-api.core.stores :refer [collector-activity-store collector-config-store]])
   (:gen-class))
 
 

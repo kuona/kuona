@@ -35,7 +35,7 @@ fi
 (cd ./lib/maven; ${MAVEN_BUILD})
 (cd ./lib/parsers; ${MAVEN_BUILD})
 
-(cd ./kuona-core; ${LEIN_TEST}; ${LEIN_INSTALL})
+(cd ./kuona-core; ${LEIN_TEST}; ${LEIN_INSTALL})cd
 (cd ./kuona-api; ${LEIN_TEST}; ${LEIN_PACKAGE})
 (cd ./tools/github-crawler; ${LEIN_TEST}; ${LEIN_PACKAGE})
 (cd ./tools/tfs-crawler; ${LEIN_TEST}; ${LEIN_PACKAGE})
