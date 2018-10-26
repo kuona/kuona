@@ -1,7 +1,10 @@
 (ns kuona-api.health-check-handlers
   (:require [ring.util.response :as response]
             [clojure.tools.logging :as log]
-            [slingshot.slingshot :refer :all])
+            [slingshot.slingshot :refer :all]
+            [kuona-api.core.store :as store]
+            [kuona-api.core.stores :as stores]
+            [kuona-api.core.util :as util])
   (:gen-class)
   (:import (java.net MalformedURLException URL)))
 
@@ -35,7 +38,7 @@
 (defn new-health-check
   [health-check]
   (let [status (valid-health-check? health-check)]
+    (log/info "New healthcheck " health-check)
     (if (-> status :valid)
-      (response/created (kuona-api.core.store/put-document health-check kuona-api.core.stores/health-check-store kuona-api.core.util/uuid))
-      (response/status (response/response status) 401)
-      )))
+      (response/created (store/put-document health-check stores/health-check-store (util/uuid)))
+      (response/status (response/response status) 401))))

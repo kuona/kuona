@@ -1,3 +1,5 @@
+require('../utils.js');
+
 function MainCtrl($scope, $http) {
   this.userName = 'Kuona Admin';
   this.helloText = 'Kuona Administration';
@@ -236,9 +238,20 @@ function NewServerHealthCheckController($scope, $http) {
     endpoints: "",
     type: "HTTP_GET"
   };
+  $scope.api_response = {};
 
-  $scope.addHealthChecks = function() {
-    console.log("Health Check " + $scope.healthcheck);
+  $scope.addHealthChecks = function () {
+    let request = {
+      type: $scope.healthcheck.type,
+      tags: commaListToArray($scope.healthcheck.tags, ','),
+      endpoints: commaListToArray($scope.healthcheck.endpoints, '\n')
+    };
+    console.log(request);
+    console.log(request.tags);
+    $http.post("/api/health-checks", request).then(function (res) {
+      $scope.api_response = res.data;
+    });
+
   }
 }
 

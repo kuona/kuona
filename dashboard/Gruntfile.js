@@ -1,5 +1,11 @@
 module.exports = function (grunt) {
   grunt.initConfig({
+    "browserify": {
+      admin: {
+        src: ['src/admin/**/*.js'],
+        dest: 'build/app.js',
+      }
+    },
     "babel": {
       options: {
         sourceMap: true
@@ -78,5 +84,5 @@ module.exports = function (grunt) {
 //  grunt.registerTask("default", ["babel"]);
   grunt.registerTask('build', ['clean', 'copy', 'compass', 'babel']);
   grunt.registerTask('dev', ['build', 'browserSync', 'watch']);
-  grunt.registerTask('default', ['build']);
+  grunt.registerTask('default', ['browserify:admin', 'build']);
 };
