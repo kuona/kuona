@@ -1,4 +1,4 @@
-import {commaListToArray} from '../src/js/utils'
+require('../src/js/utils');
 
 describe('String to array processing', () => {
   it('maps an empty string to an empty array', () => {

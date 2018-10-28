@@ -1,7 +1,8 @@
 (ns kuona-api.core.healthcheck-test
   (:require [midje.sweet :refer :all]
             [kuona-api.core.http :as http]
-            [kuona-api.core.healthcheck :refer :all]))
+            [kuona-api.core.healthcheck :refer :all]
+            [kuona-api.core.util :as util]))
 
 
 (facts "about merging lists"
@@ -51,5 +52,22 @@
        (fact "reports unreachable hosts"
              (health-check {:encoding :json
                             :href     "http://localhost:9843"}) => {:status      :failed
-                                                                    :description "Connection refused"})
-       )
+                                                                    :description "Connection refused"}))
+
+(facts "about health check log entries"
+       (fact "log contains the health check id"
+             (let [hc              {:id (util/uuid)}
+                   health          {:status :ok}
+                   collection-date (util/timestamp)]
+               (health-check-log hc, health collection-date) => (contains {:health_check_id (-> hc :id)})
+               (health-check-log hc, health collection-date) => (contains {:date collection-date})
+
+               )))
+
+(facts "about health check handler selection"
+       (fact "matches HTTP check"
+         (health-check-fn :HTTP_GET) => (exactly perform-http-health-checks))
+       (fact
+         (health-check-fn :SPRING_ACTUATOR) => (exactly perform-spring-actuator-health-check))
+       (fact
+         (health-check-fn :FOO) => (exactly perform-health-check-error)))

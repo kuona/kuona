@@ -1,5 +1,3 @@
-require('../utils.js');
-
 function MainCtrl($scope, $http) {
   this.userName = 'Kuona Admin';
   this.helloText = 'Kuona Administration';
@@ -54,7 +52,7 @@ function NewGithubRepoController($scope, $http) {
 
   $scope.testRepo = function () {
     $scope.gh = null;
-    var request = {
+    let request = {
       "source": "github-project",
       "username": $scope.username,
       "repository": $scope.repository
@@ -70,7 +68,7 @@ function NewGithubRepoController($scope, $http) {
 
   $scope.addRepo = function () {
     $scope.gh = null;
-    var request = {
+    let request = {
       "source": "github-project",
       "username": $scope.username,
       "repository": $scope.repository
@@ -95,7 +93,7 @@ function NewJenkinsServerController($scope, $http) {
 
   $scope.addJenkins = function () {
 
-    var request = {
+    let request = {
       "collector_type": "BUILD",
       "collector": "jenkins",
       "config": {
@@ -156,7 +154,7 @@ function GitHubCrawlerController($scope, $http, $window) {
   $scope.username = "";
 
   $scope.addGithub = function () {
-    var request = {
+    let request = {
       "collector_type": "VCS",
       "collector": "GitHubOrg",
       "config": {
@@ -183,7 +181,7 @@ function TfsCrawlerController($scope, $http, $window) {
   };
 
   $scope.addTfsServer = function () {
-    var request = {
+    let request = {
       "collector_type": "VCS",
       "collector": "TFS",
       "config": {
@@ -208,10 +206,7 @@ function NewSearchCodeServerController($scope, $http) {
     private: null,
     public: null
   };
-  $scope.api_key = {
-    private: null,
-    public: null
-  };
+
   $scope.api_response = null;
 
   $scope.addSearchCodeServer = function () {
@@ -219,7 +214,7 @@ function NewSearchCodeServerController($scope, $http) {
   };
 
   $scope.testSearchCodeServer = function () {
-    var request = {
+    let request = {
       integration: {
         type: "searchcode",
         url: $scope.server_url,
@@ -230,6 +225,16 @@ function NewSearchCodeServerController($scope, $http) {
       $scope.api_response = res.data;
     });
   };
+}
+
+function commaListToArray(text, sepearator) {
+  let elements = text.split(sepearator);
+  let result = [];
+
+  for (let i = 0; i < elements.length; i++) {
+    result.push(elements[i].trim())
+  }
+  return result;
 }
 
 function NewServerHealthCheckController($scope, $http) {

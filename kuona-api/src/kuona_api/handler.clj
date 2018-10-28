@@ -19,12 +19,11 @@
             [kuona-api.query-handlers :as query]
             [kuona-api.dashboard-handlers :as dashboards]
             [kuona-api.integration-handlers :as integration]
-            [kuona-api.health-check-handlers :as healthcheck]
+            [kuona-api.health-check-handlers :as health-check]
             [kuona-api.chat :as chat]
             [ring.middleware.json :as middleware]
             [ring.util.response :refer [file-response resource-response response status redirect]]
-            [clojure.java.io :as io]
-            [clj-http.client :as http])
+            [clojure.java.io :as io])
   (:gen-class))
 
 
@@ -78,7 +77,9 @@
            (POST "/api/repositories/test" request (repository/test-project-url (get-in request [:body])))
            (GET "/api/repositories/manifest/:id" [id] (file-response id {:root (workspace/get-workspace-path)}))
 
-           (POST "/api/health-checks" request (healthcheck/new-health-check (get-in request [:body])))
+           (POST "/api/health-checks" request (health-check/new-health-check (get-in request [:body])))
+           (GET "/api/health-checks" request (health-check/find-health-checks (get-in request [:body])))
+
            (GET "/api/health-checks/:id/" request (route/not-found "Not yet available"))
            (GET "/api/health-checks/:id/status" request (route/not-found "Not yet available"))
            (GET "/api/health-checks/:id/logs" request (route/not-found "Not yet available"))

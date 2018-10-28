@@ -13,6 +13,8 @@
             [kuona-api.core.git :as git]
             [kuona-api.core.collector.snapshot :as snapshot]
             [kuona-api.core.stores :refer [repositories-store commit-logs-store code-metric-store collector-config-store source-code-store]]
+            [kuona-api.core.healthcheck :as health-check]
+            [kuona-api.core.workspace :refer [get-workspace-path]]
             [kuona-api.core.workspace :refer [get-workspace-path]]
             [kuona-api.core.stores :as stores]
             [kuona-api.core.collector.source-code :as source-code]))
@@ -152,6 +154,13 @@
         (collect-repository-metrics)
         (refresh-build-metrics)
         (collect-environment-metrics))
+
+(defjob background-health-check-collector
+        [ctx]
+        (log/info "collecting health check data")
+        (let [collection-date (util/timestamp)
+              health-checks   (store/all-documents (stores/health-check-store))]
+          (doall (fn [hc] (health-check/perform-health-checks hc collection-date)) health-checks)))
 
 (defn start
   []

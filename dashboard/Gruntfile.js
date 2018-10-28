@@ -1,11 +1,5 @@
 module.exports = function (grunt) {
   grunt.initConfig({
-    "browserify": {
-      admin: {
-        src: ['src/admin/**/*.js'],
-        dest: 'build/app.js',
-      }
-    },
     "babel": {
       options: {
         sourceMap: true

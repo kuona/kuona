@@ -20,7 +20,7 @@
   (reduce (fn
             ([] false)
             ([a b] (and a b)))
-          (map valid-endpoint? endpoints))  )
+          (map valid-endpoint? endpoints)))
 
 (defn valid-health-check? [health-check]
   (let [valid-type      (contains? (hash-set "HTTP_GET" "SPRING_ACTUATOR") (-> health-check :type))
@@ -42,3 +42,6 @@
     (if (-> status :valid)
       (response/created (store/put-document health-check stores/health-check-store (util/uuid)))
       (response/status (response/response status) 401))))
+
+(defn find-health-checks [params]
+  (response/response {:health_checks (store/all-documents stores/health-check-store)}))
