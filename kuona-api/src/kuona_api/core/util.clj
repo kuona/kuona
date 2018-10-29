@@ -3,9 +3,13 @@
             [clojure.tools.logging :as log]
             [cheshire.core :refer :all])
   (:import java.util.Properties
-           (java.util UUID))
+           (java.util UUID Date)
+           (java.io StringReader PushbackReader))
   (:gen-class))
 
+(defn string-reader
+  [s]
+  (StringReader. s))
 
 (defn uuid ^UUID [] (str (UUID/randomUUID)))
 
@@ -27,7 +31,7 @@
 (defn timestamp
   "Generate a timestamp for the current instant"
   []
-  (new java.util.Date))
+  (new Date))
 
 (defn canonical-path
   "Returns canonical path of a given path"
@@ -91,7 +95,7 @@
     (do
       (log/info (str "Reading configuration file \"" filename "\""))
       (with-open [r (clojure.java.io/reader filename)]
-        (clojure.edn/read (java.io.PushbackReader. r))))
+        (clojure.edn/read (PushbackReader. r))))
     (do
       (log/warn (str "Configuration file \"" filename "\" not found"))
       {})))

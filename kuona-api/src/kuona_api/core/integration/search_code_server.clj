@@ -10,7 +10,7 @@
   (try+
     (if (and (-> key :public) (-> key :private))
       (let [pub         (str "pub=" (:public key))
-            result      (org.apache.commons.codec.digest.HmacUtils/hmacSha1Hex (-> key :private) pub)
+            result      (HmacUtils/hmacSha1Hex (-> key :private) pub)
             request-url (str url "/api/repo/list/?sig=" result "&" pub)]
         (http/json-get request-url))
       (http/json-get (str url "/api/repo/list/")))

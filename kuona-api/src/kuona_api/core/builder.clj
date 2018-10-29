@@ -3,7 +3,8 @@
             [kuona-api.core.gradle :as gradle]
             [kuona-api.core.leiningen :as lein]
             [kuona-api.core.util :refer :all])
-  (:gen-class))
+  (:gen-class)
+  (:import (java.io File)))
 
 (defn build-tool
   "matches the file path against a defined set of build tools,
@@ -30,7 +31,7 @@
   "Takes the full path and a project relative path. Runs the
   appropriate build tool using the path but reports using the relative
   path"
-  [file project-relative-path]
+  [^File file project-relative-path]
   (let [path   (.getAbsolutePath file)
         result ((build-tool path project-relative-path) path)]
     result))

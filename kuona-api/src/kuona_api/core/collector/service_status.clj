@@ -9,7 +9,7 @@
             [clojurewerkz.quartzite.jobs :as j]
             [clojurewerkz.quartzite.jobs :refer [defjob]]
             [clojurewerkz.quartzite.schedule.simple :refer [schedule with-repeat-count repeat-forever with-interval-in-milliseconds]])
-  (:import (java.net InetAddress))
+  (:import (java.net ConnectException))
   (:gen-class))
 
 (def cli-options
@@ -90,7 +90,7 @@
   [url]
   (try
     (up-status url (http/get url))
-    (catch java.net.ConnectException e
+    (catch ConnectException e
       (log/info "Connection refused for " url)
       (connection-refused url "Connection Refused"))))
 

@@ -2,7 +2,8 @@
   (:require [midje.sweet :refer :all]
             [clojure.data.xml :as xml]
             [kuona-api.core.maven :refer :all]
-            [kuona-api.core.util :refer :all]))
+            [kuona-api.core.util :refer :all]
+            [kuona-api.core.util :as util]))
 
 (defn tag
   [name value]
@@ -39,7 +40,7 @@
 
 
        (fact "reads artifact data"
-             (let [data (xml/parse (java.io.StringReader. graph-hopper))]
+             (let [data (xml/parse (util/string-reader graph-hopper))]
                (analyse-pom-file "some/path") => {:artifact     {:artifactId    "graphhopper-parent"
                                                                  :description   "Super pom of GraphHopper, the fast and flexible routing engine"
                                                                  :groupId       "com.graphhopper"

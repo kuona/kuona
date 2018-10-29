@@ -68,7 +68,7 @@
                                                                                      :watchers_count    nil}}))
 
 (facts "about line of code metrics in snapshots"
-       (fact (loc-metrics {}) => (throws java.lang.AssertionError))
+       (fact (loc-metrics {}) => (throws AssertionError))
        (fact "copied basic data"
              (loc-metrics {:metric {:activity {:blanks   1
                                                :code     2

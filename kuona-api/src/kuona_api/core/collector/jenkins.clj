@@ -8,7 +8,8 @@
             [slingshot.slingshot :refer :all]
             [clojure.xml :as cxml]
             [clojure.zip :as zip]
-            [clojure.data.zip.xml :refer :all]))
+            [clojure.data.zip.xml :refer :all])
+  (:import (java.io ByteArrayInputStream)))
 
 
 (defn read-description
@@ -61,7 +62,7 @@
 (defn zip-str
   "Returns a XML zip represented by the supplied string."
   [s]
-  (zip/xml-zip (cxml/parse (java.io.ByteArrayInputStream. (.getBytes s)))))
+  (zip/xml-zip (cxml/parse (ByteArrayInputStream. (.getBytes s)))))
 
 (defn parse-xml-response
   "Takes an HTTP response map and extracts the XML body content as an XML Zip object"
