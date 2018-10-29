@@ -5,12 +5,12 @@
             [kuona-api.core.util :as util]))
 
 
-(facts "about merging lists"
-       (fact (merge-list []) => {})
-       (fact (merge-list '()) => {})
-       (fact (merge-list [{:foo :bar}]) => {:foo :bar})
-       (fact (merge-list `({:foo :bar})) => {:foo :bar})
-       (fact (merge-list [{:foo 1} {:bar 2}]) => {:foo 1 :bar 2}))
+(facts "about merging lists of maps"
+       (fact (merge-map-list []) => {})
+       (fact (merge-map-list '()) => {})
+       (fact (merge-map-list [{:foo :bar}]) => {:foo :bar})
+       (fact (merge-map-list `({:foo :bar})) => {:foo :bar})
+       (fact (merge-map-list [{:foo 1} {:bar 2}]) => {:foo 1 :bar 2}))
 
 (facts "about spring actuator filter"
        (fact (filter-actuator-links {}) => {})
@@ -20,7 +20,8 @@
        (fact (filter-actuator-links {:_links {:health {:href "foo"} :info {:href "bar"}}}) => {:health {:href "foo"} :info {:href "bar"}}))
 
 (facts "about reading links"
-       (fact (read-link {:href "http://some.health.url"}) => "result"
+       (fact (read-href-link {}) => {})
+       (fact (read-href-link {:href "http://some.health.url"}) => "result"
              (provided (http/json-get "http://some.health.url") => "result")))
 
 (facts "spring actuator health check checks"
@@ -71,3 +72,24 @@
          (health-check-fn :SPRING_ACTUATOR) => (exactly perform-spring-actuator-health-check))
        (fact
          (health-check-fn :FOO) => (exactly perform-health-check-error)))
+
+(facts "about valid endpoints"
+       (fact (valid-endpoint? "") => false)
+       (fact (valid-endpoint? "http://google.com") => true))
+
+(facts "about valid health checks"
+       (let [invalid-response {:valid       false
+                               :description "Health checks require a type (HTTP_GET, SPRING_ACTUATOR. A list of one or more tags and a list of endpoints to check"}]
+         (fact "empty check definition is not valid"
+               (valid-health-check? {}) => invalid-response)
+         (fact "requires tags and endpoints"
+               (valid-health-check? {:type "HTTP_GET"}) => invalid-response)
+         (fact "endpoints must be valid urls"
+               (valid-health-check? {:type      "HTTP_GET"
+                                     :tags      ["foo"]
+                                     :endpoints ["http"]}) => invalid-response))
+
+       (fact "valid health check requires type, tags and endpoints"
+             (valid-health-check? {:type      "HTTP_GET"
+                                   :tags      ["foo"]
+                                   :endpoints ["http://foo.com"]}) => {:valid true}))

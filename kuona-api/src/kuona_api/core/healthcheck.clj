@@ -4,8 +4,11 @@
             [clj-http.client :as http-client]
             [kuona-api.core.util :as util]
             [kuona-api.core.store :as store]
-            [kuona-api.core.stores :as stores]))
-
+            [kuona-api.core.stores :as stores])
+  (:import (java.net ConnectException
+                     UnknownHostException
+                     MalformedURLException
+                     URL)))
 
 (defn health-check-log
   "Creates a log entry for a health check and a check result."
@@ -22,18 +25,16 @@
   [links]
   (merge {} (-> links
                 :_links
-                (select-keys [:info :health])))
-  )
+                (select-keys [:info :health]))))
 
-
-(defn merge-list
+(defn merge-map-list
   "Merge the maps in the list into a single map"
   [list]
   (if (first list)
-    (merge (first list) (merge-list (rest list)))
+    (merge (first list) (merge-map-list (rest list)))
     {}))
 
-(defn read-link
+(defn read-href-link
   "Takes a map containing an :href key. Retrieves the JSON response from the supplied href and returns the value. Returns {} if the key does not exist"
   [link]
   (if (:href link)
@@ -44,19 +45,19 @@
   [url]
   (try+
     (http-client/get url)
-    (catch java.net.UnknownHostException e
+    (catch UnknownHostException e
       {:status      :failed
-       :description (:message &throw-context)})
-    (catch java.net.ConnectException e
+       :description (str "Unknown host" (:message &throw-context))})
+    (catch ConnectException e
       {:status      :failed
-       :description "Connection refused"})))
+       :description (str "Connection refused" (:message &throw-context))})))
 
 (defn spring-actuator-health
   "Given a Spring actuator endpoint returns the health and info endpoints as a single map."
   [url]
   (let [actuator-links (http/json-get url)
         links          (filter-actuator-links actuator-links)]
-    (merge-list (map read-link (vals links)))))
+    (merge-map-list (map read-href-link (vals links)))))
 
 (defn health-check
   "Executes a healthcheck and returns the results of the healthcheck operation"
@@ -67,10 +68,10 @@
             (http/json-get (-> hc :href))
             :else {:status      :failed
                    :description (str "Unrecognised healthcheck encoding " encoding)})
-      (catch java.net.UnknownHostException e
+      (catch UnknownHostException e
         {:status      :failed
          :description (:message &throw-context)})
-      (catch java.net.ConnectException e
+      (catch ConnectException e
         {:status      :failed
          :description "Connection refused"})))
 
@@ -106,3 +107,29 @@
   (let [hc-fn (health-check-fn (-> hc :type))]
     (hc-fn hc collection-date)))
 
+(defn valid-endpoint?
+  ([] false)
+  ([url]
+   (try+
+     (URL. url) true
+     (catch MalformedURLException _ false))))
+
+(defn valid-endpoints?
+  [endpoints]
+  (reduce (fn
+            ([] false)
+            ([a b] (and a b)))
+          (map valid-endpoint? endpoints)))
+
+(defn valid-health-check? [health-check]
+  (let [valid-type      (contains? (hash-set "HTTP_GET" "SPRING_ACTUATOR") (-> health-check :type))
+        tags            (or (-> health-check :tags) [])
+        has-tags        (> (count tags) 0)
+        endpoints       (or (-> health-check :endpoints) [])
+        has-endpoints   (> (count endpoints) 0)
+        valid-endpoints (valid-endpoints? endpoints)
+        valid           (and valid-type has-tags has-endpoints valid-endpoints)]
+    (if valid
+      {:valid true}
+      {:valid       false
+       :description "Health checks require a type (HTTP_GET, SPRING_ACTUATOR. A list of one or more tags and a list of endpoints to check"})))

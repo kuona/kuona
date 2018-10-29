@@ -19,27 +19,6 @@
       (response/response)
       (response/status 400)))
 
-(facts "about valid endpoints"
-       (fact (valid-endpoint? "") => false)
-       (fact (valid-endpoint? "http://google.com") => true))
-
-(facts "about valid health checks"
-       (let [invalid-response {:valid       false
-                               :description "Health checks require a type (HTTP_GET, SPRING_ACTUATOR. A list of one or more tags and a list of endpoints to check"}]
-         (fact "empty check definition is not valid"
-               (valid-health-check? {}) => invalid-response)
-         (fact "requires tags and endpoints"
-               (valid-health-check? {:type "HTTP_GET"}) => invalid-response)
-         (fact "endpoints must be valid urls"
-               (valid-health-check? {:type      "HTTP_GET"
-                                     :tags      ["foo"]
-                                     :endpoints ["http"]}) => invalid-response))
-
-       (fact "valid health check requires type, tags and endpoints"
-             (valid-health-check? {:type      "HTTP_GET"
-                                   :tags      ["foo"]
-                                   :endpoints ["http://foo.com"]}) => {:valid true}))
-
 (future-facts "about defining health-checks"
               (fact "health checks can be tagged"
                     (new-health-check {}) => {})
