@@ -2,7 +2,8 @@
   (:require [midje.sweet :refer :all]
             [clj-http.client :as http]
             [cheshire.core :refer :all]
-            [kuona-api.core.collector.service-status :refer :all]))
+            [kuona-api.core.collector.service-status :refer :all])
+  (:import (java.net ConnectException)))
 
 (facts "Content filtering"
        (fact "Non json content type is empty string"
@@ -18,7 +19,7 @@
                                                              :status "DOWN",
                                                              :type   "error",
                                                              :url    "http://localhost:12000"}
-             (provided (http/get anything) =throws=> (java.net.ConnectException.)))
+             (provided (http/get anything) =throws=> (ConnectException.)))
 
        (fact "Service running and healthy"
              (collect-endpoint "http://kuona.io:9002/status") => {:status "UP",
