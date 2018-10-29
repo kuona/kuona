@@ -4,7 +4,7 @@
             [kuona-api.core.git :as git]))
 
 (facts "about commit history"
-       (let [test-repo-path (clojure.string/join "/" [(canonical-path "..") "test" "test-repo"])]
+       (let [test-repo-path (clojure.string/join "/" [(canonical-path-from-string "..") "test" "test-repo"])]
          (fact "has commits"
                (> (count (git/commits test-repo-path))) => true)
          (fact "daily count is less than full count"
@@ -16,7 +16,7 @@
          ))
 
 (facts "about reading git configuration"
-       (let [test-repo-path (clojure.string/join "/" [(canonical-path "..") "test" "test-repo"])]
+       (let [test-repo-path (clojure.string/join "/" [(canonical-path-from-string "..") "test" "test-repo"])]
 
          (fact "reading configured url returns valid url"
                (git/get-config test-repo-path "remote" "origin" "url") => (contains "functional-event-store"))))

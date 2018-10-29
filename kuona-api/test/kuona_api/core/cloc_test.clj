@@ -71,7 +71,7 @@
 
 (facts "about collecting cloc data for revisions"
        (fact "each-commit"
-             (let [test-repo-path (clojure.string/join "/" [(canonical-path "..") "test" "test-repo"])]
+             (let [test-repo-path (clojure.string/join "/" [(canonical-path-from-string "..") "test" "test-repo"])]
 
                (each-commit (fn [path sha time]
                               (loc-collector path

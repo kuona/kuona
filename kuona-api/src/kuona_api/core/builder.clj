@@ -2,7 +2,8 @@
   (:require [kuona-api.core.maven :as maven]
             [kuona-api.core.gradle :as gradle]
             [kuona-api.core.leiningen :as lein]
-            [kuona-api.core.util :refer :all])
+            [kuona-api.core.util :refer :all]
+            [kuona-api.core.util :as util])
   (:gen-class)
   (:import (java.io File)))
 
@@ -32,7 +33,7 @@
   appropriate build tool using the path but reports using the relative
   path"
   [^File file project-relative-path]
-  (let [path   (.getAbsolutePath file)
+  (let [path   (util/get-absolute-path file)
         result ((build-tool path project-relative-path) path)]
     result))
 
@@ -40,5 +41,5 @@
   "Scans the supplied path for interesting build files returning the
   analysis result for each file found"
   [path]
-  (let [project-path (canonical-path path)]
-    (into [] (filter not-nil? (map #(process-project-file % (subs (.getAbsolutePath %) (count project-path))) (find-files project-path))))))
+  (let [project-path (canonical-path-from-string path)]
+    (into [] (filter not-nil? (map #(process-project-file % (subs (util/get-absolute-path %) (count project-path))) (find-files project-path))))))

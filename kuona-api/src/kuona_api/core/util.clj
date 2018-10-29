@@ -4,7 +4,7 @@
             [cheshire.core :refer :all])
   (:import java.util.Properties
            (java.util UUID Date)
-           (java.io StringReader PushbackReader))
+           (java.io StringReader PushbackReader File))
   (:gen-class))
 
 (defn string-reader
@@ -33,16 +33,23 @@
   []
   (new Date))
 
-(defn canonical-path
+(defn canonical-path-from-string
   "Returns canonical path of a given path"
   [^String path]
   (.getCanonicalPath (io/file path)))
 
-(defn absolute-path
+(defn get-absolute-path
+  [^File file]
+  (.getAbsolutePath file))
+
+(defn get-path [^File file]
+  (.getPath file))
+
+(defn absolute-path-from-string
   [^String path]
   (.getAbsolutePath (io/file path)))
 
-(defn file-reader
+(defn file-reader-from-string
   [^String path]
   (clojure.java.io/reader path))
 

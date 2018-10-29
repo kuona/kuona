@@ -5,6 +5,6 @@
 
 (facts "about source code collection"
        (fact "scans repository"
-             (let [cwd (util/absolute-path ".")]
+             (let [cwd (util/absolute-path-from-string ".")]
                (collect nil cwd "someurl" 1))))
 

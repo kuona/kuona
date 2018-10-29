@@ -12,7 +12,7 @@
 
 (defn local-clone-path
   [dir repo]
-  (canonical-path (clojure.string/join "/" [dir (uuid-from repo)])))
+  (canonical-path-from-string (clojure.string/join "/" [dir (uuid-from repo)])))
 
 (defn file-change
   [path change]
@@ -154,9 +154,10 @@
         grouped-commits (group-by #(t/with-time-at-start-of-day (tc/from-date (:time (git-query/commit-info repo %)))) history)]
     (log/info "Found " (count history) " commits on " (count grouped-commits) " distinct days")
     (doseq [log grouped-commits]
-      (do (let [c (-> log second first)]
-            (git/git-checkout repo (.getName c))
-            (f repo-path (.getName c) (:time (git-query/commit-info repo c))))
+      (do (let [c    (-> log second first)
+                name (.getName c)]
+            (git/git-checkout repo name)
+            (f repo-path name (:time (git-query/commit-info repo c))))
           (git/git-checkout repo "master")))))
 
 (defn clone-or-update [^String url ^String local-dir]

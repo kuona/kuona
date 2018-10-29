@@ -34,7 +34,7 @@
 (defn run-maven-dependency-list
   [pom-file-path]
   (log/info "run-maven-dependency-list " pom-file-path)
-  (let [dot-file (canonical-path "./dependency.dot")
+  (let [dot-file (canonical-path-from-string "./dependency.dot")
         result   (maven-dependency-tree pom-file-path dot-file)]
     (cond
       (= (:exit result) 0) (MavenDotReader/readDependencies (clojure.java.io/input-stream dot-file))

@@ -3,7 +3,8 @@
             [clojure.set :refer [rename-keys]]
             [cheshire.core :refer :all]
             [clojure.tools.logging :as log]
-            [kuona-api.core.util :refer :all])
+            [kuona-api.core.util :refer :all]
+            [kuona-api.core.util :as util])
   (:gen-class))
 
 (defn clojure-project-file?
@@ -19,7 +20,7 @@
 (defn pom-files
   "Given a path returns a sequence of all the POM files."
   [files]
-  (filter #(pom-file? (.getPath %)) files))
+  (filter #(pom-file? (util/get-path %)) files))
 
 (defn sum-count
   [d k]
@@ -52,7 +53,7 @@
 (defn interesting-files
   "Filters the supplied list of file paths based on our interest"
   [files]
-  (filter #(interesting-file? (.getPath %)) files))
+  (filter #(interesting-file? (util/get-path %)) files))
 
 
 (defn map-cloc-metric

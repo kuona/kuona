@@ -67,7 +67,7 @@
 
   ;(pre-collect path)
 
-  (let [project-path (util/canonical-path path)]
+  (let [project-path (util/canonical-path-from-string path)]
     (doseq [file-path (util/find-files project-path)]
       (let [template {:url           url
                       :repository_id repository-id}]
