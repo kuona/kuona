@@ -22,3 +22,6 @@
 
 (defn find-health-check-logs [param]
   (response/response {:health_checks (store/all-documents stores/health-check-log-store)}))
+
+(defn delete-by-id [id]
+  (response/response (store/delete-document stores/health-check-store id)))

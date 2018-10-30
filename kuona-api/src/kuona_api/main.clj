@@ -15,7 +15,7 @@
    ["-s" "--store STORE" "Prefix for elastic search data store index names" :default "kuona"]
    ["-r" "--rebuild" "Rebuild/Destroy the current data stores" :default false]
    ["-m" "--mode MODE" "Run mode standalone/passive. Standalone a local scheduler runs to collect data. In passive mode external collection is assumed" :default "standalone"]
-   ["-p" "--port PORT" "API port" :default 9001]
+   ["-p" "--port PORT" "API port" :default 8080]
    ["-h" "--help"]])
 
 

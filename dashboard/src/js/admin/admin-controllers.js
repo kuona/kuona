@@ -243,21 +243,33 @@ function NewServerHealthCheckController($scope, $http) {
     endpoints: "",
     type: "HTTP_GET"
   };
-  $scope.api_response = {};
+  $scope.api_response = null;
+  $scope.healthchecks = [];
 
-  $scope.addHealthChecks = function () {
+  $scope.updateHealthChecks = () => {
+    $http.get("/api/health-checks").then((res) => {
+      $scope.healthchecks = res.data.health_checks;
+    });
+  };
+
+  $scope.addHealthChecks = () => {
     let request = {
       type: $scope.healthcheck.type,
       tags: commaListToArray($scope.healthcheck.tags, ','),
       endpoints: commaListToArray($scope.healthcheck.endpoints, '\n')
     };
-    console.log(request);
-    console.log(request.tags);
-    $http.post("/api/health-checks", request).then(function (res) {
-      $scope.api_response = res.data;
+    $http.post("/api/health-checks", request).then((res) => {
+      $scope.api_response = res;
     });
+  };
 
-  }
+  $scope.deleteHealthCheck = (id) => {
+    $http.delete("/api/health-checks/" + id).then((res) => {
+      $scope.updateHealthChecks();
+    });
+  };
+
+  $scope.updateHealthChecks();
 }
 
 angular

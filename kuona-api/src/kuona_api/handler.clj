@@ -79,6 +79,7 @@
 
            (POST "/api/health-checks" request (health-check/new-health-check (get-in request [:body])))
            (GET "/api/health-checks" request (health-check/find-health-checks (get-in request [:body])))
+           (DELETE "/api/health-checks/:id" [id] (health-check/delete-by-id id))
            (GET "/api/health-checks/logs" request (health-check/find-health-check-logs (get-in request [:body])))
 
            (GET "/api/build/tools" [] (snap-handlers/build-tool-buckets))

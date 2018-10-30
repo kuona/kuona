@@ -47,7 +47,7 @@ module.exports = function (grunt) {
     browserSync: {
       options: {
         port: 4000,
-        middleware: [require('http-proxy-middleware')('/api', {target: 'http://localhost:9001'})]
+        middleware: [require('http-proxy-middleware')('/api', {target: 'http://localhost:8080'})]
       },
       dev: {
         bsFiles: {
