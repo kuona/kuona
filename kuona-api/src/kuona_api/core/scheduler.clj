@@ -159,20 +159,30 @@
         [ctx]
         (log/info "collecting health check data")
         (let [collection-date (util/timestamp)
-              health-checks   (store/all-documents (stores/health-check-store))]
-          (doall (fn [hc] (health-check/perform-health-checks hc collection-date)) health-checks)))
+              health-checks   (health-check/all-health-checks)]
+          (log/info "health checks" health-checks collection-date)
+          (doall (map (fn [hc] (health-check/perform-health-checks hc collection-date)) health-checks))))
 
 (defn start
   []
-  (let [s                        (-> (scheduler/initialize) scheduler/start)
-        refresh-repositories-job (jobs/build
-                                   (jobs/of-type background-data-collector)
-                                   (jobs/with-identity (jobs/key "repositories.refresh.1")))
-        trigger                  (triggers/build
-                                   (triggers/with-identity (triggers/key "triggers.1"))
-                                   (triggers/start-now)
-                                   (triggers/with-schedule (schedule
-                                                             (repeat-forever)
-                                                             ;(with-repeat-count 10)
-                                                             (with-interval-in-minutes 30))))]
-    (scheduler/schedule s refresh-repositories-job trigger)))
+  (let [s                     (-> (scheduler/initialize) scheduler/start)
+        refresh-repositories  (jobs/build
+                                (jobs/of-type background-data-collector)
+                                (jobs/with-identity (jobs/key "repositories.refresh.1")))
+        refresh-health-checks (jobs/build
+                                (jobs/of-type background-health-check-collector)
+                                (jobs/with-identity (jobs/key "health-check.refresh.1")))
+        every-minute          (triggers/build
+                                (triggers/with-identity (triggers/key "every-minute-trigger"))
+                                (triggers/start-now)
+                                (triggers/with-schedule (schedule
+                                                          (repeat-forever)
+                                                          (with-interval-in-minutes 1))))
+        every-30-minutes      (triggers/build
+                                (triggers/with-identity (triggers/key "every-30-minutes-trigger"))
+                                (triggers/start-now)
+                                (triggers/with-schedule (schedule
+                                                          (repeat-forever)
+                                                          (with-interval-in-minutes 30))))]
+    (scheduler/schedule s refresh-repositories every-30-minutes)
+    (scheduler/schedule s refresh-health-checks every-minute)))

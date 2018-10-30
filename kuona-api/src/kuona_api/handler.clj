@@ -81,10 +81,6 @@
            (GET "/api/health-checks" request (health-check/find-health-checks (get-in request [:body])))
            (GET "/api/health-checks/logs" request (health-check/find-health-check-logs (get-in request [:body])))
 
-           (GET "/api/health-checks/:id/" request (route/not-found "Not yet available"))
-           (GET "/api/health-checks/:id/status" request (route/not-found "Not yet available"))
-           (GET "/api/health-checks/:id/logs" request (route/not-found "Not yet available"))
-
            (GET "/api/build/tools" [] (snap-handlers/build-tool-buckets))
 
            (GET "/api/snapshots/:id" [id] (snap-handlers/get-snapshot-by-id id))

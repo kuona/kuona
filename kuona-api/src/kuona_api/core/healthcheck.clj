@@ -4,7 +4,8 @@
             [clj-http.client :as http-client]
             [kuona-api.core.util :as util]
             [kuona-api.core.store :as store]
-            [kuona-api.core.stores :as stores])
+            [kuona-api.core.stores :as stores]
+            [clojure.tools.logging :as log])
   (:import (java.net ConnectException
                      UnknownHostException
                      MalformedURLException
@@ -44,17 +45,25 @@
 (defn http-get-check-health
   [url]
   (try+
-    (http-client/get url)
+    (log/info "HTTP Health check for " url)
+    (let [response (http-client/get url)]
+      {:status        :success
+       :response_code (:status response)
+       :url           url}
+      )
     (catch UnknownHostException e
-      {:status      :failed
+      {:url         url
+       :status      :failed
        :description (str "Unknown host" (:message &throw-context))})
     (catch ConnectException e
-      {:status      :failed
+      {:url         url
+       :status      :failed
        :description (str "Connection refused" (:message &throw-context))})))
 
 (defn spring-actuator-health
   "Given a Spring actuator endpoint returns the health and info endpoints as a single map."
   [url]
+  (log/info "Spring actuator health check collection of " url)
   (let [actuator-links (http/json-get url)
         links          (filter-actuator-links actuator-links)]
     (merge-map-list (map read-href-link (vals links)))))
@@ -74,7 +83,6 @@
       (catch ConnectException e
         {:status      :failed
          :description "Connection refused"})))
-
   )
 
 (defn put-health-check-log
@@ -83,12 +91,13 @@
 
 (defn perform-http-health-checks
   [hc collection-date]
-  (doall (fn [health] (store/put-document stores/health-check-log-store (health-check-log hc health collection-date)))
-         (map http-get-check-health (-> hc :endpoints))))
+  (log/info "HTTP health check")
+  (doall (map (fn [health] (store/put-document (health-check-log hc health collection-date) stores/health-check-log-store)) (map http-get-check-health (-> hc :endpoints)))))
 
-(defn perform-spring-actuator-health-check [hc collection-date]
-  (doall (fn [health] (store/put-document stores/health-check-log-store (health-check-log hc health collection-date)))
-         (map spring-actuator-health (-> hc :endpoints))))
+(defn perform-spring-actuator-health-check
+  [hc collection-date]
+  (log/info "Spring actuator health check")
+  (doall (map (fn [health] (store/put-document (health-check-log hc health collection-date) stores/health-check-log-store)) (map spring-actuator-health (-> hc :endpoints)))))
 
 (def checks
   {:HTTP_GET        perform-http-health-checks
@@ -96,16 +105,21 @@
 
 (defn perform-health-check-error
   [hc collection-date]
-  {:error "Unknown health check type"})
+  (log/warn "No available handler for health check" hc (type (keyword (-> hc :type))))
+  {:error (str "Unknown health check type " (-> hc :type))})
 
-(defn health-check-fn [key]
-  (or (get checks key) perform-health-check-error))
+(defn health-check-fn
+  [key]
+  (or (get checks key) (get checks (keyword key)) perform-health-check-error))
 
 (defn perform-health-checks
   "Takes a health-check entry and performs the desired checks. Takes a healthcheck request and collection date"
   [hc collection-date]
+  (log/info "Running health check " hc)
   (let [hc-fn (health-check-fn (-> hc :type))]
-    (hc-fn hc collection-date)))
+    (log/info "health check fn " hc-fn)
+    (let [log-entry (hc-fn hc collection-date)]
+      (log/info "Log entry" log-entry))))
 
 (defn valid-endpoint?
   ([] false)
@@ -133,3 +147,6 @@
       {:valid true}
       {:valid       false
        :description "Health checks require a type (HTTP_GET, SPRING_ACTUATOR. A list of one or more tags and a list of endpoints to check"})))
+
+(defn all-health-checks []
+  (store/all-documents stores/health-check-store))
