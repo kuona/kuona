@@ -61,8 +61,6 @@
           <th>URLs</th>
           <th></th>
         </tr>
-
-        </th>
         <tbody>
         <tr ng-repeat="hc in healthchecks">
           <td>{{hc.id}}</td>
@@ -74,6 +72,29 @@
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <table class="table">
+        <tr>
+          <th>ID</th>
+          <th>Kind</th>
+          <th>tags</th>
+          <th>URLs</th>
+          <th>Status</th>
+        </tr>
+        <tbody>
+        <tr ng-repeat="hc in healthcheck_snapshots">
+          <td>{{hc.id}}</td>
+          <td>{{hc.type}}</td>
+          <td>{{hc.tags.join(', ')}}</td>
+          <td>{{hc.endpoints.join(', ')}}</td>
+          <td><pre>{{hc.results}}</pre></td>
         </tr>
         </tbody>
       </table>

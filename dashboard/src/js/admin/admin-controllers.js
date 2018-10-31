@@ -245,10 +245,17 @@ function NewServerHealthCheckController($scope, $http) {
   };
   $scope.api_response = null;
   $scope.healthchecks = [];
+  $scope.healthcheck_snapshots = []
 
   $scope.updateHealthChecks = () => {
     $http.get("/api/health-checks").then((res) => {
       $scope.healthchecks = res.data.health_checks;
+    });
+  };
+
+  $scope.updateHealthCheckSnapshots = () => {
+    $http.get("/api/health-checks/snapshots").then((res) => {
+      $scope.healthchecks = res.data.snapshots;
     });
   };
 
