@@ -25,3 +25,6 @@
 
 (defn delete-by-id [id]
   (response/response (store/delete-document stores/health-check-store id)))
+
+(defn find-health-check-snapshots []
+  (response/response (store/all-documents stores/health-check-snapshot-store)))

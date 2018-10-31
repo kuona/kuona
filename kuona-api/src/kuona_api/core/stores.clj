@@ -232,6 +232,12 @@
                                    :endpoint    es/indexed-keyword
                                    :health      es/enabled-object
                                    :info        es/enabled-object}}})
+(def health-check-snapshot-schema
+  {:health-check-snapshot {:properties {
+                                        health-check-schema
+                                        health-check-logs-schema
+                                        }}})
+
 
 (defn create-store-if-missing
   [store schema]
@@ -322,43 +328,47 @@
 (def source-code-store (DataStore. :vcs-source :source {}))
 (def dashboards-store (DataStore. :dashboards :dashboard dashboards-schema))
 (def health-check-store (DataStore. :health-check :health-check health-check-schema))
+(def health-check-snapshot-store (DataStore. :health-check-snapshot :health-check-snapshot health-check-snapshot-schema))
 (def health-check-log-store (DataStore. :health-check-log :health-check-log health-check-logs-schema))
 
 (def sources
-  {:builds             {:id          :builds
-                        :index       builds-store
-                        :description "Build data - software construction data read from Jenkins"
-                        :path        "/api/query/builds"}
-   :snapshots          {:id          :snapshots
-                        :index       snapshots-store
-                        :description "Snapshot data from source code analysis"}
-   :repositories       {:id          :repositories
-                        :index       repositories-store
-                        :description "Captured repository data"}
-   :commits            {:id          :commits
-                        :index       commit-logs-store
-                        :description "Captured commit data"}
-   :code               {:id          :code
-                        :index       code-metric-store
-                        :description "Results of source analysis"}
-   :source             {:id          :source
-                        :index       source-code-store
-                        :description "Scanned repository code"}
-   :collector-activity {:id          :collector-activity
-                        :index       collector-activity-store
-                        :description "Records collector activity"}
-   :collector-config   {:id          :collector-config
-                        :index       collector-config-store
-                        :description "Stores the configuration of configured collectors"}
-   :dashboards         {:id          :dashboards
-                        :index       dashboards-store
-                        :description "Dashboard configuration store"}
-   :health-check       {:id          :health-check
-                        :index       health-check-store
-                        :description "Health check definitions"}
-   :health-check-log   {:id          :health-check-log
-                        :index       health-check-log-store
-                        :description "Health check resiults definitions"}})
+  {:builds                {:id          :builds
+                           :index       builds-store
+                           :description "Build data - software construction data read from Jenkins"
+                           :path        "/api/query/builds"}
+   :snapshots             {:id          :snapshots
+                           :index       snapshots-store
+                           :description "Snapshot data from source code analysis"}
+   :repositories          {:id          :repositories
+                           :index       repositories-store
+                           :description "Captured repository data"}
+   :commits               {:id          :commits
+                           :index       commit-logs-store
+                           :description "Captured commit data"}
+   :code                  {:id          :code
+                           :index       code-metric-store
+                           :description "Results of source analysis"}
+   :source                {:id          :source
+                           :index       source-code-store
+                           :description "Scanned repository code"}
+   :collector-activity    {:id          :collector-activity
+                           :index       collector-activity-store
+                           :description "Records collector activity"}
+   :collector-config      {:id          :collector-config
+                           :index       collector-config-store
+                           :description "Stores the configuration of configured collectors"}
+   :dashboards            {:id          :dashboards
+                           :index       dashboards-store
+                           :description "Dashboard configuration store"}
+   :health-check          {:id          :health-check
+                           :index       health-check-store
+                           :description "Health check definitions"}
+   :health-check-log      {:id          :health-check-log
+                           :index       health-check-log-store
+                           :description "Health check logs"}
+   :health-check-snapshot {:id          :health-check-snapshot
+                           :index       health-check-snapshot-store
+                           :description "Health check Snapshot (latest) results"}})
 
 (defn create-stores
   []

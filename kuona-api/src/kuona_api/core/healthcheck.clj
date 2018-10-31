@@ -20,6 +20,16 @@
    :tags            (-> hc :tags)
    :health          health})
 
+(defn health-key-filter [log-entry]
+  (select-keys log-entry [:health]))
+
+(defn health-check-snapshot [logs hc date]
+  (log/info "snapshot " logs hc date)
+  (merge
+    (select-keys hc [:id :tags])
+    {:date date}
+    {:results (into [] (map health-key-filter logs))}))
+
 
 (defn filter-actuator-links
   "Filters the list of actuator links for health and info references"
@@ -85,14 +95,24 @@
          :description "Connection refused"})))
   )
 
-(defn put-health-check-log
-  [log]
-  (store/put-document stores/health-check-log-store log))
+(defn put-health-check-log [log]
+  (store/put-document log stores/health-check-log-store))
+
+(defn put-health-check-snapshot [snapshot]
+  (store/put-document snapshot stores/health-check-snapshot-store (-> snapshot :id)))
 
 (defn perform-http-health-checks
   [hc collection-date]
   (log/info "HTTP health check")
-  (doall (map (fn [health] (store/put-document (health-check-log hc health collection-date) stores/health-check-log-store)) (map http-get-check-health (-> hc :endpoints)))))
+  (let [results  (map http-get-check-health (-> hc :endpoints))
+        x        (log/info "results" results)
+        logs     (map (fn [health] (health-check-log hc health collection-date)) results)
+        y        (log/info "logs" logs)
+        snapshot (health-check-snapshot logs hc collection-date)]
+
+    (log/info "snapshot" snapshot)
+    (put-health-check-snapshot snapshot)
+    (doall (map put-health-check-log logs))))
 
 (defn perform-spring-actuator-health-check
   [hc collection-date]
@@ -117,7 +137,6 @@
   [hc collection-date]
   (log/info "Running health check " hc)
   (let [hc-fn (health-check-fn (-> hc :type))]
-    (log/info "health check fn " hc-fn)
     (let [log-entry (hc-fn hc collection-date)]
       (log/info "Log entry" log-entry))))
 

@@ -40,7 +40,7 @@
              (provided (http/json-get "http://some.health.url") => {:status "DOWN"})
              (provided (http/json-get "http://some.info.url") => {:info "INFO"})))
 
-(facts "about healthchecks"
+(facts "about health checks"
        (fact "health checks requires a supported encoding"
              (health-check {}) => {:status      :failed
                                    :description "Unrecognised healthcheck encoding "}
@@ -65,9 +65,27 @@
 
                )))
 
+
+(facts "about health check snapshots"
+       (fact "snapshot contains the health check with id and date"
+             (let [hc-id   (util/uuid)
+                   hc-date (util/timestamp)
+                   hc-tags [1 2]
+                   hc      {:id   hc-id
+                            :tags hc-tags}
+                   hc-log  {:foo    :should-not-be-in-result
+                            :health :should-be-there}
+                   hc-logs [hc-log]]
+               (health-check-snapshot hc-logs hc hc-date) => (contains {:id hc-id})
+               (health-check-snapshot hc-logs hc hc-date) => (contains {:date hc-date})
+               (health-check-snapshot hc-logs hc hc-date) => (contains {:tags hc-tags})
+               (health-check-snapshot hc-logs hc hc-date) => (contains {:results [{:health :should-be-there}]}))
+
+             ))
+
 (facts "about health check handler selection"
        (fact "matches HTTP check"
-         (health-check-fn :HTTP_GET) => (exactly perform-http-health-checks))
+             (health-check-fn :HTTP_GET) => (exactly perform-http-health-checks))
        (fact
          (health-check-fn :SPRING_ACTUATOR) => (exactly perform-spring-actuator-health-check))
        (fact

@@ -184,5 +184,5 @@
                                 (triggers/with-schedule (schedule
                                                           (repeat-forever)
                                                           (with-interval-in-minutes 30))))]
-    (scheduler/schedule s refresh-repositories every-30-minutes)
+    ;(scheduler/schedule s refresh-repositories every-30-minutes)
     (scheduler/schedule s refresh-health-checks every-minute)))
