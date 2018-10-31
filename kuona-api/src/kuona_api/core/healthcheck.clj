@@ -26,7 +26,7 @@
 (defn health-check-snapshot [logs hc date]
   (log/info "snapshot " logs hc date)
   (merge
-    (select-keys hc [:id :tags])
+    (select-keys hc [:id :type :tags])
     {:date date}
     {:results (into [] (map health-key-filter logs))}))
 

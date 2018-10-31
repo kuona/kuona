@@ -21,10 +21,10 @@
   (response/response {:health_checks (store/all-documents stores/health-check-store)}))
 
 (defn find-health-check-logs [param]
-  (response/response {:health_checks (store/all-documents stores/health-check-log-store)}))
+  (response/response {:health_check_logs (store/all-documents stores/health-check-log-store)}))
 
 (defn delete-by-id [id]
   (response/response (store/delete-document stores/health-check-store id)))
 
 (defn find-health-check-snapshots []
-  (response/response (store/all-documents stores/health-check-snapshot-store)))
+  (response/response {:snapshots (store/all-documents stores/health-check-snapshot-store)}))

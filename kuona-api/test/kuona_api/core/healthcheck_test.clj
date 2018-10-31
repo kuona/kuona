@@ -72,13 +72,15 @@
                    hc-date (util/timestamp)
                    hc-tags [1 2]
                    hc      {:id   hc-id
-                            :tags hc-tags}
+                            :tags hc-tags
+                            :type :health-check-type}
                    hc-log  {:foo    :should-not-be-in-result
                             :health :should-be-there}
                    hc-logs [hc-log]]
                (health-check-snapshot hc-logs hc hc-date) => (contains {:id hc-id})
                (health-check-snapshot hc-logs hc hc-date) => (contains {:date hc-date})
                (health-check-snapshot hc-logs hc hc-date) => (contains {:tags hc-tags})
+               (health-check-snapshot hc-logs hc hc-date) => (contains {:type :health-check-type})
                (health-check-snapshot hc-logs hc hc-date) => (contains {:results [{:health :should-be-there}]}))
 
              ))

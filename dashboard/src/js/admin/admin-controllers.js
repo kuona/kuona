@@ -245,7 +245,7 @@ function NewServerHealthCheckController($scope, $http) {
   };
   $scope.api_response = null;
   $scope.healthchecks = [];
-  $scope.healthcheck_snapshots = []
+  $scope.healthcheck_snapshots = [];
 
   $scope.updateHealthChecks = () => {
     $http.get("/api/health-checks").then((res) => {
@@ -255,7 +255,7 @@ function NewServerHealthCheckController($scope, $http) {
 
   $scope.updateHealthCheckSnapshots = () => {
     $http.get("/api/health-checks/snapshots").then((res) => {
-      $scope.healthchecks = res.data.snapshots;
+      $scope.healthcheck_snapshots = res.data.snapshots;
     });
   };
 
@@ -271,16 +271,18 @@ function NewServerHealthCheckController($scope, $http) {
   };
 
   $scope.deleteHealthCheck = (id) => {
-    $http.delete("/api/health-checks/" + id).then((res) => {
+    $http.delete("/api/health-checks/" + id).then(() => {
       $scope.updateHealthChecks();
     });
   };
 
   $scope.updateHealthChecks();
+  $scope.updateHealthCheckSnapshots();
 }
 
 angular
   .module('kuona-admin')
+  .filter('age', ageFilter)
   .controller('MainCtrl', ['$scope', '$http', MainCtrl])
   .controller('NewGithubRepoController', ['$scope', '$http', NewGithubRepoController])
   .controller('NewJenkinsServerController', ['$scope', '$http', NewJenkinsServerController])

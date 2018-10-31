@@ -4,4 +4,4 @@ pairs:
     jeff: Jeff Henderson; jeffrey.henderson17@gmail.com
 email:
     prefix:
-
+    no_solo_prefix: true

@@ -20,7 +20,7 @@
               <br/>
               <label> <input type="radio" ng-model="healthcheck.type" value="JSON"> JSON</label>
               <br/>
-              <label> <input type="radio" ng-model="healthcheck.type" ng-value="SPRING_ACTUATOR"> Spring Actuator </label>
+              <label> <input type="radio" ng-model="healthcheck.type" value="SPRING_ACTUATOR"> Spring Actuator </label>
               <br/>
             </div>
           </div>
@@ -83,17 +83,17 @@
       <table class="table">
         <tr>
           <th>ID</th>
+          <th>Collected</th>
           <th>Kind</th>
           <th>tags</th>
-          <th>URLs</th>
           <th>Status</th>
         </tr>
         <tbody>
         <tr ng-repeat="hc in healthcheck_snapshots">
           <td>{{hc.id}}</td>
+          <td>{{hc.date | age}}</td>
           <td>{{hc.type}}</td>
           <td>{{hc.tags.join(', ')}}</td>
-          <td>{{hc.endpoints.join(', ')}}</td>
           <td><pre>{{hc.results}}</pre></td>
         </tr>
         </tbody>
