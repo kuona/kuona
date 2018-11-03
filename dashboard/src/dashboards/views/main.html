@@ -34,8 +34,8 @@
           <table class="table table-striped">
             <thead>
             <tr>
-              <th></th>
               <th>Dashboard</th>
+              <th>Title</th>
               <th>Description</th>
               <th>Panels</th>
               <th>Created</th>
@@ -44,9 +44,8 @@
             </thead>
             <tbody>
             <tr ng-repeat="dashboard in dashboards">
-              <td><i class="fa fa-desktop text-highlight"></i></td>
-              <td><a href="/dashboard.html?name={{dashboard.name}}"> {{dashboard.name}} </a></td>
-
+              <td><a href="/dashboard.html?name={{dashboard.name}}"><i class="fa fa-desktop text-highlight"></i> {{dashboard.name}} </a></td>
+              <td>{{dashboard.title}}</td>
               <td>{{dashboard.description}}</td>
               <td>
                 <pre><code>{{dashboard.panels | json:2}}</code></pre>

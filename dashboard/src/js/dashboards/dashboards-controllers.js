@@ -245,10 +245,31 @@ let sample = [
 
 ];
 
+sample = [
+  {
+    type: 'health-check',
+    source: 'query',
+    query: {
+      title: 'Kuona Health checks',
+      source: 'health-check-snapshot',
+      format: 'elastic-json',
+      type: 'results',
+      json: {
+        "query": {
+          "bool": {
+            "must": [{"term": {"tag": "kuona"}},
+              {"term": {"tag": "selftest"}}]
+          }
+        }
+      }
+    }
+  }
+];
 
 function NewDashboardController($scope, $http, $location) {
   $scope.dashboard = {
     name: "",
+    title: "",
     description: "",
     definition: JSON.stringify(sample)
   };
@@ -257,6 +278,7 @@ function NewDashboardController($scope, $http, $location) {
   $scope.saveDashboard = () => {
     const dashboard = {
       name: $scope.dashboard.name,
+      title: $scope.dashboard.title,
       description: $scope.dashboard.description,
       panels: JSON.parse($scope.dashboard.definition)
     };

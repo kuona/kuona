@@ -1,4 +1,4 @@
-var dashboardApp = angular.module('dashboard-app', [
+let dashboardApp = angular.module('dashboard-app', [
   'ui.bootstrap',
   'chart.js'
 ]);
@@ -9,7 +9,7 @@ function mergeParams(obj, params) {
   }
 }
 
-var resultTransformers = {
+let resultTransformers = {
   count: (data, panel, params) => {
     panel.data.title = panel.query.title;
     panel.data.value = data.count;
@@ -54,7 +54,7 @@ function transformResult(type, data, panel, params) {
   }
 }
 
-var widgetProcessors = {
+let widgetProcessors = {
   "count-metric": function (panel, $http) {
     $http.post("/api/query/" + panel.query.source, panel.query.json).then(res => {
 
