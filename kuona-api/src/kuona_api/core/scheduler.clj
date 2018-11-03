@@ -178,11 +178,11 @@
                                 (triggers/with-schedule (schedule
                                                           (repeat-forever)
                                                           (with-interval-in-minutes 1))))
-        every-30-minutes      (triggers/build
-                                (triggers/with-identity (triggers/key "every-30-minutes-trigger"))
+        every-hour            (triggers/build
+                                (triggers/with-identity (triggers/key "every-hour-trigger"))
                                 (triggers/start-now)
                                 (triggers/with-schedule (schedule
                                                           (repeat-forever)
-                                                          (with-interval-in-minutes 30))))]
-    ;(scheduler/schedule s refresh-repositories every-30-minutes)
+                                                          (with-interval-in-minutes 60))))]
+    (scheduler/schedule s refresh-repositories every-hour)
     (scheduler/schedule s refresh-health-checks every-minute)))

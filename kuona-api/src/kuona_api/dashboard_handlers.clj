@@ -5,24 +5,23 @@
             [kuona-api.core.stores :as stores]
             [kuona-api.core.util :as util]))
 
-(defn- dashboards-page-link
-  [page-number]
-  (str "/api/repositories?page=" page-number))
-
-
-(defn search
+(defn all-dashboards
   [search page]
-  (log/info "get repositories" search page)
-  (response (store/search stores/dashboards-store search 100 page dashboards-page-link)))
+  (log/info "get dashboards" search page)
+  (response {:dashboards (store/all-documents stores/dashboards-store)}))
 
 (defn put!
   ([dashboard] (put! dashboard (:name dashboard)))
   ([dashboard id]
    (response (store/put-document
-               (merge dashboard {:created util/timestamp})
+               (merge dashboard {:created (util/timestamp)})
                stores/dashboards-store
                id))))
 
 (defn get-by-id [id]
   [id]
-  (response (:_source (store/get-document stores/dashboards-store id))))
+  (response {:dashboard (:_source (store/get-document stores/dashboards-store id))}))
+
+(defn delete-dashboard
+  [id]
+  (response (:_source (store/delete-document stores/dashboards-store id))))

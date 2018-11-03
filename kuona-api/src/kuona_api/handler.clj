@@ -110,9 +110,10 @@
 
            (POST "/api/builds" request (build/put-build! (get-in request [:body])))
 
-           (GET "/api/dashboards" [search page] (dashboards/search search page))
+           (GET "/api/dashboards" [search page] (dashboards/all-dashboards search page))
            (POST "/api/dashboards" request (dashboards/put! (get-in request [:body])))
            (GET "/api/dashboards/:id" [id] (dashboards/get-by-id id))
+           (DELETE "/api/dashboards/:id" [id] (dashboards/delete-dashboard id))
 
            (GET "/api/query" [] (redirect "/api/query/sources"))
            (GET "/api/query/sources" [] (query/get-sources))

@@ -30,9 +30,6 @@
             </div>
           </div>
         </div>
-
-        <pre ng-bind="dashboards | json:2"></pre>
-
         <div class="table-responsive">
           <table class="table table-striped">
             <thead>
@@ -40,7 +37,7 @@
               <th></th>
               <th>Dashboard</th>
               <th>Description</th>
-              <th>Display</th>
+              <th>Panels</th>
               <th>Created</th>
               <th>Action</th>
             </tr>
@@ -48,12 +45,14 @@
             <tbody>
             <tr ng-repeat="dashboard in dashboards">
               <td><i class="fa fa-desktop text-highlight"></i></td>
-              <td><a href="/dashboard.html"> {{dashboard.name}} </a></td>
+              <td><a href="/dashboard.html?name={{dashboard.name}}"> {{dashboard.name}} </a></td>
 
               <td>{{dashboard.description}}</td>
-              <td><i class="fa fa-chart-pie text-muted"></i></td>
-              <td>Jul 22, 2013</td>
-              <td><a href="#"><i class="fas fa-trash text-highlight"></i></a></td>
+              <td>
+                <pre><code>{{dashboard.panels | json:2}}</code></pre>
+              </td>
+              <td>{{dashboard.created | date}}</td>
+              <td><a ng-click="deleteDashboard(dashboard.name)"><i class="fas fa-trash text-highlight"></i></a></td>
             </tr>
 
             </tbody>
