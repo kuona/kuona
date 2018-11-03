@@ -237,7 +237,24 @@ function commaListToArray(text, sepearator) {
   return result;
 }
 
-function NewServerHealthCheckController($scope, $http) {
+angular
+  .module('kuona-admin').factory('$health_check', ['$http', ($http) => {
+  return {
+    healthCheckList: () => $http.get("/api/health-checks"),
+    healthCheckSnapshotList: () => $http.get("/api/health-checks/snapshots"),
+    addHealthCheck: (type, tags, endpoints) => {
+      let request = {
+        type: type,
+        tags: commaListToArray(tags, ','),
+        endpoints: commaListToArray(endpoints, '\n')
+      };
+      return $http.post("/api/health-checks", request);
+    },
+    deleteHeathCheck: (id) => $http.delete("/api/health-checks/" + id)
+  }
+}]);
+
+function NewServerHealthCheckController($scope, $http, $health_check) {
   $scope.healthcheck = {
     tags: "",
     endpoints: "",
@@ -247,34 +264,14 @@ function NewServerHealthCheckController($scope, $http) {
   $scope.healthchecks = [];
   $scope.healthcheck_snapshots = [];
 
-  $scope.updateHealthChecks = () => {
-    $http.get("/api/health-checks").then((res) => {
-      $scope.healthchecks = res.data.health_checks;
-    });
-  };
+  $scope.updateHealthChecks = () => $health_check.healthCheckList().success((data) => $scope.healthchecks = data.health_checks);
 
-  $scope.updateHealthCheckSnapshots = () => {
-    $http.get("/api/health-checks/snapshots").then((res) => {
-      $scope.healthcheck_snapshots = res.data.snapshots;
-    });
-  };
+  $scope.updateHealthCheckSnapshots = () => $health_check.healthCheckSnapshotList().success((data) => $scope.healthcheck_snapshots = data.snapshots);
 
-  $scope.addHealthChecks = () => {
-    let request = {
-      type: $scope.healthcheck.type,
-      tags: commaListToArray($scope.healthcheck.tags, ','),
-      endpoints: commaListToArray($scope.healthcheck.endpoints, '\n')
-    };
-    $http.post("/api/health-checks", request).then((res) => {
-      $scope.api_response = res;
-    });
-  };
+  $scope.addHealthChecks = () => $health_check.addHealthCheck($scope.healthcheck.type, $scope.healthcheck.tags, $scope.healthcheck.endpoints).then((res) => $scope.api_response = res);
 
-  $scope.deleteHealthCheck = (id) => {
-    $http.delete("/api/health-checks/" + id).then(() => {
-      $scope.updateHealthChecks();
-    });
-  };
+  $scope.deleteHealthCheck = (id) => $health_check.deleteHeathCheck(id).then(() => $scope.updateHealthChecks());
+
 
   $scope.updateHealthChecks();
   $scope.updateHealthCheckSnapshots();
@@ -291,5 +288,5 @@ angular
   .controller('TfsCrawlerController', ['$scope', '$http', '$window', TfsCrawlerController])
   .controller('GitHubCrawlerController', ['$scope', '$http', '$window', GitHubCrawlerController])
   .controller('NewSearchCodeServerController', ['$scope', '$http', NewSearchCodeServerController])
-  .controller('NewServerHealthCheckController', ['$scope', '$http', NewServerHealthCheckController])
+  .controller('NewServerHealthCheckController', ['$scope', '$http', '$health_check', NewServerHealthCheckController])
 ;
