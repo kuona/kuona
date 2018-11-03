@@ -53,11 +53,12 @@
   </div>
   <div class="row">
     <div class="col-lg-12">
+      <h2>Currently defined health checks</h2>
       <table class="table">
         <tr>
           <th>ID</th>
-          <th>Kind</th>
-          <th>tags</th>
+          <th>Type</th>
+          <th>Tags</th>
           <th>URLs</th>
           <th></th>
         </tr>
@@ -80,13 +81,14 @@
 
   <div class="row">
     <div class="col-lg-12">
+      <h2>Latest health check results</h2>
       <table class="table">
         <tr>
           <th>ID</th>
           <th>Collected</th>
-          <th>Kind</th>
-          <th>tags</th>
-          <th>Status</th>
+          <th>Type</th>
+          <th>Tags</th>
+          <th>Latest Result</th>
         </tr>
         <tbody>
         <tr ng-repeat="hc in healthcheck_snapshots">
@@ -94,7 +96,9 @@
           <td>{{hc.date | age}}</td>
           <td>{{hc.type}}</td>
           <td>{{hc.tags.join(', ')}}</td>
-          <td><pre>{{hc.results}}</pre></td>
+          <td>
+            <pre>{{hc.results |json:2}}</pre>
+          </td>
         </tr>
         </tbody>
       </table>
