@@ -257,8 +257,8 @@ sample = [
       json: {
         "query": {
           "bool": {
-            "must": [{"term": {"tag": "kuona"}},
-              {"term": {"tag": "selftest"}}]
+            "must": [{"term": {"tags": "kuona"}},
+              {"term": {"tags": "selftest"}}]
           }
         }
       }

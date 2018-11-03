@@ -1,22 +1,22 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h5><i class="fa fa-github"></i> Repository Content</h5>
+    <h5> Repository Content</h5>
   </div>
   <div class="panel-body">
     <div class="row">
-      <div class="col-sm-6"><i class="fa fa-file-o"></i> Files</div>
+      <div class="col-sm-6">Source files found</div>
       <div class="col-sm-6 text-highlight">{{ content.file_count }}</div>
     </div>
     <div class="row">
-      <div class="col-sm-6"><i class="fa fa-comments-o" aria-hidden="true"></i> Lines of comments</div>
+      <div class="col-sm-6">Lines of comments</div>
       <div class="col-sm-6 text-highlight">{{ content.comment_lines | number }}</div>
     </div>
     <div class="row">
-      <div class="col-sm-6"><i class="fa fa-circle-o" aria-hidden="true"></i> Blank lines</div>
+      <div class="col-sm-6">Blank lines</div>
       <div class="col-sm-6 text-highlight">{{ content.blank_lines | number }}</div>
     </div>
     <div class="row">
-      <div class="col-sm-6"><i class="fa fa-code" aria-hidden="true"></i> Lines of Code</div>
+      <div class="col-sm-6">Lines of Code</div>
       <div class="col-sm-6 text-highlight">{{ content.code_lines | number }}</div>
     </div>
   </div>

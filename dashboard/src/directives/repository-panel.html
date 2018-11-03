@@ -1,41 +1,40 @@
 <div class="panel panel-default" ng-if="repository">
   <div class="panel-heading">
-    <h5>
-      <i class="fa fa-github"></i> Project data {{repository.name}}
+    <h5> Project data for: <span class="text-highlight">{{repository.name}}</span>
       <small class="pull-right" ng-if="repository.updated_at">Last updated <span class="label label-primary">{{ repository.updated_at  | date:'yyyy-MM-dd' }}</span></small>
     </h5>
   </div>
   <div class="panel-body">
     <div class="row" ng-if="repository.open_issues_count">
-      <div class="col-sm-6"><i class="fa fa-bug" aria-hidden="true"></i>&nbsp;Open&nbsp;Issues</div>
+      <div class="col-sm-6">Open Issues</div>
       <div class="col-sm-6 text-highlight">{{ repository.open_issues_count }}</div>
     </div>
     <div class="row" ng-if="repository.forks_count">
-      <div class="col-sm-6"><i class="fa fa-code-fork" aria-hidden="true"></i> Forks</div>
+      <div class="col-sm-6">Forks</div>
       <div class="col-sm-6 text-highlight">{{ repository.forks_count }}</div>
     </div>
     <div class="row" ng-if="repository.watchers_count">
-      <div class="col-sm-6"><i class="fa fa-eye" aria-hidden="true"></i> Watchers</div>
+      <div class="col-sm-6">Watchers</div>
       <div class="col-sm-6 text-highlight">{{ repository.watchers_count }}</div>
     </div>
     <div class="row" ng-if="repository.stargazers_count">
-      <div class="col-sm-6"><i class="fa fa-star" aria-hidden="true"></i> Stars</div>
+      <div class="col-sm-6">Stars</div>
       <div class="col-sm-6 text-highlight">{{ repository.stargazers_count | number }}</div>
     </div>
     <div class="row" ng-if="repository.size">
-      <div class="col-sm-6"><i class="fa fa-circle-o" aria-hidden="true"></i> Size (kb)</div>
+      <div class="col-sm-6">Size (kb)</div>
       <div class="col-sm-6 text-highlight">{{ repository.size | number }}</div>
     </div>
     <div class="row" ng-if="repository.updated_at">
-      <div class="col-sm-6"><i class="fa fa-clock-o" aria-hidden="true"></i> Updated</div>
-      <div class="col-sm-6 text-highlight">{{ repository.updated_at  | date:'yyyy-MM-dd' }}</div>
+      <div class="col-sm-6">Updated</div>
+      <div class="col-sm-6 text-highlight">{{ repository.updated_at | date:'yyyy-MM-dd' }}</div>
     </div>
     <div class="row" ng-if="repository.pushed_at">
-      <div class="col-sm-6"><i class="fa fa-clock-o" aria-hidden="true"></i> Pushed at</div>
+      <div class="col-sm-6">Pushed at</div>
       <div class="col-sm-6 text-highlight">{{ repository.pushed_at | date:'yyyy-MM-dd' }}</div>
     </div>
     <div class="row" ng-if="repository.language">
-      <div class="col-sm-6"><i class="fa fa-circle-o" aria-hidden="true"></i> Language</div>
+      <div class="col-sm-6">Language</div>
       <div class="col-sm-6 text-highlight">{{ repository.language }}</div>
     </div>
   </div>

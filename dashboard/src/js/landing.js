@@ -6,8 +6,7 @@ var kuona = angular.module('kuona.dashboard', [
   'ngResource'
 ]);
 
-kuona.filter('elapsed', elapsedFilter);
-kuona.filter('age', ageFilter);
+registerKuonaAngularFilters(kuona);
 
 function MainController($scope, $http) {
   this.helloText = 'Welcome to Kuona';

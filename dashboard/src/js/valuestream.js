@@ -39,6 +39,7 @@ function valueStreamController($scope, $http, $location) {
 }
 
 kuonaValueStream.controller('ValueStreamController', ['$scope', '$http', '$location', valueStreamController]);
+registerKuonaAngularFilters(kuonaValueStream);
 
 kuonaValueStream.directive('valuestreamSummaryPanel', function () {
   return {
@@ -50,10 +51,6 @@ kuonaValueStream.directive('valuestreamSummaryPanel', function () {
   };
 });
 
-
-kuonaValueStream.filter('elapsed', elapsedFilter);
-
-kuonaValueStream.filter('age', ageFilter);
 
 kuonaValueStream.directive('commitsPanel', function () {
   return {

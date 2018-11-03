@@ -39,24 +39,29 @@ function ageFilter() {
     var years = Math.floor(days / 365);
     if (years > 0) {
       return years + " years ago";
-    } else if (months == 1) {
+    } else if (months === 1) {
       return "about a month ago";
     }else if (months > 1) {
       return "about " + months + " months ago";
     } else if (days > 1) {
       return days + " days ago";
-    } else if (days == 1) {
+    } else if (days === 1) {
       return "1 day ago"
     } else if (hours > 1) {
       return hours + " hours ago";
-    } else if (hours == 1) {
+    } else if (hours === 1) {
       return "an hour ago";
     } else if (minutes > 1) {
       return minutes + " minutes ago";
-    } else if (minutes == 1) {
+    } else if (minutes === 1) {
       return "a minute ago";
     } else {
       return "seconds ago";
     }
   }
+}
+
+function registerKuonaAngularFilters(module) {
+  module.filter('elapsed', elapsedFilter);
+  module.filter('age', ageFilter);
 }

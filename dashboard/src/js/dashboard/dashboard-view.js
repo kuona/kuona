@@ -77,6 +77,15 @@ let widgetProcessors = {
     $http.post("/api/query/" + panel.query.source, panel.query.json).then(res => {
       transformResult(panel.transform.type, res.data, panel, panel.transform.params)
     });
+  },
+  'health-check': (panel, $http) => {
+    $http.post("/api/query/" + panel.query.source, panel.query.json).then(res => {
+      panel.data = {
+        source: panel.query.source,
+        query: panel.query.json,
+        result: res.data
+      }
+    });
   }
 };
 
@@ -110,7 +119,6 @@ dashboardApp.controller('DashboardViewController', ['$scope', '$http', function 
   $scope.dashboard = null;
 
   let refreshView = (dashboard) => {
-    console.log(dashboard);
     if (dashboard.panels) {
       for (let i = 0; i < dashboard.panels.length; i++) {
         let panel = dashboard.panels[i];
@@ -207,6 +215,14 @@ dashboardApp.directive('activityFeedPanel', function () {
     templateUrl: '/directives/activity-feed-panel.html'
   };
 });
+dashboardApp.directive('healthCheckPanel', function () {
+  return {
+    restrict: 'E',
+    scope: {
+      data: "=data"
+    },
+    templateUrl: '/directives/health-check-panel.html'
+  };
+});
 
-dashboardApp.filter('age', ageFilter);
-dashboardApp.filter('elapsed', elapsedFilter);
+registerKuonaAngularFilters(dashboardApp);

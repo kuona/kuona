@@ -304,5 +304,4 @@ kuonaSnapshot.directive('markdown', () => ({
   }
 }));
 
-kuonaSnapshot.filter('elapsed', elapsedFilter);
-kuonaSnapshot.filter('age', ageFilter);
+registerKuonaAngularFilters(kuonaSnapshot);

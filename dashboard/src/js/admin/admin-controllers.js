@@ -237,22 +237,6 @@ function commaListToArray(text, sepearator) {
   return result;
 }
 
-angular
-  .module('kuona-admin').factory('$health_check', ['$http', ($http) => {
-  return {
-    healthCheckList: () => $http.get("/api/health-checks"),
-    healthCheckSnapshotList: () => $http.get("/api/health-checks/snapshots"),
-    addHealthCheck: (type, tags, endpoints) => {
-      let request = {
-        type: type,
-        tags: commaListToArray(tags, ','),
-        endpoints: commaListToArray(endpoints, '\n')
-      };
-      return $http.post("/api/health-checks", request);
-    },
-    deleteHeathCheck: (id) => $http.delete("/api/health-checks/" + id)
-  }
-}]);
 
 function NewServerHealthCheckController($scope, $http, $health_check) {
   $scope.healthcheck = {
@@ -272,14 +256,16 @@ function NewServerHealthCheckController($scope, $http, $health_check) {
 
   $scope.deleteHealthCheck = (id) => $health_check.deleteHeathCheck(id).then(() => $scope.updateHealthChecks());
 
-
   $scope.updateHealthChecks();
   $scope.updateHealthCheckSnapshots();
 }
 
-angular
-  .module('kuona-admin')
-  .filter('age', ageFilter)
+let adminModule = angular
+  .module('kuona-admin');
+
+registerKuonaAngularServices(adminModule);
+
+adminModule
   .controller('MainCtrl', ['$scope', '$http', MainCtrl])
   .controller('NewGithubRepoController', ['$scope', '$http', NewGithubRepoController])
   .controller('NewJenkinsServerController', ['$scope', '$http', NewJenkinsServerController])
@@ -290,3 +276,4 @@ angular
   .controller('NewSearchCodeServerController', ['$scope', '$http', NewSearchCodeServerController])
   .controller('NewServerHealthCheckController', ['$scope', '$http', '$health_check', NewServerHealthCheckController])
 ;
+registerKuonaAngularFilters(adminModule);
