@@ -101,7 +101,6 @@ let widgetProcessors = {
 
 dashboardApp.controller('DashboardViewController', ['$scope', '$http', function ($scope, $http) {
   let dashboardName = new URL(location.href).searchParams.get('name');
-  console.log("Loading dashboard " + dashboardName);
   $scope.helloText = 'Kuona Dashboards';
 
   $scope.buildStatus = {
