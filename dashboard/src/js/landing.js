@@ -16,12 +16,11 @@ function MainController($scope, $http) {
   $scope.repository_count = "[loading]";
   $scope.vcs_count = "[loading]";
   $scope.buildTools = [];
-  $scope.info = {};
   $scope.collector_activity = [];
   $scope.code_metric_count = 0;
   $scope.code_snapshot_count = 0;
   $scope.query = null;
-  $scope.query_response = "";
+  $scope.query_response = null;
   $scope.search = function () {
     console.log("Query for " + $scope.query);
     $http.post('api/chat', {query: $scope.query}).then(function (res) {
@@ -56,14 +55,17 @@ function MainController($scope, $http) {
     $scope.code_snapshot_count = res.data.count;
   });
 
-  $http.get('/api/info').then(function (res) {
-    $scope.info = res.data;
-  });
-
   $http.get('/api/collectors/activities').then(function (res) {
     $scope.collector_activity = res.data.items;
   });
 
 }
 
-kuona.controller('MainController', ['$scope', '$http', MainController]);
+function FooterController($scope, $http) {
+  $scope.info = {};
+  $http.get('/api/info').then(function (res) {
+    $scope.info = res.data;
+  });
+}
+
+kuona.controller('MainController', ['$scope', '$http', MainController]).controller("FooterController", ['$scope', '$http', FooterController]);

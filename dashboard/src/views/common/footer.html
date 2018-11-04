@@ -1,9 +1,32 @@
-<div class="footer">
-  <div class="pull-right">
-    <strong>Kuona</strong><small> Copyright &copy; 2014-2018</small>
-  </div>
+<div class="footer" ng-controller="FooterController">
   <div>
     <a href="http://kuona.io"><i class="fa fa-home text-highlight"></i> kuona.io</a>
-    <a href="https://github.com/kuona/kuona-project"><i class="fa fa-github text-highlight"></i> https://github.com/kuona/kuona-project</a>
+    <a href="https://github.com/kuona/kuona-project"><i class="fab fa-github text-highlight"></i> https://github.com/kuona/kuona-project</a>
+
+    <label class="muted">Kuona API:</label>
+    <small class="text-highlight">{{ info.kuona_api.version }}</small>
+
+    <label class="muted">Clojure:</label>
+    <small class="text-highlight">{{ info.clojure.version }}</small>
+
+    <label class="muted">Elasticsearch:</label>
+    <small class="text-highlight">{{ info.elastic_search.name }}</small>
+
+    <label class="muted">Version</label>
+    <small class="text-highlight">{{ info.elastic_search.version.number }}</small>
+
+    <label class="muted">Lucene</label>
+    <small class="text-highlight">
+      {{ info.elastic_search.version.lucene_version }}
+      ({{ info.elastic_search.version.build_date | date:'yyyy-MM-dd' }})
+    </small>
+
+    <label class="muted">Cluster UUID:</label>
+    <small class="text-highlight">{{ info.elastic_search.cluster_uuid }}</small>
+
+    <div class="pull-right">
+      <strong>Kuona</strong>
+      <small> Copyright &copy; 2014-2018</small>
+    </div>
   </div>
 </div>

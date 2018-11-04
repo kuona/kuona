@@ -40,57 +40,22 @@
 
             </div>
             <div class="row">
-              <div class="col-lg-12">
-                <div class="jumbotron">
-                  <form ng-submit="search()">
-                    <div class="form-group">
-                      <label class="col-sm-2 control-label"><i class="fa fa-search"></i> Search</label>
-                      <div class="col-sm-8">
-                        <input type="text" ng-model="query" class="form-control" placeholder="How many repos are there">
-                      </div>
-                      <div class="col-sm-2">
-                        <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
-                      </div>
+              <div class="jumbotron">
+                <form ng-submit="search()">
+                  <div class="form-group">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-8">
+                      <input type="text" ng-model="query" class="form-control" placeholder="How many repos are there">
                     </div>
-                  </form>
-                </div>
+                    <div class="col-sm-2">
+                      <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+                    </div>
+                  </div>
+                </form>
               </div>
-              <div class="col-sm-12">
+              <div class="col-sm-12" ng-if="query_response">
                 <div class="jumbotron">
                   <p>{{query_response}}</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-12">
-                <div class="ibox float-e-margins">
-                  <div class="ibox-content text-center">
-                    <ul class="list-unstyled">
-                      <li>
-                        <label class="muted">Kuona API:</label>
-                        <small>{{ info.kuona_api.version }}</small>
-
-                        <label class="muted">Clojure:</label>
-                        <small>{{ info.clojure.version }}</small>
-
-                        <label class="muted">Elasticsearch:</label>
-                        <small>{{ info.elastic_search.name }}</small>
-
-                        <label class="muted">Version</label>
-                        <small>{{ info.elastic_search.version.number }}</small>
-
-                        <label class="muted">Lucene</label>
-                        <small>
-                          {{ info.elastic_search.version.lucene_version }}
-                          ({{ info.elastic_search.version.build_date | date:'yyyy-MM-dd' }})
-                        </small>
-
-                        <label class="muted">Cluster UUID:</label>
-                        <small>{{ info.elastic_search.cluster_uuid }}</small>
-                      </li>
-                    </ul>
-                  </div>
                 </div>
               </div>
             </div>
