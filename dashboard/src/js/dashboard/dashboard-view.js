@@ -80,11 +80,7 @@ let widgetProcessors = {
   },
   'health-check': (panel, $http) => {
     $http.post("/api/query/" + panel.query.source, panel.query.json).then(res => {
-      panel.data = {
-        source: panel.query.source,
-        query: panel.query.json,
-        result: res.data
-      }
+      panel.data = res.data;
     });
   }
 };

@@ -16,7 +16,7 @@ function DashboardListController($scope, $http) {
   loadDashboards();
 }
 
-let sample = [
+let testDashobardPanels = [
   {
     type: 'activity-feed',
     source: 'query',
@@ -241,11 +241,30 @@ let sample = [
       }
     },
     data: {}
+  },
+  {
+    type: 'health-check',
+    source: 'query',
+    query: {
+      title: 'Kuona Health checks',
+      source: 'health-check-snapshot',
+      format: 'elastic-json',
+      type: 'results',
+      json: {
+        "query": {
+          "bool": {
+            "must": [{"term": {"tags": "kuona"}},
+              {"term": {"tags": "selftest"}}]
+          }
+        }
+      }
+    }
   }
+
 
 ];
 
-sample = [
+const sample = [
   {
     type: 'health-check',
     source: 'query',
@@ -284,6 +303,15 @@ function NewDashboardController($scope, $http, $location) {
     };
     $http.post("/api/dashboards", dashboard).then(() => $location.path("/dashboards"));
   };
+  $scope.addTestDashboards = () => {
+    const dashboard = {
+      name: "test1",
+      title: "Dashboard for Testing dashboards",
+      description: "A dashboard that exercises dashboard panels using both fixed data and the results of queries against the data sets.",
+      panels: testDashobardPanels
+    };
+    $http.post("/api/dashboards", dashboard).then(() => $location.path("/dashboards"));
+  }
 }
 
 angular
