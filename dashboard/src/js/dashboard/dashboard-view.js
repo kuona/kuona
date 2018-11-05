@@ -42,6 +42,24 @@ let resultTransformers = {
     panel.data.title = panel.query.title;
 
     mergeParams(panel.data, params);
+  },
+  'health-check-view': (data, panel, params) => {
+    let result_table = [];
+    for (let i = 0; i < data.results.length; i++){
+      for (let j = 0; j < data.results[i].results.length; j++) {
+        result_table.push({
+          date: data.results[i].date,
+          type: data.results[i].type,
+          tags: data.results[i].tags.join(', '),
+          url: data.results[i].results[j].health.url,
+          status: data.results[i].results[j].health.status
+        });
+      }
+    }
+    panel.data.view_data = {
+      title: panel.query.title,
+      entries: result_table
+    }
   }
 };
 
@@ -81,6 +99,7 @@ let widgetProcessors = {
   'health-check': (panel, $http) => {
     $http.post("/api/query/" + panel.query.source, panel.query.json).then(res => {
       panel.data = res.data;
+      transformResult('health-check-view', res.data, panel, null);
     });
   }
 };
@@ -131,7 +150,6 @@ dashboardApp.controller('DashboardViewController', ['$scope', '$http', function 
   $http.get("/api/dashboards/" + dashboardName).success(data => {
     refreshView(data.dashboard);
   });
-  refreshView({});
 }]);
 
 dashboardApp.directive('pietyChart', function () {

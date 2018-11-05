@@ -1,9 +1,28 @@
 <div class="ibox dashboard">
   <div class="ibox-title">
-    <h5>Dashboard Health Check</h5>
+    <h5>{{data.view_data.title}}</h5>
   </div>
-
   <div class="ibox-content">
-    <pre>{{data | json:2}}</pre>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Tags</th>
+        <th>URL</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="entry in data.view_data.entries">
+        <td>{{entry.date|age}}</td>
+        <td>{{entry.type}}</td>
+        <td>{{entry.tags}}</td>
+        <td>{{entry.url}}</td>
+        <td ng-if="entry.status == 'success'" class="text-green"><i class="fa fa-thumbs-up fa-3x text-green"></i></td>
+        <td ng-if="entry.status != 'success'" class="text-danger"><i class="fa fa-thumbs-down fa-3x text-danger"></i></td>
+      </tr>
+      </tbody>
+    </table>
   </div>
 </div>
