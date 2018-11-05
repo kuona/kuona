@@ -5,7 +5,7 @@
             [kuona-api.core.store :as store]
             [kuona-api.core.stores :as stores]
             [kuona-api.core.util :as util]
-            [kuona-api.core.healthcheck :as health-check])
+            [kuona-api.core.health-check :as health-check])
   (:gen-class))
 
 

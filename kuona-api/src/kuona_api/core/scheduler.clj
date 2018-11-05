@@ -13,8 +13,7 @@
             [kuona-api.core.git :as git]
             [kuona-api.core.collector.snapshot :as snapshot]
             [kuona-api.core.stores :refer [repositories-store commit-logs-store code-metric-store collector-config-store source-code-store]]
-            [kuona-api.core.healthcheck :as health-check]
-            [kuona-api.core.workspace :refer [get-workspace-path]]
+            [kuona-api.core.health-check :as health-check]
             [kuona-api.core.workspace :refer [get-workspace-path]]
             [kuona-api.core.stores :as stores]
             [kuona-api.core.collector.source-code :as source-code]))
@@ -101,7 +100,7 @@
 (defn collect-repository-metrics
   []
   (log/info "Collecting metrics from known repositories")
-  (track-activity "Updating respository metrics" :started)
+  (track-activity "Updating repository metrics" :started)
   (let [repositories (store/all-documents repositories-store)]
     (log/info "Found " (count repositories) " configured repositories for analysis")
 

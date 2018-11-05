@@ -1,9 +1,9 @@
 function elapsedFilter() {
   return function (duration) {
-    var seconds = Math.floor(duration / 1000);
-    var minutes = Math.floor(seconds / 60);
-    var hours = Math.floor(minutes / 60);
-    var days = Math.floor(hours / 24);
+    const seconds = Math.floor(duration / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
 
     if (days > 1) {
       return days + " days";
@@ -21,7 +21,7 @@ function ageFilter() {
   return function (date) {
     if (!date) return;
 
-    var time = date;
+    let time;
 
     if (typeof date === 'string') {
       time = Date.parse(date);
@@ -29,19 +29,20 @@ function ageFilter() {
       time = new Date(date);
     }
 
-    var timeNow = new Date().getTime(),
+    let timeNow = new Date().getTime(),
       difference = timeNow - time,
       seconds = Math.floor(difference / 1000),
       minutes = Math.floor(seconds / 60),
       hours = Math.floor(minutes / 60),
       days = Math.floor(hours / 24),
-      months = Math.floor(days / 30);
-    var years = Math.floor(days / 365);
+      months = Math.floor(days / 30),
+      years = Math.floor(days / 365);
+
     if (years > 0) {
       return years + " years ago";
     } else if (months === 1) {
       return "about a month ago";
-    }else if (months > 1) {
+    } else if (months > 1) {
       return "about " + months + " months ago";
     } else if (days > 1) {
       return days + " days ago";
@@ -56,7 +57,7 @@ function ageFilter() {
     } else if (minutes === 1) {
       return "a minute ago";
     } else {
-      return "seconds ago";
+      return seconds + " seconds ago";
     }
   }
 }

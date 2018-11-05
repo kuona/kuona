@@ -1,4 +1,4 @@
-(ns kuona-api.core.healthcheck
+(ns kuona-api.core.health-check
   (:require [slingshot.slingshot :refer :all]
             [kuona-api.core.http :as http]
             [clj-http.client :as http-client]
@@ -61,11 +61,11 @@
        :response_code (:status response)
        :url           url}
       )
-    (catch UnknownHostException e
+    (catch UnknownHostException _
       {:url         url
        :status      :failed
        :description (str "Unknown host" (:message &throw-context))})
-    (catch ConnectException e
+    (catch ConnectException _
       {:url         url
        :status      :failed
        :description (str "Connection refused" (:message &throw-context))})))
@@ -86,11 +86,11 @@
       (cond (= encoding :json)
             (http/json-get (-> hc :href))
             :else {:status      :failed
-                   :description (str "Unrecognised healthcheck encoding " encoding)})
-      (catch UnknownHostException e
+                   :description (str "Unrecognised health check encoding " encoding)})
+      (catch UnknownHostException _
         {:status      :failed
          :description (:message &throw-context)})
-      (catch ConnectException e
+      (catch ConnectException _
         {:status      :failed
          :description "Connection refused"})))
   )
@@ -105,12 +105,10 @@
   [hc collection-date]
   (log/info "HTTP health check")
   (let [results  (map http-get-check-health (-> hc :endpoints))
-        x        (log/info "results" results)
         logs     (map (fn [health] (health-check-log hc health collection-date)) results)
-        y        (log/info "logs" logs)
         snapshot (health-check-snapshot logs hc collection-date)]
 
-    (log/info "snapshot" snapshot)
+    (log/info "new health check snapshot" snapshot)
     (put-health-check-snapshot snapshot)
     (doall (map put-health-check-log logs))))
 
@@ -133,7 +131,7 @@
   (or (get checks key) (get checks (keyword key)) perform-health-check-error))
 
 (defn perform-health-checks
-  "Takes a health-check entry and performs the desired checks. Takes a healthcheck request and collection date"
+  "Takes a health-check entry and performs the desired checks."
   [hc collection-date]
   (log/info "Running health check " hc)
   (let [hc-fn (health-check-fn (-> hc :type))]

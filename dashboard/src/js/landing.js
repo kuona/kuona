@@ -1,17 +1,13 @@
-var kuona = angular.module('kuona.dashboard', [
-  'angular-websocket',
-  'ui.router',                    // Routing
-  'oc.lazyLoad',                  // ocLazyLoad
-  'ui.bootstrap',                 // Ui Bootstrap
+let kuona = angular.module('kuona.dashboard', [
+  'ui.router',
+  'oc.lazyLoad',
+  'ui.bootstrap',
   'ngResource'
 ]);
 
 registerKuonaAngularFilters(kuona);
 
 function MainController($scope, $http) {
-  this.helloText = 'Welcome to Kuona';
-  this.descriptionText = 'Use the navigation to look around :)';
-
   $scope.currentDate = new Date();
   $scope.repository_count = "[loading]";
   $scope.vcs_count = "[loading]";
@@ -29,11 +25,11 @@ function MainController($scope, $http) {
   };
   $http.get('/api/build/tools').then(function (res) {
     $scope.buildTools = [];
-    var data = res.data.buckets;
+    let data = res.data.buckets;
 
-    var colorIndex = 0;
-    for (var k in data) {
-      var item = data[k];
+    let colorIndex = 0;
+    for (let k in data) {
+      let item = data[k];
       $scope.buildTools.push({"label": item.key, "color": colors[colorIndex++], "value": item.doc_count});
     }
     barChart(document.getElementById("buildToolCanvas"), "Module Count", "Build tool counts for identified modules", $scope.buildTools);
@@ -58,7 +54,6 @@ function MainController($scope, $http) {
   $http.get('/api/collectors/activities').then(function (res) {
     $scope.collector_activity = res.data.items;
   });
-
 }
 
 function FooterController($scope, $http) {
@@ -68,4 +63,6 @@ function FooterController($scope, $http) {
   });
 }
 
-kuona.controller('MainController', ['$scope', '$http', MainController]).controller("FooterController", ['$scope', '$http', FooterController]);
+kuona
+  .controller('MainController', ['$scope', '$http', MainController])
+  .controller("FooterController", ['$scope', '$http', FooterController]);

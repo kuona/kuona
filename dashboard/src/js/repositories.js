@@ -19,23 +19,21 @@ kuonaRepositories.directive('kuonaBarChart', function() {
 
 registerKuonaAngularFilters(kuonaRepositories);
 
-function RepositoriesController($scope, $http) {
-  this.helloText = 'Welcome to Kuona';
-  this.descriptionText = 'Use the navigation to look around :)';
-
-  $scope.currentDate = new Date();
+function RepositoriesController($scope, $repositories) {
   $scope.repositoriesFound = [];
 
   $scope.repoSearch = function(term) {
-    $http.get("/api/repositories?search=" + term).then(function(res){
-      $scope.repositoriesFound = res.data;
-    });
+    $repositories.find(term).success(res => $scope.repositoriesFound = res.data);
   };
 
   $scope.repoSearch("");
 }
 
+kuonaRepositories.factory('$repositories', ['$http', ($http) => {
+  return {
+    find: (term) => $http.get("/api/repositories?search=" + term)
+  }
+}]);
 
-
-kuonaRepositories.controller('RepositoriesController',['$scope', '$http', RepositoriesController]);
+kuonaRepositories.controller('RepositoriesController',['$scope', '$repositories', RepositoriesController]);
 

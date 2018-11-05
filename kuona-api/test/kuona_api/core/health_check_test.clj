@@ -1,7 +1,7 @@
-(ns kuona-api.core.healthcheck-test
+(ns kuona-api.core.health-check-test
   (:require [midje.sweet :refer :all]
             [kuona-api.core.http :as http]
-            [kuona-api.core.healthcheck :refer :all]
+            [kuona-api.core.health-check :refer :all]
             [kuona-api.core.util :as util]))
 
 
@@ -43,9 +43,9 @@
 (facts "about health checks"
        (fact "health checks requires a supported encoding"
              (health-check {}) => {:status      :failed
-                                   :description "Unrecognised healthcheck encoding "}
+                                   :description "Unrecognised health check encoding "}
              (health-check {:encoding :foo}) => {:status      :failed
-                                                 :description "Unrecognised healthcheck encoding :foo"})
+                                                 :description "Unrecognised health check encoding :foo"})
        (fact "reports unresolved hosts"
              (health-check {:encoding :json
                             :href     "http://some.rediculous.domain"}) => {:status      :failed

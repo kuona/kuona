@@ -3,16 +3,6 @@
             [ring.util.response :as response]
             [kuona-api.health-check-handlers :refer :all]))
 
-
-(defn find-health-check-reports-by-id
-  "Queries the health check reports for a single health-check by ID or all health-checks by tag"
-  ([])
-  ([id]))
-
-(defn find-health-check-reports-by-tags
-  "Queries the health check reports that match the supplied tags"
-  [tags])
-
 (defn invalid-health-check-response
   [body]
   (-> body

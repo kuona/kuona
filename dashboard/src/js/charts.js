@@ -134,7 +134,7 @@ var polarChart = function(id, title, subtitle, data) {
 
   var ctx3 = document.getElementById(id).getContext("2d");
   new Chart(ctx3, {type: 'polarArea', data: polarData, options:polarOptions});
-}
+};
 
 function barChart(canvas, title, subtitle, data) {
   var dataValues = [];
