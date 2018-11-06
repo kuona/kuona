@@ -37,8 +37,6 @@
 (defn collect-file
   [project-path file-path store template]
   (let [relative-path (subs (.getAbsolutePath file-path) (count project-path))]
-    ;(println file-path relative-path)
-    ;(println relative-path)
     (cond
       (nil? file-path) (fn [p] nil)
       (util/directory? file-path) (fn [p] nil)
@@ -58,15 +56,10 @@
   [path]
   (let [repo (git/load-repo path)]
     (git/git-checkout repo "master")
-    (git/git-checkout repo "HEAD"))
-  )
-
+    (git/git-checkout repo "HEAD")))
 
 (defn collect
   [store path url repository-id]
-
-  ;(pre-collect path)
-
   (let [project-path (util/canonical-path-from-string path)]
     (doseq [file-path (util/find-files project-path)]
       (let [template {:url           url
