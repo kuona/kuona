@@ -128,14 +128,14 @@
           :else (record-activity "Historical code metric collector"
                                  {:url url}
                                  (git/collect-repository-historical-code-metrics1 code-metric-store (get-workspace-path) url (-> repo :id))))))
-    (doseq [repo repositories]
-      (let [url (-> repo :url)]
-        (cond
-          (nil? url) (log/error "No URL field found in repository" repo)
-          :else (record-activity "Historical code metric collector"
-                                 {:url url}
-                                 (source-code/collect source-code-store (get-workspace-path) url (-> repo :id)))))
-      )
+    ;(doseq [repo repositories]
+    ;  (let [url (-> repo :url)]
+    ;    (cond
+    ;      (nil? url) (log/error "No URL field found in repository" repo)
+    ;      :else (record-activity "Historical code metric collector"
+    ;                             {:url url}
+    ;                             (source-code/collect source-code-store (get-workspace-path) url (-> repo :id)))))
+    ;  )
 
     )
   (track-activity "Updating respository metrics" :completed))

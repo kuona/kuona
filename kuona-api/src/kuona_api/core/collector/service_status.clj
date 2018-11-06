@@ -78,7 +78,6 @@
 
 (defn up-status
   [url response]
-  (println response)
   (let [json-response (json-filter response)]
     (log/info url "UP")
     {:url    url
