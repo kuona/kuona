@@ -6,8 +6,9 @@
 (facts "about http exception handling"
        (fact (wrap-http-call (fn [] true)) => true)
 
-       (fact "400" (wrap-http-call (fn [] (throw+ {:status 400 :request-time 0 :headers {} :body "{}"}))) => {:status :error})
+       (fact "400" (wrap-http-call (fn [] (throw+ {:status 400 :request-time 0 :headers {} :body "{}"}))) => {:status :error :cause 400})
        (fact "404" (wrap-http-call (fn [] (throw+ {:status 404 :request-time 0 :headers {} :body "{}"}))) => {:status :error :cause 404})
+       (fact "503" (wrap-http-call (fn [] (throw+ {:status 503 :request-time 0 :headers {} :body "{}"}))) => {:status :error :cause 503})
        (fact "Exceptions are turned into error messages" (wrap-http-call (fn [] (throw (RuntimeException. "Test exception message")))) => (contains {:message "Test exception message" :status :error})))
 
 

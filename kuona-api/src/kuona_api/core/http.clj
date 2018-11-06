@@ -12,15 +12,18 @@
   [f]
   (try+
     (f)
-    (catch [:status 400] {:keys [request-time headers body]}
-      (let [error (util/parse-json body)]
-        (log/info "Bad request" error)
-        {:status :error}))
-    (catch [:status 404] {:keys [request-time headers body]}
-      (let [error (util/parse-json body)]
-        (log/info "Not authorized" error)
-        {:status :error
-         :cause  404}))
+    (catch [:status 400] {}
+           (log/info "Bad request")
+      {:status :error
+       :cause  400})
+    (catch [:status 404] {}
+           (log/info "Not authorized")
+      {:status :error
+       :cause  404})
+    (catch [:status 503] {}
+           (log/info "Service not available")
+      {:status :error
+       :cause  503})
     (catch Object _
       (log/error "Unexpected exception " (:message &throw-context))
       {:status  :error

@@ -28,7 +28,6 @@
 
 (defn ignore-source-file
   [file-type file-path relative-path template]
-  (log/info "ignoring file " relative-path)
   (merge template
          {:path relative-path
           :type file-type}
