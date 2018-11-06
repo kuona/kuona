@@ -18,9 +18,3 @@
 (def comment-mapping-type
   {:comments {:properties comment-type}})
 
-(def environment-mapping-type
-  {:environments {:properties {:name es-string-not-analyzed-type
-                               :version es-string-not-analyzed-type
-                               :status es-string-not-analyzed-type
-                               :tags es-string-not-analyzed-type
-                               :comment {:properties comment-type}}}})

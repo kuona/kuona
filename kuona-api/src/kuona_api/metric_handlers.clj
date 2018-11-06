@@ -1,7 +1,5 @@
 (ns kuona-api.metric-handlers
   (:require [clojure.string :as string]
-            [clojure.tools.logging :as log]
-            [kuona-api.environments :refer :all]
             [kuona-api.core.store :as store]
             [kuona-api.core.stores :as stores]
             [ring.util.response :refer [resource-response response status not-found]]

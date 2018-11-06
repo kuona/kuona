@@ -140,19 +140,12 @@
     )
   (track-activity "Updating respository metrics" :completed))
 
-(defn refresh-build-metrics []
-  (log/info "Collecting build information from build servers"))
-
-(defn collect-environment-metrics []
-  (log/info "Collecting environment status data"))
 
 (defjob background-data-collector [ctx]
         (log/info "Background data collection started")
         (refresh-repositories)
         (log/info "Updating repository metrics")
-        (collect-repository-metrics)
-        (refresh-build-metrics)
-        (collect-environment-metrics))
+        (collect-repository-metrics))
 
 (defjob background-health-check-collector
         [ctx]

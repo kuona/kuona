@@ -20,7 +20,7 @@
 
 <body ng-controller="RepositoriesController as controller" class="top-navigation pace-done">
 <div id="wrapper">
-  <div id="page-wrapper" class="{{$state.current.name}}">
+  <div id="page-wrapper">
     <div ng-include="'/views/common/navigation.html'"></div>
     <div class="wrapper wrapper-content">
       <div class="container-fluid">
@@ -44,7 +44,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="i in repositoriesFound.items" class="search-result">
+                    <tr ng-repeat="i in repositories.items" class="search-result">
 
                       <td>
                         <h4>{{i.project.name}}</h4>

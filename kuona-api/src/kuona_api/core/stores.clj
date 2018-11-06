@@ -314,8 +314,6 @@
           p        (string/join "&" params)]
       (str (string/join "/" elements) "?" p))))
 
-(def environments-store (mapping :environments (index :kuona-env default-es-host)))
-(def environments-comment-store (mapping :comments (index :kuona-env default-es-host)))
 (def metrics-store (index :kuona-metrics default-es-host))
 
 (def repositories-store (DataStore. :repositories :repositories repository-metric-type))
