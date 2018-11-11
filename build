@@ -18,6 +18,7 @@ function banner() {
 
 PWD=`pwd`
 
+readonly LEIN_TEST_PACKAGE="lein do midje, install, uberjar"
 readonly LEIN_TEST="lein midje"
 readonly LEIN_PACKAGE="lein uberjar"
 readonly LEIN_INSTALL="lein install"
@@ -35,10 +36,11 @@ fi
 (cd ./lib/maven; ${MAVEN_BUILD})
 (cd ./lib/parsers; ${MAVEN_BUILD})
 
-(cd ./kuona-core; ${LEIN_TEST}; ${LEIN_INSTALL})cd
-(cd ./kuona-api; ${LEIN_TEST}; ${LEIN_PACKAGE})
-(cd ./tools/github-crawler; ${LEIN_TEST}; ${LEIN_PACKAGE})
-(cd ./tools/tfs-crawler; ${LEIN_TEST}; ${LEIN_PACKAGE})
+(cd ./kuona-api; ${LEIN_TEST_PACKAGE})
+banner "github crawler"
+(cd ./tools/github-crawler; ${LEIN_TEST_PACKAGE})
+banner "TFS crawler"
+(cd ./tools/tfs-crawler; ${LEIN_TEST_PACKAGE})
 
 find . -iname '*standalone.jar' -not -path './target' -exec cp -f {} ./target \;
 echo "${pblue}Binaries collected to ./target${preset}"
