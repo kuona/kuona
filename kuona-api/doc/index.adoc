@@ -1,7 +1,11 @@
 = Kuona
+:source-highlighter: coderay
 
+Kuona (to see) is a an data collection, analysis and visualisation tool for development teams and organisations designed to provide insight into development processes through data.
 
+== Kuona API
 
-
-
-Kuona API
+[source,clojure]
+....
+include::../src/kuona_api/handler.clj[]
+....

@@ -56,7 +56,10 @@
 
 (defroutes app-routes
            (GET "/" [] (io/resource "public/index.html"))
+           (GET "/doc/" [] (io/resource "doc/index.html"))
            (route/resources "/")
+           (route/resources "/doc/" {:root "doc"})
+           
            (GET "/api" [] (get-service-data))
            (GET "/api/info" [] (get-api-info))
            (GET "/api/status" [] (get-api-status))
