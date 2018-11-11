@@ -267,6 +267,7 @@ let testDashobardPanels = [
 const sample = [
   {
     type: 'health-check',
+    width: 6,
     source: 'query',
     query: {
       title: 'Kuona Health checks',

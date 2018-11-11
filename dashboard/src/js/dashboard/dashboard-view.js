@@ -45,7 +45,7 @@ let resultTransformers = {
   },
   'health-check-view': (data, panel, params) => {
     let result_table = [];
-    for (let i = 0; i < data.results.length; i++){
+    for (let i = 0; i < data.results.length; i++) {
       for (let j = 0; j < data.results[i].results.length; j++) {
         result_table.push({
           date: data.results[i].date,
@@ -132,6 +132,9 @@ dashboardApp.controller('DashboardViewController', ['$scope', '$http', function 
   };
   $scope.dashboard = null;
 
+  $scope.panelWidth = (width) => {
+    return width ? 'col-lg-' + width : 'col-lg-3';
+  };
   let refreshView = (dashboard) => {
     if (dashboard.panels) {
       for (let i = 0; i < dashboard.panels.length; i++) {

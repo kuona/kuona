@@ -34,13 +34,15 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-3" ng-repeat="panel in dashboard.panels">
-            <build-status-panel ng-if="panel.type == 'build-status'" data="panel.data"></build-status-panel>
-            <count-metric-panel ng-if="panel.type == 'count-metric'" data="panel.data"></count-metric-panel>
-            <pie-chart-panel ng-if="panel.type == 'pie-chart'" data="panel.data"></pie-chart-panel>
-            <bar-chart-panel ng-if="panel.type == 'bar-chart'" data="panel.data"></bar-chart-panel>
-            <activity-feed-panel ng-if="panel.type == 'activity-feed'" data="panel.data"></activity-feed-panel>
-            <health-check-panel ng-if="panel.type == 'health-check'" data="panel.data"></health-check-panel>
+          <div ng-repeat="panel in dashboard.panels">
+            <div ng-class="panelWidth(panel.width)">
+              <build-status-panel ng-if="panel.type == 'build-status'" data="panel.data"></build-status-panel>
+              <count-metric-panel ng-if="panel.type == 'count-metric'" data="panel.data"></count-metric-panel>
+              <pie-chart-panel ng-if="panel.type == 'pie-chart'" data="panel.data"></pie-chart-panel>
+              <bar-chart-panel ng-if="panel.type == 'bar-chart'" data="panel.data"></bar-chart-panel>
+              <activity-feed-panel ng-if="panel.type == 'activity-feed'" data="panel.data"></activity-feed-panel>
+              <health-check-panel ng-if="panel.type == 'health-check'" data="panel.data"></health-check-panel>
+            </div>
           </div>
         </div>
       </div>
