@@ -1,0 +1,34 @@
+---
+- hosts: kuona
+  remote_user: root
+  gather_facts: false
+  roles:
+    - role: elastic.elasticsearch
+  vars:
+    es_instance_name: kuona-es
+    es_api_port: 9201
+    es_config:
+      node.name: "kuona-es"
+      cluster.name: "kuaon-cluster"
+      discovery.zen.ping.unicast.hosts: "localhost:9301"
+      http.port: 9201
+      transport.tcp.port: 9301
+  pre_tasks:
+    - name: Install python for Ansible
+      raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qqy python-minimal)"
+      register: output
+      changed_when: output.stdout != ""
+    - name: Gathering Facts
+      setup:
+  tasks:
+    - name: Update all packages to the latest version
+      apt:
+        upgrade: dist
+    - name: "Install nginx"
+      apt:
+        name: nginx
+        update_cache: yes
+    - name: "Install elasticsearch"
+      apt:
+        name: elasticsearch
+        update_cache: yes
