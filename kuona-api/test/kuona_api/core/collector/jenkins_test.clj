@@ -2,9 +2,9 @@
   (:require [clj-http.client :as http]
             [cheshire.core :refer :all]
             [midje.sweet :refer :all]
-            [kuona-api.core.collector.jenkins :refer :all]
             [clojure.tools.logging :as log]
-            [clojure.data.zip.xml :refer :all]))
+            [clojure.data.zip.xml :refer :all]
+            [kuona-api.core.collector.jenkins :refer :all]))
 
 (def stubbed-home-response
   {:jobs
@@ -149,11 +149,6 @@
                (provided
                  (http/get "http://foo/bar/api/json" {}) => {:body (generate-string {:result :foo})}))))
 
-(def workflow-job-class
-  "org.jenkinsci.plugins.workflow.job.WorkflowJob")
-
-(defn workflow-job? [job]
-  (= (:_class job) workflow-job-class))
 
 (facts "about workflow jobs"
        (fact
@@ -161,25 +156,17 @@
        (fact
          (workflow-job? {:_class workflow-job-class}) => true))
 
-(defn build-job [job]
-  (cond
-    (workflow-job? job) (select-keys job [:name :url])
-    :else nil))
 
 (facts
   (fact
     (build-job {}) => nil)
   (fact (let [valid-job-spec {:_class workflow-job-class
                               :name   "some_name"
-                              :url    "job_url"
-                              }
+                              :url    "job_url"}
               job-def        {:name "some_name"
-                              :url  "job_url"
-                              }]
+                              :url  "job_url"}]
           (build-job valid-job-spec) => job-def)))
 
-(defn read-jobs [job]
-  (concat [] (map build-job (:jobs job))))
 
 (facts "about reading build jobs"
        (let [valid-job-spec {:_class workflow-job-class

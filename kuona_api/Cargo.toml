@@ -1,0 +1,23 @@
+[package]
+name = "kuona_api"
+version = "0.1.0"
+authors = ["Graham Brooks <graham@grahambrooks.com>"]
+edition = "2018"
+
+[dependencies]
+elastic = "*"
+elastic_derive = "*"
+rocket = "0.4.0"
+rocket_codegen = "0.4.0"
+serde = "*"
+serde_json = "*"
+serde_derive= "*"
+
+[dependencies.rocket_contrib]
+version = "*"
+default-features= false
+features= ["json"]
+
+[dev-dependencies]
+json_str = "~0.5"
+env_logger = "~0.4.3"

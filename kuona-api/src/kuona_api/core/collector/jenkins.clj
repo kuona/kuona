@@ -239,3 +239,17 @@
     )
   )
 
+(def workflow-job-class
+  "org.jenkinsci.plugins.workflow.job.WorkflowJob")
+
+(defn workflow-job? [job]
+  (= (:_class job) workflow-job-class))
+
+(defn build-job [job]
+  (cond
+    (workflow-job? job) (select-keys job [:name :url])
+    :else nil))
+
+(defn read-jobs [job]
+  (concat [] (map build-job (:jobs job))))
+
