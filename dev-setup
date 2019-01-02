@@ -39,10 +39,12 @@ echo "${pblue}Setting up web development environment${preset}"
 cd dashboard; npm install; cd ..
 
 if ! [ -d "test/test-repo" ]; then
+  echo 'setting up test repository for functional testing'
   git clone https://github.com/grahambrooks/functional-event-store.git test/test-repo
 fi
 
 if ! [ -d "test/dependency-test-repo" ]; then
+  echo 'setting up test repository for functional dependency  testing'
   git clone https://github.com/grahambrooks/java-nio-socket-server.git test/dependency-test-repo
 fi
 
