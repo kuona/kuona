@@ -62,7 +62,7 @@ function symlink_core {
 symlink_core "tools/github-crawler"
 symlink_core "tools/tfs-crawler"
 
-if ! [ -e "kuona-api/resources/public" ]; then
+if ! [ -h "kuona-api/resources/public" ]; then
   ln -s "${PWD}/dashboard/out" "kuona-api/resources/public"
 fi
 
