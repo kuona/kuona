@@ -59,10 +59,11 @@ function symlink_core {
     ln -s "${PWD}/kuona-api" "${p}/checkouts/kuona-api"
   fi
 }
-
 symlink_core "tools/github-crawler"
 symlink_core "tools/tfs-crawler"
 
-ln -s "${PWD}/dashboard/out" "kuona-api/resources/public"
+if ! [ -e "kuona-api/resources/public" ]; then
+  ln -s "${PWD}/dashboard/out" "kuona-api/resources/public"
+fi
 
 echo "${pgreen}Ready to develop! Start with the readme.${preset}"
