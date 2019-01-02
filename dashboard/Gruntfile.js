@@ -61,12 +61,10 @@ module.exports = function (grunt) {
         }
       }
     },
-    compass: {                  // Task
-      dist: {                   // Target
-        options: {              // Target options
-          sassDir: 'src/sass',
-          cssDir: 'out/css',
-          environment: 'production'
+    sass: {
+      dist: {
+        files: {
+          'out/css/dashboard.css': 'src/sass/dashboard.sass'
         }
       }
     }
@@ -76,7 +74,7 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
 
 //  grunt.registerTask("default", ["babel"]);
-  grunt.registerTask('build', ['clean', 'copy', 'compass', 'babel']);
+  grunt.registerTask('build', ['clean', 'copy', 'sass', 'babel']);
   grunt.registerTask('dev', ['build', 'browserSync', 'watch']);
   grunt.registerTask('default', ['browserify:admin', 'build']);
 };
