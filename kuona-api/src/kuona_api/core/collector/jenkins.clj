@@ -108,9 +108,9 @@
           uri              (api-url url)
           http-credentials (http-credentials (:username credentials) (:password credentials))]
       (content-parser (http/get uri http-credentials)))
-    (catch [:status 404] {:keys [request-time headers body]}
+    (catch [:status 404] {:keys []}
       (log/warn "404 Failed to get" url))
-    (catch [:status 500] {:keys [request-time headers body]}
+    (catch [:status 500] {:keys []}
       (log/warn "500 Failed to get" url))
     (catch Exception e
       (log/warn "Failed to get" url e)
@@ -182,9 +182,9 @@
     (try+
       (log/info "put-build!" url (-> build :build :url))
       (http/post url (build-json-request build))
-      (catch [:status 404] {:keys [request-time headers body]}
+      (catch [:status 404] {:keys [body]}
         (log/warn "Failed to put build" url build "response" body))
-      (catch [:status 500] {:keys [request-time headers body]}
+      (catch [:status 500] {:keys [body]}
         (log/warn "Failed to put build" url build "response" body))
       (catch Object _
         (log/warn "Failed to put build" url build)
@@ -235,6 +235,11 @@
 
 (defn collect-metrics [connection url api]
   (let [jobs (read-jenkins-jobs connection url)]
+
+    ;(->> (read-all-job-builds connection jobs)
+    ;     (read-build-metrics connection url)
+    ;     (put-builds! api)
+    ;     )
     (put-builds! api (read-build-metrics connection url (read-all-job-builds connection jobs)))
     )
   )

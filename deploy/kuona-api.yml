@@ -6,7 +6,7 @@
   vars:
     kuona_home: /home/kuona
     working_directory: "{{kuona_home}}/working"
-    jar_name: "kuona-api-0.0.1-standalone.jar"
+    jar_name: "kuona-api-0.0.2-standalone.jar"
     dashboard_version: 0.2.2-SNAPSHOT
   tasks:
   - name: "Uploading jar {{jar_name}}"
