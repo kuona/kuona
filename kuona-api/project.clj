@@ -7,7 +7,7 @@
   :license {:name "Apache License 2.0"
             :url  "http://www.apache.org/licenses/LICENSE-2.0"}
   :repositories [["gradle" "https://repo.gradle.org/gradle/libs-releases-local/"]]
-  :dependencies [[org.clojure/clojure "1.9.0"]
+  :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/tools.cli "0.4.1"]
                  [org.clojure/tools.logging "0.4.1"]
                  [log4j/log4j "1.2.17" :exclusions [javax.mail/mail
@@ -26,8 +26,8 @@
                  [kuona/parsers "0.2"]
                  [org.clojure/data.xml "0.0.8"]
                  [org.clojure/data.zip "0.1.2"]
-                 [org.gradle/gradle-core "4.10.2"]
-                 [org.gradle/gradle-tooling-api "4.10.2"]
+                 [org.gradle/gradle-core "5.0"]
+                 [org.gradle/gradle-tooling-api "5.0"]
                  [org.slf4j/slf4j-log4j12 "1.7.25"]
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-jetty-adapter "1.7.1"]
