@@ -87,6 +87,12 @@
         (tfs-org-collector-config? e) (refresh-tfs-org (-> config :org) (-> config :token))
         :else (log/info "collector type not supported")))
     (catch Object _
+      (store/put-document {:id         (util/uuid)
+                           :collector  {:name    (-> e :collector)
+                                        :version (util/get-project-version 'kuona-api)}
+                           :activity   :error
+                           :parameters (select-keys (-> e :config) [:org :username])
+                           :timestamp  (util/timestamp)} stores/collector-activity-store)
       (log/error (:throwable &throw-context) "Unexpected error collecting repository data " e))))
 
 (defn refresh-repositories
