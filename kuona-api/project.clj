@@ -20,15 +20,15 @@
                  [clj-time "0.15.1"]
                  [clojurewerkz/quartzite "2.1.0"]
                  [com.jcabi/jcabi-log "0.18"]
-                 [commons-codec/commons-codec "1.11"]
+                 [commons-codec/commons-codec "1.12"]
                  [compojure "1.6.1"]
                  [io.forward/yaml "1.0.9"]
                  [kuona/parsers "0.2"]
                  [org.clojure/data.xml "0.0.8"]
                  [org.clojure/data.zip "0.1.2"]
-                 [org.gradle/gradle-core "5.0"]
-                 [org.gradle/gradle-tooling-api "5.0"]
-                 [org.slf4j/slf4j-log4j12 "1.7.25"]
+                 [org.gradle/gradle-core "5.2.1"]
+                 [org.gradle/gradle-tooling-api "5.2.1"]
+                 [org.slf4j/slf4j-log4j12 "1.7.26"]
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-jetty-adapter "1.7.1"]
                  [ring/ring-json "0.4.0"]
@@ -46,5 +46,5 @@
          :auto-refresh true}
   :profiles {:dev     {:dependencies [[javax.servlet/servlet-api "2.5"]
                                       [ring/ring-mock "0.3.2"]
-                                      [midje "1.9.4"]]}
+                                      [midje "1.9.6"]]}
              :uberjar {:aot :all}})
