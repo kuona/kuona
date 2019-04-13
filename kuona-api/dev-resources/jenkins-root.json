@@ -1,0 +1,52 @@
+{
+  "_class": "hudson.model.Hudson",
+  "assignedLabels": [
+    {
+      "name": "master"
+    }
+  ],
+  "mode": "NORMAL",
+  "nodeDescription": "the master Jenkins node",
+  "nodeName": "",
+  "numExecutors": 2,
+  "description": null,
+  "jobs": [
+    {
+      "_class": "jenkins.branch.OrganizationFolder",
+      "name": "k",
+      "url": "http://localhost:8081/job/k/"
+    },
+    {
+      "_class": "org.jenkinsci.plugins.workflow.job.WorkflowJob",
+      "name": "ku",
+      "url": "http://localhost:8081/job/ku/",
+      "color": "notbuilt"
+    },
+    {
+      "_class": "jenkins.branch.OrganizationFolder",
+      "name": "Kuona",
+      "url": "http://localhost:8081/job/Kuona/"
+    }
+  ],
+  "overallLoad": {},
+  "primaryView": {
+    "_class": "hudson.model.AllView",
+    "name": "all",
+    "url": "http://localhost:8081/"
+  },
+  "quietingDown": false,
+  "slaveAgentPort": 50000,
+  "unlabeledLoad": {
+    "_class": "jenkins.model.UnlabeledLoadStatistics"
+  },
+  "useCrumbs": true,
+  "useSecurity": true,
+  "views": [
+    {
+      _
+      "class": "hudson.model.AllView",
+      "name": "all",
+      "url": "http://localhost:8081/"
+    }
+  ]
+}
