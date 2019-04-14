@@ -67,10 +67,13 @@
               <button class="btn btn-danger btn-circle" type="button" ng-click="deleteIndex(index.name)">
                 <i class="fas fa-trash-alt"></i>
               </button>
-              <button class="btn btn-warning btn-circle" type="button" ng-if="index.settings.index.blocks.read_only_allow_delete === 'true'" ng-click="unlock(index.name)">
+              <button class="btn btn-warning btn-circle" type="button"
+                      ng-if="index.settings.index.blocks.read_only_allow_delete === 'true'"
+                      ng-click="unlock(index.name)">
                 <i class="fas fa-unlock"></i>
               </button>
-              <button class="btn btn-success btn-circle" type="button" ng-if="index.settings.index.blocks.read_only_allow_delete === 'false'">
+              <button class="btn btn-success btn-circle" type="button"
+                      ng-if="index.settings.index.blocks.read_only_allow_delete === 'false'">
                 <i class="fas fa-lock-open"></i>
               </button>
             </td>

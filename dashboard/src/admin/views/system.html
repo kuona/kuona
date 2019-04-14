@@ -1,0 +1,117 @@
+<div class="wrapper wrapper-content" ng-controller="SystemConfigurationController">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="text-center m-t-lg">
+        <h1>
+          System Configuration
+        </h1>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="ibox-content">
+      <form class="form-horizontal">
+        <div class="form-group">
+          <label class="col-sm-2 control-label" for="workspace">Workspace path</label>
+          <div class="col-sm-10">
+            <input type="text" id="workspace" ng-model="config.workspace.path" class="form-control"
+                   placeholder="kuona-workspace">
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <h3>Data collection frequency</h3>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Refresh Repository Indexes</label>
+          <div class="col-sm-10">
+            <h4>Refresh the repository indexes (TFS/GitHub) every</h4>
+            <label>
+              <input type="radio" ng-model="config.repository.refresh" value="weekly"> Week
+            </label>
+            <br/>
+            <label>
+              <input type="radio" ng-model="config.repository.refresh" value="daily"> Every Day
+            </label>
+            <br/>
+            <label>
+              <input type="radio" ng-model="config.repository.refresh" value="hourly"> Every Hour
+            </label>
+            <br/>
+            <label>
+              <input type="radio" ng-model="config.repository.refresh" value="none"> No refresh
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Historical Code Metrics</label>
+          <div class="col-sm-10">
+            <h4>When a new repository is first analysed collect code metrics for each day in the last</h4>
+            <label>
+              <input type="radio" ng-model="config.repository.refresh" value="6"> 6 months
+            </label>
+            <br/>
+            <label>
+              <input type="radio" ng-model="config.repository.refresh" value="1"> Last Month
+            </label>
+            <br/>
+            <label>
+              <input type="radio" ng-model="config.repository.refresh" value="0"> No History
+            </label>
+          </div>
+        </div>
+
+        <div class="col-lg-12">
+          <h3>Source Code Data collection</h3>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label" for="code-collection-enabled">Collect code demographic
+            data from repositories</label>
+          <div class="col-sm-10">
+            <input type="checkbox" id="code-collection-enabled"
+                   ng-model="config.code.collect" value="false"> Collect Code Metrics
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label" for="code.collect.tool.path">Path</label>
+          <div class="col-sm-10">
+            <input type="text" id="code.collect.tool.path" ng-model="config.code.tool.path"
+                   class="form-control"
+                   placeholder="/usr/local/bin/cloc">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Code Collection format</label>
+          <div class="col-sm-10">
+            <h4>cloc and tokei are supported. tokei is much faster and is recommended for larger projects</h4>
+            <label>
+              <input type="radio" ng-model="config.code.tool.kind" value="cloc">&nbsp;CLOC
+            </label>
+            <br/>
+            <label>
+              <input type="radio" ng-model="config.code.tool.kind" value="tokei">&nbsp;Tokei
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label" for="config.builders.collection.enabled">Build and build
+            dependencies</label>
+          <div class="col-sm-10">
+            <input type="checkbox" id="config.builders.collection.enabled"
+                   ng-model="config.builders.collect" value="false"> Collect builder metrics
+          </div>
+        </div>
+
+        <div class="hr-line-dashed"></div>
+
+        <div class="form-group">
+          <div class="col-sm-4 col-sm-offset-2">
+            <button class="btn btn-primary" type="submit" ng-click="saveSystemConfiguration()">Save</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>

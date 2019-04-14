@@ -54,6 +54,10 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
     url: 'health-check',
     templateUrl: 'views/health-check.html',
     data: {pageTitle: 'New Health Check'}
+  }).state('index.system-admin', {
+    url: 'system-admin',
+    templateUrl: 'views/system.html',
+    data: {pageTitle: 'System Configuration'}
   });
 }
 
