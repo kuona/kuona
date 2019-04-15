@@ -56,6 +56,40 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type SystemConfiguration struct {
+	Repository struct {
+		Refresh struct {
+			Frequency string `json:"frequency"`
+		} `json:"refresh"`
+	} `json:"repository"`
+	Metrics struct {
+		Collectors struct {
+			Workspace struct {
+				Path string `json:"path"`
+			}
+			SourceCode struct {
+				Collector struct {
+					Enabled bool
+				}
+				Tool struct {
+					Path string
+					Kind string
+				}
+				History struct {
+					Months int
+				}
+			}
+			Builds struct {
+				Enabled bool
+			}
+		}
+	}
+}
+
+func SystemConfigurationHandler(w http.ResponseWriter, r *http.Request) {
+	_ = json.NewEncoder(w).Encode(SystemConfiguration{})
+}
+
 type ApiSearchResponse struct {
 	Results interface{}   `json:"results"`
 	Count   int           `json:"count"`

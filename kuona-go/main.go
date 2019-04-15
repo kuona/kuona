@@ -16,6 +16,7 @@ func main() {
 	router := mux.NewRouter()
 
 	apiRouter := router.PathPrefix("/api").Subrouter()
+	apiRouter.HandleFunc("/system/config", SystemConfigurationHandler).Methods("GET", "POST")
 	apiRouter.HandleFunc("/info", InfoHandler).Methods("GET")
 	apiRouter.HandleFunc("/status", StatusHandler).Methods("GET")
 	apiRouter.HandleFunc("/search", SearchHandler).Methods("GET")
@@ -29,7 +30,6 @@ func main() {
 	apiRouter.HandleFunc("/metrics/{index}/count", MetricsCountHandler)
 	apiRouter.HandleFunc("/collectors/activities", CollectorActivitiesHandler)
 	apiRouter.HandleFunc("/build/tools", BuildToolsHandler)
-
 
 	http.Handle("/", router)
 	router.PathPrefix("/").Handler(http.FileServer(box))
