@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/elastic/go-elasticsearch"
 	"log"
 	"net/http"
 	"strings"
@@ -16,6 +17,7 @@ type ElasticIndex struct {
 	description string
 }
 type ElasticSearchEngine struct {
+	Client  *elasticsearch.Client
 	Url     string
 	Indices map[string]ElasticIndex
 }
@@ -25,16 +27,21 @@ func (index ElasticIndex) Name() string {
 }
 
 func (index ElasticIndex) Count() (interface{}, error) {
-	url := index.Engine.Url + "/" + index.Name() + "/_count"
-	log.Printf("Requesting %s", url)
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	} else {
-		var content interface{}
-		_ = json.NewDecoder(resp.Body).Decode(&content)
-		return content, nil
-	}
+	response, _ := index.Engine.Client.Count(index.Engine.Client.Count.WithIndex(index.Name()))
+	var content interface{}
+	_ = json.NewDecoder(response.Body).Decode(&content)
+	return content, nil
+	//log.Println(response)
+	//url := index.Engine.Url + "/" + index.Name() + "/_count"
+	//log.Printf("Requesting %s", url)
+	//resp, err := http.Get(url)
+	//if err != nil {
+	//	return nil, err
+	//} else {
+	//	var content interface{}
+	//	_ = json.NewDecoder(resp.Body).Decode(&content)
+	//	return content, nil
+	//}
 }
 
 type ElasticSearchResponse struct {
@@ -145,7 +152,19 @@ func NewIndex(name string, engine ElasticSearchEngine) ElasticIndex {
 }
 
 func NewElasticSearchEngine(url string) ElasticSearchEngine {
-	engine := ElasticSearchEngine{Url: url, Indices: map[string]ElasticIndex{}}
+	es, err := elasticsearch.NewDefaultClient()
+	if err != nil {
+		log.Fatalf("Error creating the client: %s", err)
+	}
+
+	res, err := es.Info()
+	if err != nil {
+		log.Fatalf("Error getting response: %s", err)
+	}
+
+	log.Println(res)
+
+	engine := ElasticSearchEngine{Client: es, Url: url, Indices: map[string]ElasticIndex{}}
 	engine.Indices["builds"] = NewIndex("builds", engine)
 	engine.Indices["repositories"] = NewIndex("repositories", engine)
 	engine.Indices["commits"] = NewIndex("vcs-commit", engine)

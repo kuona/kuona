@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"io"
 	"net/http"
 )
 
@@ -187,13 +188,17 @@ func RepositoriesCountHandler(w http.ResponseWriter, r *http.Request) {
 func MetricsCountHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	indexName := vars["index"]
-	index, err := SearchEngine.Index(indexName)
-	content, _ := index.Count()
-	if err != nil {
-		_ = json.NewEncoder(w).Encode(ServiceStatus{Status: "error", Store: "kuona-repositories"})
-	} else {
-		_ = json.NewEncoder(w).Encode(content)
-	}
+	index, _ := SearchEngine.Index(indexName)
+	response, _ := SearchEngine.Client.Count(SearchEngine.Client.Count.WithIndex(index.Name()))
+	_, _ = io.Copy(w, response.Body)
+	//w.Write(response.Body.Read())
+	//index, err := SearchEngine.Index(indexName)
+	//content, _ := index.Count()
+	//if err != nil {
+	//	_ = json.NewEncoder(w).Encode(ServiceStatus{Status: "error", Store: "kuona-repositories"})
+	//} else {
+	//	_ = json.NewEncoder(w).Encode(content)
+	//}
 }
 
 func BuildToolsHandler(w http.ResponseWriter, r *http.Request) {
