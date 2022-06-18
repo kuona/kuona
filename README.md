@@ -2,6 +2,8 @@
 
 # kuona-project
 
+This repository is no longer maintained and has been set to read-only/archived
+
 Kuona is the [Shona](https://en.wikipedia.org/wiki/Shona_language)
 word that means "To see". This project is about providing valuable
 actionable insight into software delivery.
